@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
 
 void main() {
-  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 

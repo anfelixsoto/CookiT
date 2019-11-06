@@ -3,6 +3,7 @@ import 'package:cookit_demo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
+import 'package:cookit_demo/LoginActivity.dart';
 
 void main(){
   runApp(MaterialApp(
@@ -14,21 +15,12 @@ void main(){
 class RegisterActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final nFirstField = TextField(
+    final nNameField = TextField(
       obscureText: false,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "First Name",
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-      ),
-    );
-
-    final nLastName = TextField(
-      obscureText: false,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Last Name",
+          fillColor: Colors.lightGreen,
+          hintText: "Name",
           border:
           OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
       ),
@@ -77,28 +69,7 @@ class RegisterActivity extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                )
-            )
-        )
-    );
-
-    final cancelButton = Material(
-        child: RaisedButton(
-
-            onPressed: (){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage())
-              );
-            },
-            color: Colors.lightGreen,
-            child: Text(
-                ("Cancel").toUpperCase(),
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
+                  color: Colors.lightGreen,
                 )
             )
         )
@@ -107,52 +78,63 @@ class RegisterActivity extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.lightGreen,
+        appBar: AppBar(
+          backgroundColor: Colors.lightGreen,
+          automaticallyImplyLeading: true,
+          title: Text('CookiT'),
+          leading: IconButton(icon:Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+        ),
+        backgroundColor: Colors.white,
         body: Center(
-            child: Column(
-              children: <Widget>[
-                AvatarGlow(
-                  endRadius: 90,
-                  duration: Duration(seconds: 2),
-                  glowColor: Colors.white24,
-                  repeat: true,
-                  repeatPauseDuration: Duration(seconds: 2),
-                  startDelay: Duration(seconds: 1),
-                  child: Material(
-                      elevation: 8.0,
-                      shape: CircleBorder(),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey[100],
-                        child: FlutterLogo(
-                          size: 50.0,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(36.0),
+                child: ListView(
+                  children: <Widget>[
+                    AvatarGlow(
+                      endRadius: 90,
+                      duration: Duration(seconds: 2),
+                      glowColor: Colors.lightGreen,
+                      repeat: true,
+                      repeatPauseDuration: Duration(seconds: 2),
+                      startDelay: Duration(seconds: 1),
+                      child: Material(
+                          elevation: 8.0,
+                          shape: CircleBorder(),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey[100],
+                            child: FlutterLogo(
+                              size: 50.0,
+                            ),
+                            radius: 50.0,
+                          )),
+                    ),
+                    DelayedAnimation(
+                      child: Text(
+                        "Account Registeration",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 35.0,
+                          color: Colors.lightGreen,
                         ),
-                        radius: 50.0,
-                      )),
+                      ),
+                    ),
+                    SizedBox(height: 20.0,),
+                    nNameField,
+                    SizedBox(height: 20.0,),
+                    nEmailField,
+                    SizedBox(height: 20.0,),
+                    nPasswordField,
+                    SizedBox(height: 20.0,),
+                    nPasswordRepeatField,
+                    SizedBox(height: 10.0,),
+                    registerComplete,
+                  ],
                 ),
-                DelayedAnimation(
-                  child: Text(
-                    "Account Registeration",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 35.0,
-                      color: Colors.white,),
-                  ),
-                ),
-                SizedBox(height: 20.0,),
-                nFirstField,
-                SizedBox(height: 20.0,),
-                nLastName,
-                SizedBox(height: 20.0,),
-                nEmailField,
-                SizedBox(height: 20.0,),
-                nPasswordField,
-                SizedBox(height: 20.0,),
-                nPasswordRepeatField,
-                SizedBox(height: 10.0,),
-                registerComplete,
-                SizedBox(height: 5.0),
-                cancelButton,
-              ],
+              ),
             )
         ),
       ),

@@ -16,6 +16,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final registerButton = Material(
+        borderRadius: BorderRadius.circular(100.0),
+        color: Colors.white,
         child: MaterialButton(
             onPressed: (){
               Navigator.push(
@@ -35,14 +37,15 @@ class HomePage extends StatelessWidget {
     );
 
     final loginButton = Material(
-        child: RaisedButton(
+        borderRadius: BorderRadius.circular(100.0),
+        color: Colors.lightGreen,
+        child: MaterialButton(
             onPressed: (){
               Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => LoginActivity())
               );
             },
-            color: Colors.lightGreen,
             child: Text(
               ("I Already have An Account").toUpperCase(),
                 style: TextStyle(
@@ -106,9 +109,9 @@ class HomePage extends StatelessWidget {
               child: Text("Cook Book",
                 style: TextStyle(fontSize: 20.0, color: Colors.white,),),
             ),
-            SizedBox(height: 45.0,),
+            SizedBox(height: 200.0, width: 270,),
             registerButton,
-            SizedBox(height: 25.0),
+            SizedBox(height: 10.0),
             loginButton,
           ],
         )

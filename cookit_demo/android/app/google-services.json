@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "311451891923",
+    "firebase_url": "https://cookit-demo-db-ff68b.firebaseio.com",
+    "project_id": "cookit-demo-db-ff68b",
+    "storage_bucket": "cookit-demo-db-ff68b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311451891923:android:090136caa6cf82a9fa7c26",
+        "android_client_info": {
+          "package_name": "edu.csumb.cst438.cookit_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311451891923-6adln4qohln49nsslc1c3qb99d0m0osf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT3_OYD75QJcBk-d34_rhRR1baXj6lFb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311451891923-6adln4qohln49nsslc1c3qb99d0m0osf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

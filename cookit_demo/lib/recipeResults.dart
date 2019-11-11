@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
@@ -12,12 +13,12 @@ void main(){
 }
 
 class RecipeResults extends StatelessWidget {
-  List<String> recipes=new List(4);
+  List<Recipe> recipes=new List(4);
   RecipeResults(){
-    recipes[0]='Baked Salmon';
-    recipes[1]='Pan Fried Salmon';
-    recipes[2]='Microwave Salmon';
-    recipes[3]='Salmon Sashimi';
+    recipes[0]=new Recipe.justName('Baked Salmon');
+    recipes[1]=new Recipe.justName('Pan Fried Salmon');
+    recipes[2]=new Recipe.justName('Microwave Salmon');
+    recipes[3]=new Recipe.justName('Salmon Sashimi');
   }
   @override
   Widget build(BuildContext context){
@@ -37,18 +38,6 @@ class RecipeResults extends StatelessWidget {
         fontWeight: FontWeight.bold,
         fontSize: 20.0,
         color: Colors.grey,)
-    );
-
-    final recipesView=ListView.builder(
-      itemCount: recipes.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(recipes[index]),
-          onTap: () {
-            //Go to the next screen with Navigator.push
-          },
-        );
-      },
     );
 
     return MaterialApp(
@@ -88,7 +77,7 @@ class RecipeResults extends StatelessWidget {
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                   onPressed: (){},
-                                  child: Text(recipes[index],
+                                  child: Text(recipes[index].name,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 20.0,

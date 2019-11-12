@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,7 +77,12 @@ class RecipeResults extends StatelessWidget {
                                 child:MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RecipeDetails())
+                                    );
+                                  },
                                   child: Text(recipes[index].name,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(

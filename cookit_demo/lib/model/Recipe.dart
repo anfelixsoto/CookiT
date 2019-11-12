@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Recipe{
   String name;
+  String description;
   int numCalories;
   int prepTime;
   int servings;
@@ -15,8 +16,9 @@ class Recipe{
   Recipe.none(){
   }
 
-  Recipe(String name,int numCalories,int prepTime,int servings,List<String> ingredients,List<String> instructions){
+  Recipe(String name,String description,int numCalories,int prepTime,int servings,List<String> ingredients,List<String> instructions){
     this.name=name;
+    this.description=description;
     this.numCalories=numCalories;
     this.prepTime=prepTime;
     this.servings=servings;

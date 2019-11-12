@@ -14,7 +14,6 @@ void main(){
 
 class RecipeInstructions extends StatelessWidget {
 
-  //Recipe recipe=new Recipe.none();
   List<String> ingredients=new List();  
   List<String> steps=new List();
   RecipeInstructions(){
@@ -32,7 +31,7 @@ class RecipeInstructions extends StatelessWidget {
     final imageView=Image.network(
       'https://www.jessicagavin.com/wp-content/uploads/2019/01/baked-salmon-8-1200.jpg',
       fit: BoxFit.fill,);
-    final recipe=Recipe('Baked Salmon',450,20,2,ingredients,steps);
+    final recipe=Recipe('Baked Salmon','This healthy baked salmon is the best way to feed a crowd.',450,20,2,ingredients,steps);
 
     final detailsView=ListView(
       scrollDirection: Axis.horizontal,

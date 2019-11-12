@@ -1,37 +1,26 @@
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:cookit_demo/delayed_animation.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 void main(){
   runApp(MaterialApp(
     title: 'CookiT Recipe Results',
-    home: RecipeInstructions(),
+    home: RecipeInstructions(recipe:null),
   ));
 }
 
 class RecipeInstructions extends StatelessWidget {
-
-  List<String> ingredients=new List();  
-  List<String> steps=new List();
-  RecipeInstructions(){
-    ingredients.add('12 ounce salmon fillet, cut into 4 pieces');    
-    ingredients.add('pepper');   
-    ingredients.add('salt');  
-    ingredients.add('baked squash'); 
-    steps.add('Preheat the oven to 450 degrees F.');
-    steps.add('Season salmon with salt and pepper. Place salmon, skin side down, on a non-stick baking sheet or in a non-stick pan with an oven-proof handle. Bake until salmon is cooked through, about 12 to 15 minutes. Serve with the squash, if desired.');
+  final Recipe recipe;
+  RecipeInstructions({Key key,@required this.recipe}):super(key:key){
   }
 
   @override
   Widget build(BuildContext context){
 
     final imageView=Image.network(
-      'https://www.jessicagavin.com/wp-content/uploads/2019/01/baked-salmon-8-1200.jpg',
+      recipe.imageURL,
       fit: BoxFit.fill,);
-    final recipe=Recipe('Baked Salmon','This healthy baked salmon is the best way to feed a crowd.',450,20,2,ingredients,steps);
+    //final recipe=Recipe('Baked Salmon','This healthy baked salmon is the best way to feed a crowd.',450,20,2,ingredients,steps);
 
     final detailsView=ListView(
       scrollDirection: Axis.horizontal,

@@ -1,10 +1,6 @@
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:cookit_demo/delayed_animation.dart';
-import 'package:cookit_demo/RegisterActivity.dart';
 
 void main(){
   runApp(MaterialApp(
@@ -80,7 +76,7 @@ class RecipeResults extends StatelessWidget {
                                   onPressed: (){
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => RecipeDetails())
+                                        MaterialPageRoute(builder: (context) => RecipeDetails(recipeName:recipes[index].name))
                                     );
                                   },
                                   child: Text(recipes[index].name,

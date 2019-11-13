@@ -4,13 +4,42 @@ import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
 import 'package:cookit_demo/RegisterActivity.dart';
 import 'package:cookit_demo/LoginActivity.dart';
+import 'package:splashscreen/splashscreen.dart';
 
 void main() {
   runApp(MaterialApp(
     title: 'Home Page',
-    home: HomePage(),
+    home: MyApp(),
   ));
 }
+
+class MyApp extends StatefulWidget {
+
+  @override
+  _MyAppState createState() => new _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return new SplashScreen(
+        seconds: 5,
+        navigateAfterSeconds: HomePage(),
+        title: new Text('CookiT',
+          style: new TextStyle(
+              color: Colors.white,
+              backgroundColor: Colors.lightGreen,
+              fontWeight: FontWeight.bold,
+              fontSize: 60.0
+          ),),
+        backgroundColor: Colors.lightGreen,
+        styleTextUnderTheLoader: new TextStyle(),
+        onClick: ()=>print("Clicked screen"),
+        loaderColor: Colors.white
+    );
+  }
+}
+
 
 class HomePage extends StatelessWidget {
   @override

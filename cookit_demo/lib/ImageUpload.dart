@@ -1,11 +1,12 @@
-import 'package:simple_permissions/simple_permissions.dart';
+//import 'package:simple_permissions/simple_permissions.dart';
 
+/*
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart';
-/*
+
 
 void main(){
   runApp(MaterialApp(
@@ -246,5 +247,4 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-
- */
+*/

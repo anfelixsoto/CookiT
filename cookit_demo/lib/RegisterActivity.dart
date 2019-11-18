@@ -1,9 +1,8 @@
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:cookit_demo/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
 import 'package:cookit_demo/LoginActivity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main(){
   runApp(MaterialApp(

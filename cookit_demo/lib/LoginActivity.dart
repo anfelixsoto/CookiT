@@ -2,115 +2,111 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
-import 'package:cookit_demo/RegisterActivity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main(){
-  runApp(MaterialApp(
-    title: 'CookiT Login',
-    home: LoginActivity(),
-  ));
+class LoginActivity extends StatefulWidget {
+LoginActivity({Key key}) : super(key: key);
+
+@override
+_LoginPageState createState() => _LoginPageState();
 }
 
-class LoginActivity extends StatelessWidget {
+class _LoginPageState extends State<LoginActivity> {
+  final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+  TextEditingController emailInputController;
+  TextEditingController pwdInputController;
+
   @override
-  Widget build(BuildContext context){
-    final emailField = TextField(
-      obscureText: false,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Email",
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-      ),
-    );
+  initState() {
+    emailInputController = new TextEditingController();
+    pwdInputController = new TextEditingController();
+    super.initState();
+  }
 
-    final passwordField = TextField(
-      obscureText: true,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
-      ),
-    );
+  String emailValidator(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Email format is invalid';
+    } else {
+      return null;
+    }
+  }
 
-    final loginButton = Material(
-        elevation: 5.0,
-        borderRadius: BorderRadius.circular(30.0),
-        color: Colors.lightGreen,
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          onPressed: (){},
-          child: Text("Login",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        )
-    );
+  String pwdValidator(String value) {
+    if (value.length < 8) {
+      return 'Password must be longer than 8 characters';
+    } else {
+      return null;
+    }
+  }
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightGreen,
-          automaticallyImplyLeading: true,
-          title: Text('CookiT'),
-          leading: IconButton(icon:Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context, false),
-          ),
+          title: Text("Login"),
         ),
-        backgroundColor: Colors.white,
-        body: Center(
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: ListView(
-                  children: <Widget>[
-                    AvatarGlow(
-                      endRadius: 90,
-                      duration: Duration(seconds: 2),
-                      glowColor: Colors.lightGreen,
-                      repeat: true,
-                      repeatPauseDuration: Duration(seconds: 2),
-                      startDelay: Duration(seconds: 1),
-                      child: Material(
-                          elevation: 8.0,
-                          shape: CircleBorder(),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey[100],
-                            child: FlutterLogo(
-                              size: 50.0,
-                            ),
-                            radius: 50.0,
-                          )),
-                    ),
-                    DelayedAnimation(
-                      child: Text(
-                        "Login",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 35.0,
-                          color: Colors.lightGreen,),
+        body: Container(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+                child: Form(
+                  key: _loginFormKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: InputDecoration(
+                            labelText: 'Email*', hintText: "john.doe@gmail.com"),
+                        controller: emailInputController,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: emailValidator,
                       ),
-                    ),
-                    SizedBox(height: 20.0,),
-                    emailField,
-                    SizedBox(height: 20.0,),
-                    passwordField,
-                    SizedBox(height: 20.0,),
-                    loginButton,
-                  ],
-                ),
-              ),
-            )
-        ),
-      ),
-    );
+                      TextFormField(
+                        decoration: InputDecoration(
+                            labelText: 'Password*', hintText: "********"),
+                        controller: pwdInputController,
+                        obscureText: true,
+                        validator: pwdValidator,
+                      ),
+                      RaisedButton(
+                        child: Text("Login"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          if (_loginFormKey.currentState.validate()) {
+                            FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                                email: emailInputController.text,
+                                password: pwdInputController.text)
+                                .then((currentUser) => Firestore.instance
+                                .collection("users")
+                                .document(currentUser.uid)
+                                .get()
+                                .then((DocumentSnapshot result) =>
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage(
+                                          title: result["fname"] +
+                                              "'s Tasks",
+                                          uid: currentUser.uid,
+                                        ))))
+                                .catchError((err) => print(err)))
+                                .catchError((err) => print(err));
+                          }
+                        },
+                      ),
+                      Text("Don't have an account yet?"),
+                      FlatButton(
+                        child: Text("Register here!"),
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/register");
+                        },
+                      )
+                    ],
+                  ),
+                ))));
   }
 }

@@ -1,6 +1,3 @@
-//import 'package:simple_permissions/simple_permissions.dart';
-
-/*
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,12 +14,37 @@ void main(){
 
 
 class ProfilePage extends StatefulWidget {
+
+
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+
   File _image;
+
+
+  Widget createButton(
+      String text, {
+        Color backgroundColor = Colors.transparent,
+        Color textColor = Colors.white,
+      }) {
+    return new ClipRRect(
+      borderRadius: new BorderRadius.circular(30.0),
+      child: new MaterialButton(
+        minWidth: 150.0,
+        height: 50.0,
+
+        color: Colors.lightBlueAccent,
+        textColor: textColor,
+        onPressed: () {},
+        child: new Text(text),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
       StorageTaskSnapshot taskSnapshot=await uploadTask.onComplete;
       setState(() {
         print("Profile Picture uploaded");
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recipe Image Uploaded')));
       });
     }
 
@@ -51,8 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         leading: IconButton(
             icon: Icon(
-              Icons.favorite,
-              color: Colors.pink,
+              Icons.camera_alt,
+              color: Colors.white,
               size: 24.0,
               semanticLabel: 'Text to announce in accessibility modes',
             ),
@@ -75,13 +97,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: <Widget>[
                   Align(
                     alignment: Alignment.center,
-                    child: CircleAvatar(
-                      radius: 100,
-                      backgroundColor: Colors.lightBlueAccent,
-                      child: ClipOval(
+                    child: Container(
+
+
+                      child: SizedBox(
                         child: new SizedBox(
-                          width: 180.0,
-                          height: 180.0,
+                          width: 360.0,
+                          height: 360.0,
                           child: (_image!=null)?Image.file(
                             _image,
                             fit: BoxFit.fill,
@@ -93,18 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 60.0),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.camera,
-                        size: 30.0,
-                      ),
-                      onPressed: () {
-                        getImage();
-                      },
-                    ),
-                  ),
+
                 ],
               ),
               SizedBox(
@@ -118,20 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Container(
                       child: Column(
                         children: <Widget>[
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('Username',
-                                style: TextStyle(
-                                    color: Colors.blueGrey, fontSize: 18.0)),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('Anon',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ),
+
                         ],
                       ),
                     ),
@@ -180,8 +178,27 @@ class _ProfilePageState extends State<ProfilePage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      child: Column(
+                      child: Row(
                         children: <Widget>[
+                          Text('Add an image ',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold)),
+                          Padding(
+                            padding: EdgeInsets.only(top: 5.0, left: 20.0),
+
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.add_photo_alternate,
+                                color: Colors.lightBlueAccent,
+                                size: 40.0,
+                              ),
+                              onPressed: () {
+                                getImage();
+                              },
+                            ),
+                          ),
 
 
                         ],
@@ -211,18 +228,10 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  RaisedButton(
-                    color: Colors.lightBlueAccent,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    elevation: 4.0,
-                    splashColor: Colors.blueGrey,
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    ),
-                  ),
+                 createButton(
+                   'Cancel',
+                   backgroundColor: Colors.lightBlueAccent,
+                 ),
                   RaisedButton(
                     color: Colors.lightBlueAccent,
                     onPressed: () {
@@ -247,4 +256,4 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-*/
+

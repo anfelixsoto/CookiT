@@ -102,8 +102,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       child: SizedBox(
                         child: new SizedBox(
-                          width: 360.0,
-                          height: 360.0,
+                          width: 300.0,
+                          height: 300.0,
                           child: (_image!=null)?Image.file(
                             _image,
                             fit: BoxFit.fill,
@@ -119,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -214,7 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               Container(
-                margin: EdgeInsets.all(20.0),
+                margin: EdgeInsets.all(15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -223,15 +223,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                 createButton(
-                   'Cancel',
-                   backgroundColor: Colors.lightBlueAccent,
-                 ),
+                  RaisedButton(
+                    color: Colors.lightBlueAccent,
+                    onPressed: () {
+                      uploadPic(context);
+                    },
+
+                    elevation: 4.0,
+                    splashColor: Colors.blueGrey,
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.white, fontSize: 16.0),
+                    ),
+                  ),
+
+
                   RaisedButton(
                     color: Colors.lightBlueAccent,
                     onPressed: () {
@@ -255,5 +266,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-

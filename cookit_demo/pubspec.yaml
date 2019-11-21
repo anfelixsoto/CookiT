@@ -41,6 +41,7 @@ dependencies:
   avatar_glow:
   splashscreen:
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

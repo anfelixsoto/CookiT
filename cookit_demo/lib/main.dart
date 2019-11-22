@@ -4,9 +4,9 @@ import 'package:cookit_demo/LoginSignupPage.dart';
 import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
 import 'package:splashscreen/splashscreen.dart';
-import 'package:cookit_demo/model/Authentication.dart';
+import 'package:cookit_demo/service/Authentication.dart';
 
-import 'model/RootPage.dart';
+import 'service/RootPage.dart';
 
 void main() {
   runApp(MaterialApp(

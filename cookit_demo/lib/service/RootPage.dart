@@ -2,7 +2,7 @@ import 'package:cookit_demo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/LoginSignupPage.dart';
 import 'package:cookit_demo/HomeScreen.dart';
-import 'package:cookit_demo/model/Authentication.dart';
+import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 
 enum AuthStatus {
@@ -79,7 +79,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
-          return new Home(
+          return Home(
             userId: _userId,
             auth: widget.auth,
             logoutCallback: loginCallback,

@@ -163,7 +163,11 @@ class _UserProfile extends State<UserProfile> {
                   color: Colors.lightBlueAccent,
                   child: Center(
                     child: RaisedButton(
-                      child: Text('New Post'),
+                      color: Colors.lightBlueAccent,
+                      textColor: Colors.white,
+                      child: Text(
+                          'New Post',
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,

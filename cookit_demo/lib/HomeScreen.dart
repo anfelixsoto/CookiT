@@ -82,7 +82,7 @@ class HomeState extends State<Home> {
 
 
                   trailing: Text(
-                    "Recipe Name",
+                    document['title'],
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
                       fontSize: 11,
@@ -105,11 +105,16 @@ class HomeState extends State<Home> {
 
                 ),
                 ButtonBar(
-                  //alignment: MainAxisAlignment.start,
+                  alignment: MainAxisAlignment.start,
                   children: <Widget>[
                     FlatButton(
-                      child: Text('Save'),
+                      child: Text('Cook it'),
                       textColor: Colors.lightBlueAccent,
+                      onPressed: () { print('pressed'); },
+                    ),
+                    FlatButton(
+                      child: Text('Next time'),
+                      textColor: Colors.orangeAccent,
                       onPressed: () { print('pressed'); },
                     ),
 
@@ -174,19 +179,17 @@ class HomeState extends State<Home> {
               builder: (context, snapshot) {
               switch(snapshot.connectionState){
                 case ConnectionState.waiting:
-                  return CircularProgressIndicator();
+                  return Center(
+                      child: CircularProgressIndicator()
+                  );
                 default:
-
-                  return ListView(
+                  return ListView (
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     children:
                     displayPosts(snapshot),
 
                     //Text(snapshot.data)
-                    // Text(snapshot.data.documents[0]['email'])
-
-
-
+                    // Text(snapshot.data.documents[0]['email']
                   );
               }
 
@@ -208,12 +211,13 @@ class HomeState extends State<Home> {
           );
         },
       ),*/
+          /*
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue.shade400,
         child: Icon(
           Icons.add,),
         onPressed: (){},
-      ),
+      ),*/
     );
   }
 

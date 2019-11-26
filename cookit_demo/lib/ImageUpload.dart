@@ -29,7 +29,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   FirebaseUser currentUser;
   File _image;
+  TextEditingController titleController = TextEditingController();
   TextEditingController captionController = TextEditingController();
+  String title = '';
   String caption = '';
 
   @override
@@ -151,6 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void createPost(Post post) {
     Firestore.instance.collection('posts').add({
       'imageUrl': post.imageUrl,
+      'title': post.title,
       'description': post.description,
       'email': post.email,
     });
@@ -168,6 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     Post currPost = Post(
       imageUrl: imageUrl,
+      title: title,
       description: caption,
       email: showEmail(),
 
@@ -175,28 +179,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
     createPost(currPost);
 
+    // clear title
+    titleController.clear();
     // clear description field
     captionController.clear();
 
     setState(() {
+      title = '';
       caption = ''; // empty the caption
       _image = null; // set image to empty
     });
   }
-/*
-  @override
-  Widget build(BuildContext context) {
 
-    Future getImage() async {
-      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
-      setState(() {
-        _image = image;
-        print('Image Path $_image');
-      });
-    }
-
-*/
 
   Future<String> uploadPic(BuildContext context) async{
 
@@ -214,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
     @override
     Widget build(BuildContext context) {
 
-    
+
 
 
     return Scaffold(
@@ -257,6 +251,17 @@ class _ProfilePageState extends State<ProfilePage> {
              child: new Text('Upload'),
            ),
          ),
+             Padding(
+               padding: EdgeInsets.symmetric(horizontal: 30.0),
+               child: TextField(
+                 controller: titleController,
+                 style: TextStyle(fontSize: 18.0),
+                 decoration: InputDecoration(
+                   labelText: 'Title',
+                 ),
+                 onChanged: (input) => title = input,
+               ),
+             ),
            Padding(
              padding: EdgeInsets.symmetric(horizontal: 30.0),
              child: TextField(

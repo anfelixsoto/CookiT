@@ -1,15 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class User{
-  String userId;
-  String userEmail;
-  String userPassword;
+class User {
+  String name;
+  String email;
+  String imageUrls;
 
-  User(String userId, String userEmail, String userPassword){
-    this.userId = userId;
-    this.userEmail = userEmail;
-    this.userPassword = userPassword;
+  User({
+    this.name,
+    this.email,
+    this.imageUrls,
+  });
+
+  factory User.fromDoc(DocumentSnapshot doc) {
+    return User (
+      name: doc['name'],
+      email: doc['email'],
+      imageUrls: doc['imageUrls'],
+    );
   }
-
 
 }

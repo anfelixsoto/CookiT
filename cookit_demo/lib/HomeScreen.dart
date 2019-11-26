@@ -5,10 +5,8 @@ import 'package:cookit_demo/service/Authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-//import 'package:cookit_demo/model/Post.dart';
 import 'package:cookit_demo/model/User.dart';
 
-import 'package:cookit_demo/model/SampleData.dart';
 import 'package:cookit_demo/UserScreen.dart';
 
 void main() {

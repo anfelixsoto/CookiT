@@ -190,8 +190,8 @@ class HomeState extends State<Home> {
 
                     //Text(snapshot.data)
                     // Text(snapshot.data.documents[0]['email']
-                  );
-              }
+                   );
+                  }
 
                 },
 

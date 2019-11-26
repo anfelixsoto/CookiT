@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/recipeResults.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'dart:io';
+
+import 'model/PostModel.dart';
 void main(){
   runApp(new MaterialApp(
     home: UserProfile(),
@@ -25,6 +28,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfile extends State<UserProfile> {
 
   FirebaseUser currentUser;
+  int postCount = 0;
 
 
   @override
@@ -66,310 +70,170 @@ class _UserProfile extends State<UserProfile> {
       ),);
   }
 
-  Widget _buildActionButtons(ThemeData theme) {
-    return new Padding(
-      padding: const EdgeInsets.only(
-        top: 20.0,
-        left: 16.0,
-        right: 16.0,
-      ),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          createButton(
-            'What to Cook?',
-            backgroundColor: theme.accentColor,
-          ),
-          createButton(
-            'Favorites',
-            backgroundColor: theme.accentColor,
 
-          ),
 
-        ],
-      ),
-    );
-  }
-
-  Widget createButton(
-      String text, {
-        Color backgroundColor = Colors.transparent,
-        Color textColor = Colors.white,
-      }) {
+  Widget findRecipes(String text, {
+    Color backgroundColor = Colors.transparent,
+    Color textColor = Colors.white,
+  }) {
     return new ClipRRect(
-      borderRadius: new BorderRadius.circular(30.0),
+      borderRadius: new BorderRadius.circular(100.0),
       child: new MaterialButton(
-        minWidth: 150.0,
-        height: 50.0,
+        minWidth: 120.0,
+        height: 40.0,
 
         color: Colors.lightBlueAccent,
         textColor: textColor,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RecipeResults()),
+          );
+        },
         child: new Text(text),
       ),
     );
   }
+
+
+  Widget showFavorites(String text, {
+    Color backgroundColor = Colors.transparent,
+    Color textColor = Colors.white,
+  }) {
+    return new ClipRRect(
+      borderRadius: new BorderRadius.circular(100.0),
+      child: new MaterialButton(
+        minWidth: 120.0,
+        height: 40.0,
+
+        color: Colors.lightBlueAccent,
+        textColor: textColor,
+        onPressed: () {
+
+        },
+        child: new Text(text),
+      ),
+    );
+  }
+
+
+    Future<List<Post>> getPosts() async {
+      List<Post> posts = [];
+      var snap = await Firestore.instance
+          .collection('posts')
+          .where('email', isEqualTo: showEmail())
+          .getDocuments();
+      for (var doc in snap.documents) {
+        posts.add(Post.fromDoc(doc));
+      }
+      setState(() {
+        postCount = snap.documents.length;
+      });
+      return posts.reversed.toList();
+    }
 
 
 
   @override
   Widget build(BuildContext context) {
 
-      var theme = Theme.of(context);
 
-
-
-      return new Stack(
-
-
-        children: <Widget>[
-          //_buildDiagonalImageBackground(context),
-
-
-          Container(
-            color: Colors.white,
-          ),
-          new Align(
-            alignment: FractionalOffset.bottomCenter,
-            heightFactor: 1,
-
-            child: new Column(
-              children: <Widget>[
-                AppBar(
-                  title: Text(showEmail()),
-                  backgroundColor: Colors.lightGreen,
-                ),
-                _buildAvatar(),
-                _buildActionButtons(theme),
-                Expanded(
-                  child: GridView.count(
-                    shrinkWrap: true, // use this
-                    crossAxisCount: 4,
-                    children: new List<Widget>.generate(22, (index) {
-                      return new GridTile(
-                        child: new Card(
-                            color: Colors.blue.shade200,
-                            child: new Center(
-                              child: new Text('tile $index'),
-                            )
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-                // footer
-                new Container(
-                  height: 40.0,
-                  color: Colors.lightBlueAccent,
-                  child: Center(
-                    child: RaisedButton(
-                      color: Colors.lightBlueAccent,
-                      textColor: Colors.white,
-                      child: Text(
-                          'New Post',
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfilePage()),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-
-              ],
-            ),
-          ),
-
-        ],
-      );
-
-  }
-}
-
-
-
-/*
-class UserProfile extends StatelessWidget {
-
-
-  Widget _buildAvatar() {
-    return new Container(
-      width: 180.0,
-      height: 180.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white30),
-      ),
-      margin: const EdgeInsets.only(top: 32.0, left: 16.0),
-      padding: const EdgeInsets.all(3.0),
-      child: ClipOval(
-        child: Image.network(
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-        ),
-      ),);
-  }
-
-  Widget _buildActionButtons(ThemeData theme) {
-    return new Padding(
-      padding: const EdgeInsets.only(
-        top: 20.0,
-        left: 16.0,
-        right: 16.0,
-      ),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          createButton(
-            'What to Cook?',
-            backgroundColor: theme.accentColor,
-          ),
-          createButton(
-            'Favorites',
-            backgroundColor: theme.accentColor,
-
-          ),
-
-        ],
-      ),
-    );
-  }
-
-  Widget createButton(
-      String text, {
-        Color backgroundColor = Colors.transparent,
-        Color textColor = Colors.white,
-      }) {
-    return new ClipRRect(
-      borderRadius: new BorderRadius.circular(30.0),
-      child: new MaterialButton(
-        minWidth: 150.0,
-        height: 50.0,
-
-        color: Colors.lightBlueAccent,
-        textColor: textColor,
-        onPressed: () {},
-        child: new Text(text),
-      ),
-    );
-  }
-
-
-
-
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-
-
-
-    return new Stack(
-
-      children: <Widget>[
-        //_buildDiagonalImageBackground(context),
-        Container(
-          color: Colors.white,
-        ),
-        new Align(
-          alignment: FractionalOffset.bottomCenter,
-          heightFactor: 1,
-
-          child: new Column(
-            children: <Widget>[
-              AppBar(
-                title: Text('Welcome ' ),
-                backgroundColor: Colors.lightGreen,
-              ),
-              _buildAvatar(),
-              _buildActionButtons(theme),
-              Expanded(
-                child: GridView.count(
-                  shrinkWrap: true, // use this
-                  crossAxisCount: 4,
-                  children: new List<Widget>.generate(33, (index) {
-                    return new GridTile(
-                      child: new Card(
-                          color: Colors.blue.shade200,
-                          child: new Center(
-                            child: new Text('tile $index'),
-                          )
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              // footer
-              new Container(
-                height: 40.0,
-                color: Colors.lightBlueAccent,
-                child: Center(
-                  child: RaisedButton(
-                    child: Text('New Post'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfilePage()),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-            ],
-          ),
-        ),
-
-      ],
-    );
-  }
-}
-
-
-class PostUpload extends StatelessWidget {
-  Widget createButton(
-      String text, {
-        Color backgroundColor = Colors.transparent,
-        Color textColor = Colors.white,
-      }) {
-    return new ClipRRect(
-      borderRadius: new BorderRadius.circular(30.0),
-      child: new MaterialButton(
-        minWidth: 150.0,
-        height: 50.0,
-
-        color: Colors.lightBlueAccent,
-        textColor: textColor,
-        onPressed: () {},
-        child: new Text(text),
-      ),
-    );
-  }
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+      return Scaffold(
       appBar: AppBar(
-        title: Text("New Post"),
+
+        title: Text(showEmail()),
+        centerTitle: true,
         backgroundColor: Colors.lightGreen,
-
+        actions: <Widget>[
+        ],
       ),
-      body: Center(
-        child: Column (
-          children: <Widget>[
+          body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: _buildAvatar(),
+                    ),
+                    Row(
+                      children: <Widget>[
 
-            createButton(
-              'Image Upload',
-              backgroundColor: Colors.lightBlueAccent,
-            ),
-          ],
+
+
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  findRecipes('What to Cook'),
+                                  showFavorites('Favorites'),
+                                ],
+                              ),
+                              Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+
+                                  ]),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+
+
+                  ],
+                ),
+              ),
+              Divider(),
+              //buildImageViewButtonBar(),
+              Divider(height: 0.0),
+              Container (
+                 child: FutureBuilder<List<Post>>(
+                  future: getPosts(),
+                 builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CircularProgressIndicator());
+                    else {
+                    // build the grid
+                          return GridView.count(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.0,
+                          //                    padding: const EdgeInsets.all(0.5),
+                          mainAxisSpacing: 1.5,
+                          crossAxisSpacing: 1.5,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: snapshot.data.map((Post post) {
+                            return GridTile(
+                                child: showPosts(post.imageUrl),
+                            );
+                          }).toList());
+                        }
+                    },
+
+                  ),
+               ),
+            ]
         ),
-
-      ),
-    );
+      );
   }
+}
 
+Widget showPosts(url){
+  return Container (
+    child: new Image.network(
+      url,
+      fit: BoxFit.cover,
+    ),
 
- */
+  );
+}

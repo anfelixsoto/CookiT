@@ -29,9 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   FirebaseUser currentUser;
   File _image;
-  TextEditingController _captionController = TextEditingController();
-  String _caption = '';
-  bool _isLoading = false;
+  TextEditingController captionController = TextEditingController();
+  String caption = '';
 
   @override
   void initState() {
@@ -169,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     Post currPost = Post(
       imageUrl: imageUrl,
-      description: _caption,
+      description: caption,
       email: showEmail(),
 
     );
@@ -177,10 +176,10 @@ class _ProfilePageState extends State<ProfilePage> {
     createPost(currPost);
 
     // clear description field
-    _captionController.clear();
+    captionController.clear();
 
     setState(() {
-      _caption=''; // empty the caption
+      caption = ''; // empty the caption
       _image = null; // set image to empty
     });
   }
@@ -207,10 +206,6 @@ class _ProfilePageState extends State<ProfilePage> {
     StorageTaskSnapshot taskSnapshot=await uploadTask.onComplete;
     String downloadUrl = await firebaseStorageRef.getDownloadURL();
     return downloadUrl;
-    setState(() {
-      print("Profile Picture uploaded");
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recipe Image Uploaded')));
-    });
   }
 
 
@@ -219,19 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
     @override
     Widget build(BuildContext context) {
 
-     /* Future getImage() async {
-        var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
-        setState(() {
-          _image = image;
-          print('Image Path $_image');
-        });
-      }
-
-      */
-
-
-
+    
 
 
     return Scaffold(
@@ -277,30 +260,16 @@ class _ProfilePageState extends State<ProfilePage> {
            Padding(
              padding: EdgeInsets.symmetric(horizontal: 30.0),
              child: TextField(
-               controller: _captionController,
+               controller: captionController,
                style: TextStyle(fontSize: 18.0),
                decoration: InputDecoration(
                  labelText: 'Description',
                ),
-               onChanged: (input) => _caption = input,
+               onChanged: (input) => caption = input,
              ),
            ),
 
-            /*  MaterialButton(
-                minWidth: 10,
-                 height: 40,
-                 color: Colors.lightBlueAccent,
-                 onPressed: () {
-                   uploadPic(context);
-                 },
 
-                 elevation: 4.0,
-                 splashColor: Colors.blueGrey,
-                 child: Text(
-                   'Upload',
-                   style: TextStyle(color: Colors.white, fontSize: 16.0),
-                 ),
-               ),*/
 
 
 
@@ -310,186 +279,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
        ),
      ),
-     /* body: Builder(
-        builder: (context) =>  Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
 
-
-                      child: SizedBox(
-                        child: new SizedBox(
-                          width: 300.0,
-                          height: 300.0,
-                          child: (_image!=null)?Image.file(
-                            _image,
-                            fit: BoxFit.fill,
-                          ):Image.network(
-                            "http://blog.williams-sonoma.com/wp-content/uploads/2017/11/nov-18-Sweet-Potato-Pancakes-with-Walnuts-652x978.jpg",
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                ],
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Align(
-
-                          ),
-                          Align(
-
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Text('Add an image ',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold)),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5.0, left: 20.0),
-
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.add_photo_alternate,
-                                color: Colors.lightBlueAccent,
-                                size: 40.0,
-                              ),
-                              onPressed: () {
-                                getImage();
-                              },
-                            ),
-                          ),
-
-
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.all(15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RaisedButton(
-                    color: Colors.lightBlueAccent,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-
-                    elevation: 4.0,
-                    splashColor: Colors.blueGrey,
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    ),
-                  ),
-                  RaisedButton(
-                    color: Colors.lightBlueAccent,
-                    onPressed: () {
-                      uploadPic(context);
-                    },
-
-                    elevation: 4.0,
-                    splashColor: Colors.blueGrey,
-                    child: Text(
-                      'Upload',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    ),
-                  ),
-
-
-                ],
-              )
-
-            ],
-          ),
-
-        ),
-      ),*/
     );
   }
 }

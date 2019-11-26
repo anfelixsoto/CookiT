@@ -57,8 +57,10 @@ class HomeState extends State<Home> {
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Card(
+          child: Padding(
+            padding:EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           child: Column(
               children: <Widget>[
 
@@ -118,7 +120,7 @@ class HomeState extends State<Home> {
       ]
       ),
       ),
-      );
+      ),);
     }).toList();
   }
 

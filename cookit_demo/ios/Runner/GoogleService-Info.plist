@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>311451891923-c2ilbn1p91helmjggto585g1givr4mss.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.311451891923-c2ilbn1p91helmjggto585g1givr4mss</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBAz9_Z620brpTII8d4hYxfuwyDyrny7f0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>311451891923</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>edu.csumb.cst438</string>
+	<key>PROJECT_ID</key>
+	<string>cookit-demo-db-ff68b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cookit-demo-db-ff68b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:311451891923:ios:c8eb82e14f187d9dfa7c26</string>
+	<key>DATABASE_URL</key>
+	<string>https://cookit-demo-db-ff68b.firebaseio.com</string>
+</dict>
+</plist>

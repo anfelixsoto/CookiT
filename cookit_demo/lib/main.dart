@@ -119,7 +119,6 @@ class StartPage extends StatelessWidget{
   }
 }
 
-
 class LetStart extends StatelessWidget {
   @override
   Widget build(BuildContext context){

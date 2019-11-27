@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
 import 'package:cookit_demo/recipeResults.dart';
+import 'package:cookit_demo/Model/User.dart';
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -28,13 +32,18 @@ class UserProfile extends StatefulWidget {
 class _UserProfile extends State<UserProfile> {
 
   FirebaseUser currentUser;
+  String username;
   int postCount = 0;
+  int _selectedIndex = 0;
+
 
 
   @override
   void initState() {
     super.initState();
     loadCurrentUser();
+    //showEmail();
+    //showUsername();
   }
 
   void loadCurrentUser() {
@@ -52,6 +61,13 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
+
+
+
+
+
+
+
 
   Widget _buildAvatar() {
     return new Container(
@@ -132,13 +148,33 @@ class _UserProfile extends State<UserProfile> {
       return posts.reversed.toList();
     }
 
+  void _onItemTapped(int index) {
+    if(index == 0) {
+
+    }
+    else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+    }
+
+    else if(index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PostUpload()),
+      );
+    }
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
 
 
-      return Scaffold(
+
+    return Scaffold(
       appBar: AppBar(
 
         title: Text(showEmail()),
@@ -205,6 +241,7 @@ class _UserProfile extends State<UserProfile> {
                     else {
                     // build the grid
                           return GridView.count(
+
                           crossAxisCount: 3,
                           childAspectRatio: 1.0,
                           //                    padding: const EdgeInsets.all(0.5),
@@ -222,8 +259,34 @@ class _UserProfile extends State<UserProfile> {
 
                   ),
                ),
+              //Divider(height: 10.0),
+
             ]
+
         ),
+        bottomNavigationBar: BottomNavigationBar( // footer
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('Profile'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              title: Text('Home'),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle_outline),
+              title: Text('New Post'),
+
+            ),
+
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: _onItemTapped,
+        ),
+
       );
   }
 }

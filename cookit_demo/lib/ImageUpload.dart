@@ -12,20 +12,20 @@ import 'package:uuid/uuid.dart';
 void main(){
   runApp(MaterialApp(
     title: 'Image Upload',
-    home: ProfilePage(),
+    home: PostUpload(),
   ));
 }
 
 
-class ProfilePage extends StatefulWidget {
+class PostUpload extends StatefulWidget {
 
 
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _PostUploadState createState() => _PostUploadState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _PostUploadState extends State<PostUpload> {
 
   FirebaseUser currentUser;
   File _image;

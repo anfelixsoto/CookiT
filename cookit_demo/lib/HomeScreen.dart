@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -29,6 +30,11 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
 
   List<Post> postsFeed = [];
+  FirebaseUser currentUser;
+  DocumentReference userRef;
+  var role;
+  var userQuery;
+
 
   @override
   void initState(){
@@ -36,10 +42,46 @@ class HomeState extends State<Home> {
 
 
       print(getPosts());
+      getUserRef();
+      //print(this.us);
 
 
 
   }
+
+  Future<void> getUserRef() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+
+    FirebaseUser user = await _auth.currentUser();
+
+    setState((){
+      userRef = _firestore.collection('users').document(user.uid);
+      role = userRef.get().then((data) {
+        if (data.exists) {
+          print(data.data['role'].toString());
+        }
+      });
+
+      //print(user.displayName.toString());
+    });
+  }
+
+  /*
+  List<Widget> checkRole(AsyncSnapshot shot) {
+    if (userRef.snapshots() == null) {
+      print("Error");
+    }
+    AsyncSnapshot<DocumentSnapshot> snapshot = userRef;
+    AsyncSnapshot<DocumentSnapshot> snap = snapshot;
+    if (snap.data['role'] == 'admin') {
+      return displayAdminPosts(shot);
+    } else {
+      return displayPosts(shot);
+    }
+  }
+*/
+
   Future<List<String>> getPosts() async {
     List<String> temp = [];
     final QuerySnapshot result = await Firestore.instance.collection('posts').getDocuments();
@@ -51,6 +93,22 @@ class HomeState extends State<Home> {
     return temp;
   }
 
+  Widget showDelete(String postId) {
+    return new IconButton(
+        icon: Icon(
+        Icons.remove_circle,
+        color: Colors.redAccent,
+        size: 30.0,
+      ),
+        onPressed: (){AdminOperations.deletePost(postId);}
+    );
+  }
+
+  void removePosts() {
+
+  }
+
+
 
 
 
@@ -60,9 +118,10 @@ class HomeState extends State<Home> {
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Card(
           child: Padding(
-            padding:EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+            padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
           child: Column(
               children: <Widget>[
+
 
 
                 ListTile(
@@ -117,6 +176,7 @@ class HomeState extends State<Home> {
                       textColor: Colors.orangeAccent,
                       onPressed: () { print('pressed'); },
                     ),
+                    showDelete(Post.fromDoc(document).id.toString()),
 
                   ],
                 ),
@@ -138,6 +198,8 @@ class HomeState extends State<Home> {
       print(e);
     }
   }
+
+
 
 
 
@@ -222,8 +284,8 @@ class HomeState extends State<Home> {
   }
 
   Widget getUserId(){
-    return Scaffold(
-      body: FutureBuilder(
+    return Container(
+      child: FutureBuilder(
         future: FirebaseAuth.instance.currentUser(),
         builder: (context, AsyncSnapshot<FirebaseUser> snapshot){
           if(snapshot.hasData){
@@ -237,4 +299,8 @@ class HomeState extends State<Home> {
 
     );
   }
+
+
+
+
 }

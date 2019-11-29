@@ -238,6 +238,13 @@ class _UserProfile extends State<UserProfile> {
                           alignment: FractionalOffset.center,
                           padding: const EdgeInsets.only(top: 10.0),
                           child: CircularProgressIndicator());
+                    else if(snapshot.data.length == 0){
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Text('No Posts')
+                      );
+                    }
                     else {
                     // build the grid
                           return GridView.count(

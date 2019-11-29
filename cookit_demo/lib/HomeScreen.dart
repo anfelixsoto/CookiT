@@ -93,19 +93,19 @@ class HomeState extends State<Home> {
     return temp;
   }
 
-  Widget showDelete(String postId) {
-    return new IconButton(
-        icon: Icon(
-        Icons.remove_circle,
-        color: Colors.redAccent,
-        size: 30.0,
-      ),
-        onPressed: (){AdminOperations.deletePost(postId);}
-    );
-  }
-
-  void removePosts() {
-
+  Widget showDelete(String postId, role) {
+    if( role == 'admin' ) {
+      return new IconButton(
+          icon: Icon(
+            Icons.remove_circle,
+            color: Colors.redAccent,
+            size: 30.0,
+          ),
+          onPressed: () {
+            AdminOperations.deletePost(postId);
+          }
+      );
+    }
   }
 
 
@@ -176,7 +176,7 @@ class HomeState extends State<Home> {
                       textColor: Colors.orangeAccent,
                       onPressed: () { print('pressed'); },
                     ),
-                    showDelete(Post.fromDoc(document).id.toString()),
+                    showDelete(Post.fromDoc(document).id.toString(), role),
 
                   ],
                 ),

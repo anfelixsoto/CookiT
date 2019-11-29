@@ -5,13 +5,13 @@ import 'package:cookit_demo/model/User.dart';
 class AdminOperations {
   static void deletePost(String PostId) {
     // delete the specified post
-    Firestore.instance.collection('posts')
-        .document(PostId)
-        .get().then((data){
-          if(data.exists) {
-            data.reference.delete();
-          }
-    });
+      Firestore.instance.collection('posts')
+          .document(PostId)
+          .get().then((data) {
+        if (data.exists) {
+          data.reference.delete();
+        }
+      });
   }
 
 }

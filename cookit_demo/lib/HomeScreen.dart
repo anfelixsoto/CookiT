@@ -1,8 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
+import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
+import 'package:cookit_demo/service/RootPage.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:cookit_demo/model/Post.dart';
-import 'package:cookit_demo/model/SampleData.dart';
+import 'package:cookit_demo/model/User.dart';
+
+import 'package:cookit_demo/UserScreen.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -22,10 +30,169 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+
+  List<Post> postsFeed = [];
+  FirebaseUser currentUser;
+  DocumentReference userRef;
+  var role;
+  var userQuery;
+
+
   @override
   void initState(){
     super.initState();
+
+
+      print(getPosts());
+      getUserRef();
+      //print(this.us);
+
+
+
   }
+
+  Future<void> getUserRef() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+
+    FirebaseUser user = await _auth.currentUser();
+
+    setState((){
+      userRef = _firestore.collection('users').document(user.uid);
+      userRef.get().then((data) {
+        if (data.exists) {
+          role = data.data['role'].toString();
+          print('Role: ' + role);
+        }
+      });
+
+      //print(user.displayName.toString());
+    });
+  }
+
+  /*
+  List<Widget> checkRole(AsyncSnapshot shot) {
+    if (userRef.snapshots() == null) {
+      print("Error");
+    }
+    AsyncSnapshot<DocumentSnapshot> snapshot = userRef;
+    AsyncSnapshot<DocumentSnapshot> snap = snapshot;
+    if (snap.data['role'] == 'admin') {
+      return displayAdminPosts(shot);
+    } else {
+      return displayPosts(shot);
+    }
+  }
+*/
+
+  Future<List<String>> getPosts() async {
+    List<String> temp = [];
+    final QuerySnapshot result = await Firestore.instance.collection('posts').getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    //documents.forEach((data) => temp.add(data.documentID));
+    for (var doc in documents){
+      temp.add(doc.toString());
+    }
+    return temp;
+  }
+
+  Widget showDelete(String postId, String role) {
+    if( role == 'admin' ) {
+      return new IconButton(
+          icon: Icon(
+            Icons.remove_circle,
+            color: Colors.redAccent,
+            size: 30.0,
+          ),
+          onPressed: () {
+            AdminOperations.deletePost(postId);
+          }
+      );
+    }
+  }
+
+
+
+
+
+  List<Widget> displayPosts(AsyncSnapshot snapshot) {
+    return snapshot.data.documents.map<Widget>((document){
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Card(
+          child: Padding(
+            padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+          child: Column(
+              children: <Widget>[
+
+
+
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(
+                      "https://picsum.photos/250?image=9",
+                    ),
+                  ),
+
+                  contentPadding: EdgeInsets.all(0),
+
+                 title: Text(
+                   document['email'],
+                   style: TextStyle(
+                     fontWeight: FontWeight.bold,
+                   ),),
+
+
+                  trailing: Text(
+                    document['title'],
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 11,
+                    ),
+                  ),
+
+                ),
+                Image.network(
+                  document['imageUrl'],
+
+                  height: 170,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                ),
+                Divider(),
+                ListTile(
+                  title: Text(
+                      document['description'],
+                      style: TextStyle(fontWeight: FontWeight.w500)),
+
+                ),
+                ButtonBar(
+                  alignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text('Cook it'),
+                      textColor: Colors.lightBlueAccent,
+                      onPressed: () { print('pressed'); },
+                    ),
+                    FlatButton(
+                      child: Text('Next time'),
+                      textColor: Colors.orangeAccent,
+                      onPressed: () { print('pressed'); },
+                    ),
+
+                    showDelete(Post.fromDoc(document).id.toString(), role.toString()),
+
+                  ],
+                ),
+
+
+      ]
+      ),
+      ),
+      ),);
+    }).toList();
+  }
+
 
   signOut() async{
     try{
@@ -36,14 +203,35 @@ class HomeState extends State<Home> {
     }
   }
 
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: Text("Home"),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
+          new IconButton(
+            icon: Icon(
+              Icons.account_circle,
+              color: Colors.white,
+              size: 40.0,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                  auth: widget.auth,)),
+              );
+            },
+
+          ),
           new FlatButton(onPressed: signOut,
               child: new Text('Logout',
               style: new TextStyle(
@@ -52,7 +240,32 @@ class HomeState extends State<Home> {
               ))),
         ],
       ),
-      body: ListView.builder(
+      body: Container(
+       child: StreamBuilder(
+              stream: Firestore.instance.collection('posts').snapshots(),
+              builder: (context, snapshot) {
+              switch(snapshot.connectionState){
+                case ConnectionState.waiting:
+                  return Center(
+                      child: CircularProgressIndicator()
+                  );
+                default:
+                  return ListView (
+                    padding: EdgeInsets.symmetric(horizontal: 50),
+                    children:
+                    displayPosts(snapshot),
+
+                    //Text(snapshot.data)
+                    // Text(snapshot.data.documents[0]['email']
+                   );
+                  }
+
+                },
+
+            ),
+      ),
+          /*
+      ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 50),
         itemCount: posts.length,
         itemBuilder: (BuildContext context, int index) {
@@ -64,19 +277,20 @@ class HomeState extends State<Home> {
             time: post['time'],
           );
         },
-      ),
+      ),*/
+          /*
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue.shade400,
         child: Icon(
           Icons.add,),
         onPressed: (){},
-      ),
+      ),*/
     );
   }
 
   Widget getUserId(){
-    return Scaffold(
-      body: FutureBuilder(
+    return Container(
+      child: FutureBuilder(
         future: FirebaseAuth.instance.currentUser(),
         builder: (context, AsyncSnapshot<FirebaseUser> snapshot){
           if(snapshot.hasData){
@@ -85,7 +299,13 @@ class HomeState extends State<Home> {
             return Text('Loading...');
           }
         }
+
       )
+
     );
   }
+
+
+
+
 }

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
 import 'package:cookit_demo/model/PostModel.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
+import 'package:cookit_demo/service/RootPage.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +59,10 @@ class HomeState extends State<Home> {
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
-      role = userRef.get().then((data) {
+      userRef.get().then((data) {
         if (data.exists) {
-          print(data.data['role'].toString());
+          role = data.data['role'].toString();
+          print('Role: ' + role);
         }
       });
 
@@ -93,7 +96,7 @@ class HomeState extends State<Home> {
     return temp;
   }
 
-  Widget showDelete(String postId, role) {
+  Widget showDelete(String postId, String role) {
     if( role == 'admin' ) {
       return new IconButton(
           icon: Icon(
@@ -176,7 +179,8 @@ class HomeState extends State<Home> {
                       textColor: Colors.orangeAccent,
                       onPressed: () { print('pressed'); },
                     ),
-                    showDelete(Post.fromDoc(document).id.toString(), role),
+
+                    showDelete(Post.fromDoc(document).id.toString(), role.toString()),
 
                   ],
                 ),
@@ -222,7 +226,8 @@ class HomeState extends State<Home> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,)),
+                MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                  auth: widget.auth,)),
               );
             },
 

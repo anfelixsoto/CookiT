@@ -3,6 +3,7 @@ import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
+import 'package:cookit_demo/service/Authentication.dart';
 
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,9 +21,13 @@ void main(){
 
 class UserProfile extends StatefulWidget {
 
-  final String userId;
 
-  UserProfile({this.userId});
+
+  UserProfile({Key key, this.auth, this.userId, this.logoutCallback})
+      : super(key: key);
+  final String userId;
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
 
   @override
   _UserProfile createState() => new _UserProfile();
@@ -35,6 +40,8 @@ class _UserProfile extends State<UserProfile> {
   String username;
   int postCount = 0;
   int _selectedIndex = 0;
+  int _currentIndex = 0;
+
 
 
 
@@ -61,7 +68,6 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
-
 
 
 
@@ -149,17 +155,22 @@ class _UserProfile extends State<UserProfile> {
     }
 
   void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
     if(index == 0) {
 
     }
-    else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-    }
+    //else if (index == 1) {
 
-    else if(index == 2) {
+      /*Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home(
+           )),
+      );*/
+    //}
+
+    else if(index == 1) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PostUpload()),
@@ -171,9 +182,6 @@ class _UserProfile extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       appBar: AppBar(
 
@@ -277,11 +285,11 @@ class _UserProfile extends State<UserProfile> {
               icon: Icon(Icons.person),
               title: Text('Profile'),
             ),
-            BottomNavigationBarItem(
+           /* BottomNavigationBarItem(
               icon: Icon(Icons.home),
               title: Text('Home'),
 
-            ),
+            ),*/
             BottomNavigationBarItem(
               icon: Icon(Icons.add_circle_outline),
               title: Text('New Post'),
@@ -289,7 +297,7 @@ class _UserProfile extends State<UserProfile> {
             ),
 
           ],
-          currentIndex: _selectedIndex,
+          currentIndex: _currentIndex,
           selectedItemColor: Colors.amber[800],
           onTap: _onItemTapped,
         ),

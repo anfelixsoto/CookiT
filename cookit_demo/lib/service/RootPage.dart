@@ -24,6 +24,7 @@ class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
 
+
   @override
   void initState() {
     super.initState();
@@ -82,7 +83,7 @@ class _RootPageState extends State<RootPage> {
           return Home(
             userId: _userId,
             auth: widget.auth,
-            logoutCallback: loginCallback,
+            logoutCallback: logoutCallback, // should be logout not login call back
           );
         } else
           return buildWaitingScreen();

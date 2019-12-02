@@ -266,7 +266,7 @@ class _UserProfile extends State<UserProfile> {
                           physics: const NeverScrollableScrollPhysics(),
                           children: snapshot.data.map((Post post) {
                             return GridTile(
-                                child: showPosts(post.imageUrl),
+                                child: showPosts(context, post, post.imageUrl),
                             );
                           }).toList());
                         }
@@ -306,12 +306,123 @@ class _UserProfile extends State<UserProfile> {
   }
 }
 
-Widget showPosts(url){
-  return Container (
+Widget showPosts(BuildContext context, Post post, url){
+
+  return InkWell(
+  //  onTap: () => print("Post " + post.id +" pressed"),
+    onTap:() {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => PostDetails(post: post,),
+
+        ),
+      );
+    },
+    child: Container (
     child: new Image.network(
       url,
       fit: BoxFit.cover,
     ),
-
+    ),
   );
+}
+
+class PostDetails extends StatelessWidget {
+
+  final Post post;
+
+  // In the constructor, require a Post.
+  PostDetails({Key key, @required this.post}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Use the Post to create the UI.
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(post.title),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+
+        child: Card(
+
+      child: Padding(
+      padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+      child: Column(
+          children: <Widget>[
+
+
+
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage(
+                  "https://picsum.photos/250?image=9",
+                ),
+              ),
+
+              contentPadding: EdgeInsets.all(0),
+
+              title: Text(
+                post.email,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),),
+
+
+              trailing: Text(
+                post.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 11,
+                ),
+              ),
+
+            ),
+            Divider(),
+            Divider(),
+            Image.network(
+              post.imageUrl,
+
+              height: 300,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+            Divider(),
+            Divider(),
+            ListTile(
+              title: Text(
+                  post.description,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+
+            ),
+            Divider(),
+            Divider(),
+            Divider(),
+            Divider(),
+            ButtonBar(
+              alignment: MainAxisAlignment.start,
+              children: <Widget>[
+                FlatButton(
+                  child: Text('Cook it'),
+                  textColor: Colors.lightBlueAccent,
+                  onPressed: () { print('pressed'); },
+                ),
+                FlatButton(
+                  child: Text('Next time'),
+                  textColor: Colors.orangeAccent,
+                  onPressed: () { print('pressed'); },
+                ),
+
+                //showDelete(Post.fromDoc(document).id.toString(), role.toString()),
+
+              ],
+            ),
+
+
+          ]
+      ),
+    ),
+    ),
+      ),
+    );
+  }
 }

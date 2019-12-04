@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/LoginSignupPage.dart';
 import 'package:cookit_demo/HomeScreen.dart';
@@ -23,6 +25,7 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
+  String _role="";
 
 
   @override
@@ -39,10 +42,15 @@ class _RootPageState extends State<RootPage> {
     });
   }
 
+
   void loginCallback() {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+    //FirebaseUser user = await _auth.currentUser();
     widget.auth.getCurrentUser().then((user) {
       setState(() {
         _userId = user.uid.toString();
+
       });
     });
     setState(() {
@@ -79,11 +87,13 @@ class _RootPageState extends State<RootPage> {
         );
         break;
       case AuthStatus.LOGGED_IN:
+        print(_userId);
         if (_userId.length > 0 && _userId != null) {
           return Home(
             userId: _userId,
             auth: widget.auth,
             logoutCallback: logoutCallback, // should be logout not login call back
+
           );
         } else
           return buildWaitingScreen();

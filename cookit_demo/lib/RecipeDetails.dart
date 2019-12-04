@@ -53,8 +53,8 @@ class _RecipeDetails extends State<RecipeDetails>{
                         children: <Widget>[
                           SizedBox(height: 5.0,),
                           new Container(
-                            height:150.0,
-                            width:600.0,
+                            //height:150.0,
+                            width: MediaQuery.of(context).size.width,
                             child:Image.network(
                               snapshot.data.imageURL,
                               fit: BoxFit.fill,),

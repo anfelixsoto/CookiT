@@ -109,7 +109,7 @@ class _UserProfile extends State<UserProfile> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RecipeResults()),
+            MaterialPageRoute(builder: (context) => RecipeResults(ingredients:['salt','pepper','salmon','lemon'])),
           );
         },
         child: new Text(text),

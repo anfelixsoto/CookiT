@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
 import 'package:cookit_demo/model/PostModel.dart';
@@ -7,6 +9,7 @@ import 'package:cookit_demo/service/RootPage.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/model/User.dart';
 
@@ -18,12 +21,17 @@ void main() {
   ));
 }
 class Home extends StatefulWidget {
-  Home({Key key, this.auth, this.userId, this.logoutCallback})
+  Home({Key key, this.auth, this.userId, this.logoutCallback, this.role})
       : super(key: key);
+
 
   final BaseAuth auth;
   final String userId;
   final VoidCallback logoutCallback;
+  final String role;
+
+
+
 
   @override
   HomeState createState() => HomeState();
@@ -36,6 +44,7 @@ class HomeState extends State<Home> {
   DocumentReference userRef;
   var role;
   var userQuery;
+  bool isAdmin = false;
 
 
   @override
@@ -63,6 +72,10 @@ class HomeState extends State<Home> {
         if (data.exists) {
           role = data.data['role'].toString();
           print('Role: ' + role);
+          if (role == 'admin') {
+            isAdmin = true;
+          }
+
         }
       });
 
@@ -96,18 +109,46 @@ class HomeState extends State<Home> {
     return temp;
   }
 
-  Widget showDelete(String postId, String role) {
-    if( role == 'admin' ) {
-      return new IconButton(
+
+
+  Widget showDelete(String postId, String role, String url) {
+
+      return  Visibility(
+        visible: isAdmin,
+        child: IconButton(
           icon: Icon(
             Icons.remove_circle,
             color: Colors.redAccent,
             size: 30.0,
           ),
           onPressed: () {
-            AdminOperations.deletePost(postId);
-          }
+              removeImage(url);
+              AdminOperations.deletePost(postId);
+            }
+          ),
+
       );
+
+  }
+
+  Future<void> removeImage(String url) async{
+    //Future<StorageReference> photoReference =
+
+    try {
+      //String path;
+      print (url);
+      String path = url.replaceAll(new RegExp(r'%2F'), '---');
+     // print(path.split('---')[1]);
+      String remove = path.split('---')[1].replaceAll('?alt', '---');
+      String img = remove.split('---')[0];
+      print(img);
+      final StorageReference storageReference =
+      FirebaseStorage.instance.ref().child("UserRecipes/" + img);
+
+      storageReference.delete();
+
+    } catch (e) {
+      return null;
     }
   }
 
@@ -180,7 +221,7 @@ class HomeState extends State<Home> {
                       onPressed: () { print('pressed'); },
                     ),
 
-                    showDelete(Post.fromDoc(document).id.toString(), role.toString()),
+                    showDelete(Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
 
                   ],
                 ),
@@ -213,10 +254,13 @@ class HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
 
+
+
         title: Text("Home"),
-        centerTitle: true,
+        //centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
+
           new IconButton(
             icon: Icon(
               Icons.account_circle,

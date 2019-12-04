@@ -33,7 +33,7 @@ class _PostUploadState extends State<PostUpload> {
   TextEditingController captionController = TextEditingController();
   String title = '';
   String caption = '';
-
+  bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -165,6 +165,9 @@ class _PostUploadState extends State<PostUpload> {
 
   submitPost(BuildContext context) async {
    // uploadPic(context); // upload pic upon submit
+    setState(() {
+    loading = true;
+    });
 
     // make the post
     String imageUrl = await uploadPic(context);
@@ -188,7 +191,9 @@ class _PostUploadState extends State<PostUpload> {
       title = '';
       caption = ''; // empty the caption
       _image = null; // set image to empty
+      loading = false;
     });
+
   }
 
 
@@ -199,8 +204,14 @@ class _PostUploadState extends State<PostUpload> {
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
     StorageTaskSnapshot taskSnapshot=await uploadTask.onComplete;
     String downloadUrl = await firebaseStorageRef.getDownloadURL();
+
+   // StorageReference imgStorageRef =
+
     return downloadUrl;
   }
+
+
+
 
 
 
@@ -246,7 +257,9 @@ class _PostUploadState extends State<PostUpload> {
              color: Colors.lightBlueAccent,
              textColor: Colors.white,
              onPressed: () {
-               submitPost(context);
+               if(loading == false) {
+                 submitPost(context);
+               }
              },
              child: new Text('Upload'),
            ),

@@ -1,5 +1,6 @@
 import 'package:cookit_demo/UserScreen.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/model/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,21 +13,21 @@ import 'package:uuid/uuid.dart';
 
 void main(){
   runApp(MaterialApp(
-    title: 'Image Upload',
-    home: PostUpload(),
+    title: 'Edit Profile Picture',
+    home: editProfile(),
   ));
 }
 
 
-class PostUpload extends StatefulWidget {
+class editProfile extends StatefulWidget {
 
 
 
   @override
-  _PostUploadState createState() => _PostUploadState();
+  _editProfile createState() => _editProfile();
 }
 
-class _PostUploadState extends State<PostUpload> {
+class _editProfile extends State<editProfile> {
 
   FirebaseUser currentUser;
   File _image;
@@ -35,9 +36,10 @@ class _PostUploadState extends State<PostUpload> {
   String title = '';
   String caption = '';
   bool loading = false;
+  String profilePic;
+  String tempPic;
+
   DocumentReference userRef;
-  String profileImage;
-  String userId;
   @override
   void initState() {
     super.initState();
@@ -62,11 +64,11 @@ class _PostUploadState extends State<PostUpload> {
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
-      userId = user.uid;
       userRef.get().then((data) {
         if (data.exists) {
-          profileImage = data.data['profileImage'].toString();
-
+          profilePic = data.data['profileImage'].toString();
+          //print(profilePic);
+          tempPic = profilePic;
 
 
         }
@@ -75,7 +77,6 @@ class _PostUploadState extends State<PostUpload> {
       //print(user.displayName.toString());
     });
   }
-
 
   String showEmail() {
     if (currentUser != null) {
@@ -147,16 +148,35 @@ class _PostUploadState extends State<PostUpload> {
     });
   }
 
+  Widget _buildAvatar() {
+    return new Container(
+      width: 180.0,
+      height: 180.0,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white30),
+      ),
+      margin: const EdgeInsets.only(top: 32.0, left: 16.0),
+      padding: const EdgeInsets.all(3.0),
+      child: ClipOval(
+        child: Image.network(
+          profilePic,
+        ),
+      ),);
+  }
+
+
+
   Widget handleNullImage(BuildContext context) {
     if (_image == null) {
       return Container (
-          padding: EdgeInsets.only(top: 5.0, bottom: 0.0),
-          margin: const EdgeInsets.only(bottom: 0.0),
+          padding: EdgeInsets.only(top: 5.0, bottom: 30.0),
+          margin: const EdgeInsets.only(bottom: 10.0),
           height: 300,
           width: 300,
           color: Colors.blueGrey[100],
 
-        child: Center (
+          child: Center (
 
             child: MaterialButton(
               minWidth: 10.0,
@@ -169,59 +189,68 @@ class _PostUploadState extends State<PostUpload> {
             ),
 
 
-        )
+          )
       );
     } else {
-      return Container(
-        padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 0.0),
-         child: Image.file(_image, width: 300, height: 300),
-      );
+      return new Container(
+        width: 300.0,
+        height: 300.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white30),
+        ),
+        margin: const EdgeInsets.only(top: 16.0, left: 16.0),
+        padding: const EdgeInsets.all(3.0),
+        child: ClipOval(
+          child: Image.file(
+            _image, width: 50, height: 50,
+          ),
+        ),);
+
+      //return Container(
+        //padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 30.0),
+
+      //);
     }
   }
 
-  void createPost(Post post) {
-    Firestore.instance.collection('posts').add({
-      'imageUrl': post.imageUrl,
-      'title': post.title,
-      'description': post.description,
-      'email': post.email,
-      'profileImage': profileImage,
-      'userId': userId,
-    });
+  void setProfilePic(String imgURL) {
+
+    Firestore.instance.collection('users').document(currentUser.uid).updateData({
+      'profileImage': imgURL,
+      }
+    );
+
   }
 
 
 
 
 
-  submitPost(BuildContext context) async {
-   // uploadPic(context); // upload pic upon submit
+
+
+
+  submitPic(BuildContext context) async {
+    // uploadPic(context); // upload pic upon submit
     setState(() {
-    loading = true;
+      loading = true;
     });
+    bool clear = false;
 
-    // make the post
-    String imageUrl = await uploadPic(context);
+    // clear and rm the previous prpfile pic if any
 
-    Post currPost = Post(
-      imageUrl: imageUrl,
-      title: title,
-      description: caption,
-      email: showEmail(),
-      profileImage: profileImage,
 
-    );
+    // upload the selected image
+    String profileImageUrl = await uploadPic(context);
 
-    createPost(currPost);
 
-    // clear title
-    titleController.clear();
-    // clear description field
-    captionController.clear();
+
+    setProfilePic(profileImageUrl);
+
+
 
     setState(() {
-      title = '';
-      caption = ''; // empty the caption
+
       _image = null; // set image to empty
       loading = false;
     });
@@ -235,18 +264,48 @@ class _PostUploadState extends State<PostUpload> {
 
 
   Future<String> uploadPic(BuildContext context) async{
+    if(profilePic.toString() != "") {
+
+      print("removing.." + profilePic.toString());
+      removeProfilePic(profilePic.toString());
+
+    }
 
     String fileName = basename(_image.path);
-    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child("UserRecipes/" + fileName);
+    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child("UserProfileImage/" + fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
     StorageTaskSnapshot taskSnapshot=await uploadTask.onComplete;
     String downloadUrl = await firebaseStorageRef.getDownloadURL();
 
-   // StorageReference imgStorageRef =
+    // StorageReference imgStorageRef =
 
     return downloadUrl;
   }
 
+  Future<void> removeProfilePic(String url) async{
+    //Future<StorageReference> photoReference =
+    print("removing..");
+
+    try {
+
+      print (" deleteing..." + url.toString());
+      String path = url.toString().replaceAll(new RegExp(r'%2F'), '---');
+
+      String remove = path.split('---')[1].replaceAll('?alt', '---');
+      String img = remove.split('---')[0];
+      print(img);
+      final StorageReference storageReference =
+      FirebaseStorage.instance.ref().child("UserProfileImage/" + img);
+
+      storageReference.delete();
+      print (" deleted..." );
+
+
+    } catch (e) {
+      print("Something went wrong");
+      return null;
+    }
+  }
 
   showLoading() {
     return Container (
@@ -266,8 +325,10 @@ class _PostUploadState extends State<PostUpload> {
 
 
 
-    @override
-    Widget build(BuildContext context) {
+
+
+  @override
+  Widget build(BuildContext context) {
 
 
 
@@ -279,7 +340,6 @@ class _PostUploadState extends State<PostUpload> {
               Icons.arrow_back,
               color: Colors.white,
               size: 24.0,
-
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -287,66 +347,47 @@ class _PostUploadState extends State<PostUpload> {
         title: Text('Upload Picture'),
         backgroundColor: Colors.lightGreen,
       ),
-     body: Container(
-       margin: EdgeInsets.all(20.0),
+      body: Container(
+        margin: EdgeInsets.all(20.0),
 
 
-       child: Center(
-         child: ListView(
-           //mainAxisAlignment: MainAxisAlignment.spaceAround,
-           children: <Widget>[
-             loading == true ? showLoading(): handleNullImage(context), // in case the image is null
-             //Image.file(_image, width: 300, height: 300 ),
+        child: Center(
+            child: ListView(
+              //mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                loading == true ?
+                  showLoading(): handleNullImage(context),
 
+               // in case the image is null
+                //Image.file(_image, width: 300, height: 300 ),
 
-             Padding(
-               padding: EdgeInsets.symmetric(horizontal: 30.0),
-               child: TextField(
-                 controller: titleController,
-                 style: TextStyle(fontSize: 18.0),
-                 decoration: InputDecoration(
-                   labelText: 'Title',
-                 ),
-                 onChanged: (input) => title = input,
-               ),
-             ),
-           Padding(
-             padding: EdgeInsets.only(top: 5.0, left: 30.0, right:30, bottom: 35.0),
-             child: TextField(
-               controller: captionController,
-               style: TextStyle(fontSize: 18.0),
-               decoration: InputDecoration(
-                 labelText: 'Description',
-               ),
-               onChanged: (input) => caption = input,
-             ),
-           ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: MaterialButton(
+                    minWidth: 10.0,
+                    height: 50.0,
 
-             FlatButton(
-               //borderRadius: BorderRadius.circular(30.0),
-               child: MaterialButton(
-                 minWidth: 110.0,
-                 height: 40.0,
-
-                 color: Colors.lightBlueAccent,
-                 textColor: Colors.white,
-                 onPressed: () {
-                   if(loading == false) {
-                     submitPost(context);
-                   }
-                 },
-                 child: new Text('Upload'),
-               ),
-             ),
+                    color: Colors.lightBlueAccent,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      if(loading == false) {
+                        submitPic(context);
+                      }
+                    },
+                    child: new Text('Upload'),
+                  ),
+                ),
 
 
 
-           ],
 
-         )
 
-       ),
-     ),
+              ],
+
+            )
+
+        ),
+      ),
 
     );
   }

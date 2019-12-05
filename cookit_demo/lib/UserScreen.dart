@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/favorite.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 
+import 'package:cookit_demo/editProfile.dart';
+import 'package:cookit_demo/service/UserOperations.dart';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'dart:io';
@@ -29,6 +34,8 @@ class UserProfile extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback logoutCallback;
 
+
+
   @override
   _UserProfile createState() => new _UserProfile();
 }
@@ -41,14 +48,18 @@ class _UserProfile extends State<UserProfile> {
   int postCount = 0;
   int _selectedIndex = 0;
   int _currentIndex = 0;
+  DocumentReference userRef;
+  String currEmail;
+  String currId;
 
-
+  var profilePic;
 
 
   @override
   void initState() {
     super.initState();
     loadCurrentUser();
+    getUserRef();
     //showEmail();
     //showUsername();
   }
@@ -57,6 +68,8 @@ class _UserProfile extends State<UserProfile> {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
         this.currentUser = user;
+        //userRef.get().then()
+
       });
     });
   }
@@ -70,13 +83,60 @@ class _UserProfile extends State<UserProfile> {
   }
 
 
+  Future<void> getUserRef() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+
+    FirebaseUser user = await _auth.currentUser();
+
+    setState((){
+      userRef = _firestore.collection('users').document(user.uid);
+      currId = user.uid;
+      userRef.get().then((data) {
+        if (data.exists) {
+          currEmail = data.data['email'].toString();
+          profilePic = data.data['profileImage'].toString();
+
+          print(profilePic);
 
 
+        }
+      });
+
+      //print(user.displayName.toString());
+    });
+  }
 
 
+showAvatar(String pic) {
+
+      return GestureDetector(
+        child: ClipOval(
+        child: profilePic == null
+            ? new CircleAvatar(
+          child: Image.network(
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+          ),
+        )
+            : new CircleAvatar(
+          child: Image.network(
+              profilePic
+          ),
+        ),
+        ),
+          onTap:(){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => editProfile()),
+            );
+          }
+      );
+
+}
 
   Widget _buildAvatar() {
-    return new Container(
+    return new GestureDetector(
+    child: Container(
       width: 180.0,
       height: 180.0,
       decoration: BoxDecoration(
@@ -85,11 +145,28 @@ class _UserProfile extends State<UserProfile> {
       ),
       margin: const EdgeInsets.only(top: 32.0, left: 16.0),
       padding: const EdgeInsets.all(3.0),
-      child: ClipOval(
-        child: Image.network(
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-        ),
-      ),);
+      child:  ClipOval(
+    child: profilePic == null
+    ?
+     Image.network(
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+    )
+        : Image.network(
+    profilePic,
+      height: 300,
+      width: MediaQuery.of(context).size.width,
+      fit: BoxFit.cover,
+    ),
+    ),
+
+    ),
+        onTap:(){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => editProfile()),
+          );
+        }
+    );
   }
 
 
@@ -131,7 +208,10 @@ class _UserProfile extends State<UserProfile> {
         color: Colors.lightBlueAccent,
         textColor: textColor,
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Favorites()),
+          );
         },
         child: new Text(text),
       ),
@@ -151,7 +231,7 @@ class _UserProfile extends State<UserProfile> {
       setState(() {
         postCount = snap.documents.length;
       });
-      return posts.reversed.toList();
+      return posts.toList();
     }
 
   void _onItemTapped(int index) {
@@ -261,12 +341,13 @@ class _UserProfile extends State<UserProfile> {
                           childAspectRatio: 1.0,
                           //                    padding: const EdgeInsets.all(0.5),
                           mainAxisSpacing: 1.5,
+
                           crossAxisSpacing: 1.5,
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(),
                           children: snapshot.data.map((Post post) {
                             return GridTile(
-                                child: showPosts(context, post, post.imageUrl),
+                                child: showPosts(context, post, post.imageUrl, currId, currEmail),
                             );
                           }).toList());
                         }
@@ -306,13 +387,15 @@ class _UserProfile extends State<UserProfile> {
   }
 }
 
-Widget showPosts(BuildContext context, Post post, url){
+Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
+
+
 
   return InkWell(
   //  onTap: () => print("Post " + post.id +" pressed"),
     onTap:() {
       Navigator.push(context, MaterialPageRoute(
-        builder: (context) => PostDetails(post: post,),
+        builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail,),
 
         ),
       );
@@ -326,12 +409,60 @@ Widget showPosts(BuildContext context, Post post, url){
   );
 }
 
+Widget showDelete(String postId, String role, String url) {
+
+  return  Visibility(
+
+    child: IconButton(
+        icon: Icon(
+          Icons.remove_circle,
+          color: Colors.redAccent,
+          size: 30.0,
+        ),
+        onPressed: () {
+          removeImage(url);
+          UserOperations.deletePost(postId);
+        }
+    ),
+
+  );
+
+}
+
+Future<void> removeImage(String url) async{
+  //Future<StorageReference> photoReference =
+
+  try {
+    //String path;
+    print (url);
+    String path = url.replaceAll(new RegExp(r'%2F'), '---');
+    // print(path.split('---')[1]);
+    String remove = path.split('---')[1].replaceAll('?alt', '---');
+    String img = remove.split('---')[0];
+    print(img);
+    final StorageReference storageReference =
+    FirebaseStorage.instance.ref().child("UserRecipes/" + img);
+
+    storageReference.delete();
+
+  } catch (e) {
+    return null;
+  }
+}
+
+
+
 class PostDetails extends StatelessWidget {
 
+
   final Post post;
+  String currId;
+  String currEmail;
+
 
   // In the constructor, require a Post.
-  PostDetails({Key key, @required this.post}) : super(key: key);
+  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -354,8 +485,11 @@ class PostDetails extends StatelessWidget {
 
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: AssetImage(
-                  "https://picsum.photos/250?image=9",
+                child: post.profileImage != null
+                ? Image.network(
+                 post.profileImage,
+                ) : Image.network(
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
                 ),
               ),
 
@@ -376,6 +510,7 @@ class PostDetails extends StatelessWidget {
                 ),
               ),
 
+
             ),
             Divider(),
             Divider(),
@@ -389,9 +524,12 @@ class PostDetails extends StatelessWidget {
             Divider(),
             Divider(),
             ListTile(
+
               title: Text(
                   post.description,
-                  style: TextStyle(fontWeight: FontWeight.w500)),
+                  style: TextStyle(fontWeight: FontWeight.w500)
+              ),
+
 
             ),
             Divider(),
@@ -399,7 +537,8 @@ class PostDetails extends StatelessWidget {
             Divider(),
             Divider(),
             ButtonBar(
-              alignment: MainAxisAlignment.start,
+
+              alignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 FlatButton(
                   child: Text('Cook it'),
@@ -411,8 +550,11 @@ class PostDetails extends StatelessWidget {
                   textColor: Colors.orangeAccent,
                   onPressed: () { print('pressed'); },
                 ),
+                // show menu button
+                post.email == currEmail ?
+                showUserOptions(context, post, currId, currEmail): Container(),
 
-                //showDelete(Post.fromDoc(document).id.toString(), role.toString()),
+
 
               ],
             ),
@@ -425,4 +567,70 @@ class PostDetails extends StatelessWidget {
       ),
     );
   }
+}
+
+
+Widget showUserOptions(BuildContext context, Post post, String userId, String email) {
+
+  return  Visibility(
+
+    child: IconButton(
+        icon: Icon(
+          Icons.more_vert,
+          color: Colors.redAccent,
+          size: 30.0,
+        ),
+        onPressed: () {
+
+    showAlert(context, userId, email, post.id, post.email, post.imageUrl);
+
+        }
+    ),
+
+  );
+
+}
+Future<void> showAlert(BuildContext context, String userId, email, String postId, String postEmail, url) {
+  return showDialog(context: context,builder: (BuildContext context) {
+    return AlertDialog(
+      title: Text('Are you sure you want to delete this post? '),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            GestureDetector(
+              child: Text('Yes'),
+              onTap: (){
+
+                  removeImage(url);
+                  UserOperations.deletePost(postId);
+                  Navigator.pop(context);
+
+              },
+            ),
+            Padding(padding: EdgeInsets.all(8.0)),
+            GestureDetector(
+              child: Text('No'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+
+            Padding(padding: EdgeInsets.all(8.0)),
+            GestureDetector(
+              child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                  )
+              ),
+
+              onTap: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  });
 }

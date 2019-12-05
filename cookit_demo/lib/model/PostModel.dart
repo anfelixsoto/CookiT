@@ -7,6 +7,8 @@ class Post {
   final String description;
   final String username;
   final String email;
+  final String profileImage;
+  final String userId;
 
   Post({
     this.id,
@@ -15,6 +17,8 @@ class Post {
     this.description,
     this.username,
     this.email,
+    this.profileImage,
+    this.userId,
   });
 
   factory Post.fromDoc(DocumentSnapshot doc) {
@@ -25,6 +29,8 @@ class Post {
       description: doc['description'],
       username: doc['username'],
       email: doc['email'],
+      profileImage: doc['profileImage'],
+      userId: doc['userId'],
 
     );
   }

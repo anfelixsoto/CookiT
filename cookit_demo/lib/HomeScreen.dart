@@ -69,12 +69,12 @@ class HomeState extends State<Home> {
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userRef.get().then((data) {
-        if (data.exists) {
-          role = data.data['role'].toString();
-          print('Role: ' + role);
-          if (role == 'admin') {
-            isAdmin = true;
-          }
+            if (data.exists) {
+              role = data.data['role'].toString();
+              print('Role: ' + role);
+              if (role == 'admin') {
+                isAdmin = true;
+              }
 
         }
       });
@@ -111,7 +111,7 @@ class HomeState extends State<Home> {
 
 
 
-  Widget showDelete(String postId, String role, String url) {
+  Widget showDelete(BuildContext context,String postId, String role, String url) {
 
       return  Visibility(
         visible: isAdmin,
@@ -122,14 +122,56 @@ class HomeState extends State<Home> {
             size: 30.0,
           ),
           onPressed: () {
-              removeImage(url);
-              AdminOperations.deletePost(postId);
+              showAlert(context, postId, role, url);
             }
           ),
 
       );
 
   }
+  Future<void> showAlert(BuildContext context, postId, role, url) {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Are you sure you want to delete this post? '),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              GestureDetector(
+                child: Text('Yes'),
+                onTap: (){
+                  removeImage(url);
+                  AdminOperations.deletePost(postId);
+                  Navigator.pop(context);
+                },
+              ),
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text('No'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                    )
+                ),
+
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
 
   Future<void> removeImage(String url) async{
     //Future<StorageReference> photoReference =
@@ -170,18 +212,31 @@ class HomeState extends State<Home> {
 
                 ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: AssetImage(
-                      "https://picsum.photos/250?image=9",
+                    backgroundImage: document['profileImage'] == null ? NetworkImage(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                    ): NetworkImage(
+                      document['profileImage'],
                     ),
                   ),
 
                   contentPadding: EdgeInsets.all(0),
 
-                 title: Text(
-                   document['email'],
-                   style: TextStyle(
-                     fontWeight: FontWeight.bold,
-                   ),),
+                 title: GestureDetector(
+                   child:Text(
+                         document['email'],
+                         style: TextStyle(
+                           fontWeight: FontWeight.bold,
+                        ),
+                     ),
+                   onTap: () {
+                     /*Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => ViewUser(userId: document['userId'],
+                        )),
+                     );*/
+                   },
+
+                 ),
 
 
                   trailing: Text(
@@ -221,7 +276,7 @@ class HomeState extends State<Home> {
                       onPressed: () { print('pressed'); },
                     ),
 
-                    showDelete(Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
+                    showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
 
                   ],
                 ),

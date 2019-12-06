@@ -15,6 +15,7 @@ class Recipe{
   int servings;
   List<String> ingredients;
   List<String> instructions;
+  Recipe rec=null;
   
   Recipe({this.name,this.description,this.imageURL,this.numCalories,this.prepTime,this.servings,this.ingredients,this.instructions});
 
@@ -30,6 +31,12 @@ class Recipe{
       instructions:(json['analyzedInstructions'][0]['steps'] as List).map((p) => Instruction.fromJson(p).step).toList(),
       );
   }
+  static Recipe recipecheat(int id){
+    Recipe r1=new Recipe();
+    Future<Recipe> r=r1.fetchRecipeObj(id);
+    print(r1.rec);
+    return r1.rec;
+  }
 
   static Future<Recipe> fetchRecipe(int id) async {
     final response =
@@ -37,6 +44,20 @@ class Recipe{
 
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.
+      return Recipe.fromJSON(json.decode(response.body));
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future<Recipe> fetchRecipeObj(int id) async {
+    final response =
+        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey=18743cb58f294573a49a41d78c78a8ce');
+
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON.
+      rec=Recipe.fromJSON(json.decode(response.body));
       return Recipe.fromJSON(json.decode(response.body));
     } else {
       // If that call was not successful, throw an error.

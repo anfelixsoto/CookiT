@@ -1,5 +1,6 @@
 import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/model/Recipe.dart';
+import 'package:cookit_demo/model/RecipesList.dart';
 import 'package:flutter/material.dart';
 
 import 'model/RecipeList.dart';
@@ -21,13 +22,17 @@ class RecipeResults extends StatefulWidget {
 }
 
 class _RecipeResults extends State<RecipeResults>{
-  Future<RecipeList> recipes;
+  Future<RecipesList> recipes;
+  List<Recipe> recipeList;
+  List<Recipe> recipeItems;
+  static var recipees=new List<Recipe>();
   //_RecipeResults({Key key,@required this.ingredients}):super(key:key);
 
    @override
   void initState(){
     super.initState();
-    recipes = RecipeList.fetchRecipes(widget.ingredients);
+    recipes = RecipesList.fetchRecipes(widget.ingredients);
+    recipeItems=new List<Recipe>();
   }
 
   String getIngredientString(){
@@ -58,11 +63,13 @@ class _RecipeResults extends State<RecipeResults>{
         ),
         backgroundColor: Colors.white,
         body: Center(
-          child: FutureBuilder<RecipeList>(
+          child: FutureBuilder<RecipesList>(
             future: recipes,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Center(
+                recipeList=snapshot.data.recipes;
+                return Text(recipeList[0].toString());
+                /*return Center(
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(36.0),
@@ -91,7 +98,7 @@ class _RecipeResults extends State<RecipeResults>{
                             child: new ListView.builder(
                               itemCount: snapshot.data.recipes.length,
                               itemBuilder: (context, index) {
-                                  return new Padding(
+                                    return new Padding(
                                     padding:EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
                                     child:Material(
                                       elevation: 5.0,
@@ -103,10 +110,10 @@ class _RecipeResults extends State<RecipeResults>{
                                         onPressed: (){
                                           Navigator.push(
                                               context,
-                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipeId:snapshot.data.recipes[index].rid))
+                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe:r))
                                           );
                                         },
-                                        child: Text(snapshot.data.recipes[index].rname,
+                                        child: Text(snapshot2.data.name,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 20.0,
@@ -117,6 +124,7 @@ class _RecipeResults extends State<RecipeResults>{
                                       ),
                                     ),
                                   );
+                                  }});
                               },
                             ),
                           ),
@@ -124,7 +132,7 @@ class _RecipeResults extends State<RecipeResults>{
                       ),
                     ),
                   ),
-                );
+                );*/
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               }

@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 void main(){
   runApp(MaterialApp(
     title: 'CookiT Recipe Results',
-    home: RecipeDetails(recipeId:632660),
+    //home: RecipeDetails(recipe:632660),
+    home:RecipeDetails(recipe:null),
   ));
 }
 
 class RecipeDetails extends StatefulWidget {
-  final int recipeId;
-  RecipeDetails({Key key,@required this.recipeId}):super(key:key);
+  final Future<Recipe> recipe;
+  RecipeDetails({Key key,@required this.recipe}):super(key:key);
 
   @override
   _RecipeDetails createState() => _RecipeDetails();
@@ -24,7 +25,7 @@ class _RecipeDetails extends State<RecipeDetails>{
   @override
   void initState(){
     super.initState();
-    recipe = Recipe.fetchRecipe(widget.recipeId);
+    recipe = widget.recipe;
   }
 
   @override

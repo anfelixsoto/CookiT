@@ -1,6 +1,7 @@
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/recipeId.dart';
+import 'package:cookit_demo/ImageUpload.dart';
 import 'package:flutter/material.dart';
 
 void main(){
@@ -139,7 +140,12 @@ class RecipeInstructions extends StatelessWidget {
                                                 child:MaterialButton(
                                                   minWidth: MediaQuery.of(context).size.width,
                                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                                  onPressed: (){},
+                                                  onPressed: (){
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => PostUpload())
+                                                  );
+                                                  },
                                                   child: Text("Take a photo",
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(

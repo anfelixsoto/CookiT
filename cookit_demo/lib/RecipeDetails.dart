@@ -11,6 +11,17 @@ void main(){
   ));
 }
 
+Widget buildError(BuildContext context, FlutterErrorDetails error) {
+   return Scaffold(
+     body: Center(
+       child: Text(
+         "Error appeared.",
+         style: Theme.of(context).textTheme.title,
+       ),
+     )
+   );
+ }
+
 class RecipeDetails extends StatefulWidget {
   final Recipe recipe;
   RecipeDetails({Key key,@required this.recipe}):super(key:key);
@@ -31,6 +42,12 @@ class _RecipeDetails extends State<RecipeDetails>{
   Widget build(BuildContext context){
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          builder: (BuildContext context, Widget widget) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return buildError(context, errorDetails);
+          };
+          return widget;
+        },
           home: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.lightGreen,

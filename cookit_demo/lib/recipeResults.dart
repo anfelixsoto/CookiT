@@ -161,12 +161,28 @@ class _RecipeResults extends State<RecipeResults>{
                         );
                       } 
                       else if(snapshot2.hasError){
-                        return Text("${snapshot2.error}");
+                        //return Text("${snapshot2.error}");
+                        return Text(
+                          "Oh no, an error occured:(\nWe apologize for the inconvenience.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35.0,
+                            color: Colors.red,),
+                        );
                       }  
                       return CircularProgressIndicator(); 
                     });
               } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
+                //return Text("${snapshot.error}");
+                return Text(
+                      "Oh no, an error occured:(\nWe apologize for the inconvenience.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 35.0,
+                        color: Colors.red,),
+                    );
               }
               // By default, show a loading spinner.
               return CircularProgressIndicator();

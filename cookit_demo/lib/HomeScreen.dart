@@ -203,6 +203,7 @@ class HomeState extends State<Home> {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Card(
+
           child: Padding(
             padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
           child: Column(

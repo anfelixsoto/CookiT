@@ -7,6 +7,7 @@ class User {
   String profileImage;
   String role;
 
+
   User({
     this.username,
     this.email,

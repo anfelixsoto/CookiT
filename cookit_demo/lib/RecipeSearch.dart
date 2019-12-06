@@ -31,8 +31,8 @@ class RecipeSearch extends StatefulWidget {
 
 class _RecipeSearchState extends State<RecipeSearch> {
 
+  static var controllerList=new List<TextEditingController>();
   static var listOfFields = <Widget>[];
-  static var controllerList=List<TextEditingController>();
   int _count=0;
 
   void _add() {
@@ -62,6 +62,9 @@ class _RecipeSearchState extends State<RecipeSearch> {
 
   @override
   Widget build(BuildContext context){
+    if(controllerList.isEmpty){
+      _add();
+    }
     final ingredientField = TextField(
       obscureText: false,
       decoration: InputDecoration(

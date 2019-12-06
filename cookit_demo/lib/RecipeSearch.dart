@@ -14,11 +14,13 @@ void main(){
 class RecipeSearch extends StatefulWidget {
   final state = _RecipeSearchState();
   final _count=0;
+  bool flag;
   List<TextField> fields;
   var listOfFields = <Widget>[];
 
   @override
   _RecipeSearchState createState() {
+    flag=false;
   return _RecipeSearchState();
   }
 
@@ -34,6 +36,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
   static var controllerList=new List<TextEditingController>();
   static var listOfFields = <Widget>[];
   int _count=0;
+  static bool flag=false;
 
   void _add() {
     controllerList.add(new TextEditingController());
@@ -54,10 +57,27 @@ class _RecipeSearchState extends State<RecipeSearch> {
   List<String> getIngredients(){
     List<String> ingredients=new List<String>();
     for(int i=0;i<controllerList.length;i++){
-      ingredients.add(controllerList[i].text.toString().trim());
+      String tinput=controllerList[i].text.toString().trim();
+      if(tinput.isNotEmpty&&RegExp(r"^[a-zA-Z]+$").hasMatch(tinput)){
+        ingredients.add(controllerList[i].text.toString().trim());
+      }
     }
-    print(ingredients);
+    if(ingredients.isEmpty){
+      setState((){
+        flag=true;
+      });
+    }
+    else{
+      setState((){
+        flag=false;
+      });
+    }
     return ingredients;
+  }
+
+  @override
+  void initState(){
+    super.initState();
   }
 
   @override
@@ -75,6 +95,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
       ),
     );
 
+
     final loginButton = Material(
         elevation: 5.0,
         borderRadius: BorderRadius.circular(30.0),
@@ -83,10 +104,13 @@ class _RecipeSearchState extends State<RecipeSearch> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           onPressed: (){
-            Navigator.push(
-              context,
-               MaterialPageRoute(builder: (context) => RecipeResults(ingredients:getIngredients())),
-            );
+            List<String> ingredients=getIngredients();
+            if(ingredients.isNotEmpty){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RecipeResults(ingredients:ingredients)),
+              );
+            }
           },
           child: Text("Search for recipes",
             textAlign: TextAlign.center,
@@ -137,12 +161,23 @@ class _RecipeSearchState extends State<RecipeSearch> {
                       ),
                     SizedBox(height: 5.0,),
                     Container(
-                      height:200.0,
+                      height:250.0,
                       child:
                       ListView(children: listOfFields),
                     ),
                     SizedBox(height: 5.0,),
                     loginButton,
+                    SizedBox(height: 5.0,),
+                    Visibility(
+                      visible:flag,
+                      child:Text(
+                      "Error: enter at least one ingredient.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                        color: Colors.red,),
+                    )),
                   ],
                 ),
               ),

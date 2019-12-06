@@ -16,11 +16,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SeachAppBarRecipe',
+      title: 'SearchAppBarRecipe',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Favorites(title: 'SeachAppBarRecipe'),
+      home: Favorites(title: 'SearchAppBarRecipe'),
     );
   }
 }

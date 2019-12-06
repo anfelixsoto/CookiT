@@ -6,30 +6,48 @@ import 'package:flutter/material.dart';
 void main(){
   runApp(MaterialApp(
     title: 'CookiT Recipe Results',
-    home: RecipeDetails(recipeId:632660),
+    //home: RecipeDetails(recipe:632660),
+    home:RecipeDetails(recipe:null),
   ));
 }
 
+Widget buildError(BuildContext context, FlutterErrorDetails error) {
+   return Scaffold(
+     body: Center(
+       child: Text(
+         "Error appeared.",
+         style: Theme.of(context).textTheme.title,
+       ),
+     )
+   );
+ }
+
 class RecipeDetails extends StatefulWidget {
-  final int recipeId;
-  RecipeDetails({Key key,@required this.recipeId}):super(key:key);
+  final Recipe recipe;
+  RecipeDetails({Key key,@required this.recipe}):super(key:key);
 
   @override
   _RecipeDetails createState() => _RecipeDetails();
 }
 class _RecipeDetails extends State<RecipeDetails>{
-  Future<Recipe> recipe;
+  Recipe recipe;
 
   @override
   void initState(){
     super.initState();
-    recipe = Recipe.fetchRecipe(widget.recipeId);
+    recipe = widget.recipe;
   }
 
   @override
   Widget build(BuildContext context){
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          builder: (BuildContext context, Widget widget) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return buildError(context, errorDetails);
+          };
+          return widget;
+        },
           home: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.lightGreen,
@@ -41,11 +59,11 @@ class _RecipeDetails extends State<RecipeDetails>{
             ),
             backgroundColor: Colors.white,
             body: Center(
-              child: FutureBuilder<Recipe>(
+              child: /*FutureBuilder<Recipe>(
               future: recipe,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return 
+                  return */
                    Container(
                     child: Padding(
                       padding: const EdgeInsets.all(36.0),
@@ -53,14 +71,14 @@ class _RecipeDetails extends State<RecipeDetails>{
                         children: <Widget>[
                           SizedBox(height: 5.0,),
                           new Container(
-                            //height:150.0,
-                            width: MediaQuery.of(context).size.width,
+                            height:150.0,
+                            width:600.0,
                             child:Image.network(
-                              snapshot.data.imageURL,
+                              recipe.imageURL,
                               fit: BoxFit.fill,),
                           ),
                           new Container(
-                            height: 80.0,
+                            height: 120.0,
                             child:ListView(
                               scrollDirection: Axis.horizontal,
                               children: <Widget>[
@@ -69,14 +87,14 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   child:ListView(
                                     children: <Widget>[
                                           new Text(
-                                            snapshot.data.name,
+                                            recipe.name,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 20.0,
                                               color: Colors.black,)
                                           ),
                                           new Text(
-                                            snapshot.data.description,
+                                            recipe.description,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15.0,
@@ -88,7 +106,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                 Container(
                                   width:160.0,
                                   child:Padding(
-                                    padding:EdgeInsets.fromLTRB(30.0, 20.0, 35.0, 25.0),
+                                    padding:EdgeInsets.fromLTRB(30.0, 40.0, 35.0, 45.0),
                                     child:Material(
                                       elevation: 5.0,
                                       borderRadius: BorderRadius.circular(10.0),
@@ -122,7 +140,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   child:ListView(
                                         children: <Widget>[
                                           new Text(
-                                            snapshot.data.ingredients.length.toString(),
+                                            recipe.ingredients.length.toString(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -145,7 +163,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   child:ListView(
                                         children: <Widget>[
                                           new Text(
-                                            snapshot.data.prepTime.toString(),
+                                            recipe.prepTime.toString(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -168,7 +186,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   child:ListView(
                                         children: <Widget>[
                                           new Text(
-                                            snapshot.data.numCalories.toString(),
+                                            recipe.numCalories.toString(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -221,14 +239,14 @@ class _RecipeDetails extends State<RecipeDetails>{
                         ],
                       ),
                     ),
-                  );
-                } else if (snapshot.hasError) {
+                  ),
+               /* } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
                 // By default, show a loading spinner.
                 return CircularProgressIndicator();
               },
-              ),
+              ),*/
             ),
             ),
           );

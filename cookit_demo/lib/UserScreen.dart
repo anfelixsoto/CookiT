@@ -4,6 +4,7 @@ import 'package:cookit_demo/ImageUpload.dart';
 import 'package:cookit_demo/favorite.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
+import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 
 import 'package:cookit_demo/editProfile.dart';
@@ -186,7 +187,7 @@ showAvatar(String pic) {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RecipeResults(ingredients:['salt','pepper','salmon','lemon'])),
+            MaterialPageRoute(builder: (context) => RecipeSearch()),
           );
         },
         child: new Text(text),

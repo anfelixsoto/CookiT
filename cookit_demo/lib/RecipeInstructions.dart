@@ -1,6 +1,7 @@
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/recipeId.dart';
+import 'package:cookit_demo/ImageUpload.dart';
 import 'package:flutter/material.dart';
 
 void main(){
@@ -11,7 +12,7 @@ void main(){
 }
 
 class RecipeInstructions extends StatelessWidget {
-  final Future<Recipe> recipe;
+  final Recipe recipe;
   RecipeInstructions({Key key,@required this.recipe}):super(key:key);
 
 
@@ -30,11 +31,11 @@ class RecipeInstructions extends StatelessWidget {
             ),
             backgroundColor: Colors.white,
             body: Container(
-              child: FutureBuilder<Recipe>(
+              child: /*FutureBuilder<Recipe>(
               future: recipe,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return LayoutBuilder(
+                  return*/ LayoutBuilder(
     builder: (BuildContext context, BoxConstraints viewportConstraints) {
       return SingleChildScrollView(
         padding:EdgeInsets.all(15.0),
@@ -67,7 +68,7 @@ class RecipeInstructions extends StatelessWidget {
                               height:150.0,
                               width:200.0,
                               child:Image.network(
-                                snapshot.data.imageURL,
+                                recipe.imageURL,
                                 fit: BoxFit.fill,)
                             ),
                           ]
@@ -97,26 +98,26 @@ class RecipeInstructions extends StatelessWidget {
                                       primary:false,
                                       children: <Widget>[
                                         new Text(
-                                          snapshot.data.name,
+                                          recipe.name,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0,
                                             color: Colors.black,)
                                         ),
                                         new Text(
-                                          "Prep time: "+snapshot.data.prepTime.toString(),
+                                          "Prep time: "+recipe.prepTime.toString(),
                                           style: TextStyle(
                                             fontSize: 15.0,
                                             color: Colors.grey,)
                                         ),
                                         new Text(
-                                          "Calories: "+snapshot.data.numCalories.toString(),
+                                          "Calories: "+recipe.numCalories.toString(),
                                           style: TextStyle(
                                             fontSize: 15.0,
                                             color: Colors.grey,)
                                         ),
                                         new Text(
-                                          "Serving size: "+snapshot.data.servings.toString(),
+                                          "Serving size: "+recipe.servings.toString(),
                                           style: TextStyle(
                                             fontSize: 15.0,
                                             color: Colors.grey,)
@@ -139,7 +140,12 @@ class RecipeInstructions extends StatelessWidget {
                                                 child:MaterialButton(
                                                   minWidth: MediaQuery.of(context).size.width,
                                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                                  onPressed: (){},
+                                                  onPressed: (){
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => PostUpload())
+                                                  );
+                                                  },
                                                   child: Text("Take a photo",
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
@@ -189,9 +195,9 @@ class RecipeInstructions extends StatelessWidget {
                                   primary:false,
                                   shrinkWrap: true,
                                   //scrollDirection: Axis.vertical,
-                                  itemCount: snapshot.data.ingredients.length,
+                                  itemCount: recipe.ingredients.length,
                                   itemBuilder: (context, index) {
-                                    return new Text(snapshot.data.ingredients[index],
+                                    return new Text(recipe.ingredients[index],
                                       style: TextStyle(
                                         fontSize: 15.0,
                                         color: Colors.grey,
@@ -224,11 +230,11 @@ class RecipeInstructions extends StatelessWidget {
                                 ListView.builder(
                                   physics:NeverScrollableScrollPhysics(),
                                   //scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data.instructions.length,
+                                  itemCount: recipe.instructions.length,
                                   shrinkWrap: true,
                                   primary:false,
                                   itemBuilder: (context, index) {
-                                    return new Text(snapshot.data.instructions[index],
+                                    return new Text(recipe.instructions[index],
                                       style: TextStyle(
                                         fontSize: 15.0,
                                         color: Colors.grey,
@@ -239,14 +245,14 @@ class RecipeInstructions extends StatelessWidget {
                            /* ]
                           ),*/
                     ]
-                  )));});       
-                } else if (snapshot.hasError) {
+                  )));}),      
+                /*} else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
                 // By default, show a loading spinner.
                 return CircularProgressIndicator();
               },
-              ),
+              ),*/
               //]
             ),
 

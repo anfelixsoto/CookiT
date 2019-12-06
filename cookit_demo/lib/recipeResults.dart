@@ -1,5 +1,6 @@
 import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/model/Recipe.dart';
+import 'package:cookit_demo/model/RecipeList.dart';
 import 'package:flutter/material.dart';
 
 import 'model/RecipeList.dart';
@@ -22,12 +23,16 @@ class RecipeResults extends StatefulWidget {
 
 class _RecipeResults extends State<RecipeResults>{
   Future<RecipeList> recipes;
+  List<RecipeId> recipeList;
+  List<Recipe> recipeItems;
+  static var recipees=new List<Recipe>();
   //_RecipeResults({Key key,@required this.ingredients}):super(key:key);
 
    @override
   void initState(){
     super.initState();
     recipes = RecipeList.fetchRecipes(widget.ingredients);
+    recipeItems=new List<Recipe>(0);
   }
 
   String getIngredientString(){
@@ -42,6 +47,15 @@ class _RecipeResults extends State<RecipeResults>{
     }
     return s;
   }
+  
+  Future<List<Recipe>> getRes(List<RecipeId> ids) async{
+    List<Recipe> list = await Future.wait(ids.map((itemId) => Recipe.fetchRecipe(itemId.rid)));
+    return list.map((response){
+      // do processing here and return items
+      return response;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context){
 
@@ -62,71 +76,121 @@ class _RecipeResults extends State<RecipeResults>{
             future: recipes,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Center(
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(36.0),
-                      child: ListView(
-                        children: <Widget>[
-                          SizedBox(height: 20.0,),
-                          Text(
-                            "Recipe Results",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 35.0,
-                              color: Colors.lightGreen,)
-                          ),
-                          SizedBox(height: 30.0,),
-                          Text(
-                            getIngredientString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                              color: Colors.grey,)
-                          ),
-                          new Container(
-                            height: 400.0,
-                            child: new ListView.builder(
-                              itemCount: snapshot.data.recipes.length,
-                              itemBuilder: (context, index) {
-                                  return new Padding(
-                                    padding:EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
-                                    child:Material(
-                                      elevation: 5.0,
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      color: Colors.lightGreen,
-                                      child:MaterialButton(
-                                        minWidth: MediaQuery.of(context).size.width,
-                                        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                        onPressed: (){
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipeId:snapshot.data.recipes[index].rid))
+                recipeList=snapshot.data.recipes;
+                if(recipeList.isNotEmpty){
+                  for(int i=0;i<recipeList.length;i++){
+                    if(recipeList[i]!=null&&recipeList[i].mCount>0){
+                      recipeList.removeAt(i);
+                      i--;
+                    }
+                  }
+                }
+                Future<List<Recipe>> recipees=getRes(recipeList);
+                return FutureBuilder<List<Recipe>>(
+                  future: recipees,
+                  builder: (context, snapshot2) {
+                    if (snapshot2.hasData) {
+                      List<Recipe> rec=snapshot2.data;
+                        return Center(
+                          child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(36.0),
+                              child: ListView(
+                                children: <Widget>[
+                                  SizedBox(height: 20.0,),
+                                  Text(
+                                    "Recipe Results",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 35.0,
+                                      color: Colors.lightGreen,)
+                                  ),
+                                  SizedBox(height: 30.0,),
+                                  Text(
+                                    getIngredientString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                      color: Colors.grey,)
+                                  ),
+                                  new Container(
+                                    height: 400.0,
+                                    child: new ListView.builder(
+                                      itemCount: rec.length,
+                                      itemBuilder: (context, index) {
+                                        if(rec.length>0){
+                                        Recipe rTest=rec[index];
+                                        if(rTest!=null&&
+                                        rTest.ingredients!=null&&
+                                        rTest.instructions!=null&&
+                                        rTest.instructions.isNotEmpty&&
+                                        rTest.ingredients.isNotEmpty){
+                                            return new Padding(
+                                            padding:EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+                                            child:Material(
+                                              elevation: 5.0,
+                                              borderRadius: BorderRadius.circular(30.0),
+                                              color: Colors.lightGreen,
+                                              child:MaterialButton(
+                                                minWidth: MediaQuery.of(context).size.width,
+                                                padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                                onPressed: (){
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => RecipeDetails(recipe:rec[index]))
+                                                  );
+                                                },
+                                                child: Text(rec[index].name,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           );
-                                        },
-                                        child: Text(snapshot.data.recipes[index].rname,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
+                                        }
+                                        else{
+                                          return SizedBox(height:0.0);
+                                        }
+                                        }return SizedBox(height:0.0);
+                                          }),
+                                      //},
                                     ),
-                                  );
-                              },
+                                  //),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                        );
+                      } 
+                      else if(snapshot2.hasError){
+                        //return Text("${snapshot2.error}");
+                        return Text(
+                          "Oh no, an error occured:(\nWe apologize for the inconvenience.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35.0,
+                            color: Colors.red,),
+                        );
+                      }  
+                      return CircularProgressIndicator(); 
+                    });
               } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
+                //return Text("${snapshot.error}");
+                return Text(
+                      "Oh no, an error occured:(\nWe apologize for the inconvenience.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 35.0,
+                        color: Colors.red,),
+                    );
               }
               // By default, show a loading spinner.
               return CircularProgressIndicator();

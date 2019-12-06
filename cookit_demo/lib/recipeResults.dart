@@ -77,6 +77,14 @@ class _RecipeResults extends State<RecipeResults>{
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 recipeList=snapshot.data.recipes;
+                if(recipeList.isNotEmpty){
+                  for(int i=0;i<recipeList.length;i++){
+                    if(recipeList[i]!=null&&recipeList[i].mCount>0){
+                      recipeList.removeAt(i);
+                      i--;
+                    }
+                  }
+                }
                 Future<List<Recipe>> recipees=getRes(recipeList);
                 return FutureBuilder<List<Recipe>>(
                   future: recipees,

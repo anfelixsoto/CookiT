@@ -149,7 +149,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         minWidth: MediaQuery.of(context).size.width,
                                         padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                         onPressed: (){
-                                          UserOperations.addToFavorites(userId, widget.recipeId);
+                                          UserOperations.addToFavorites(userId, widget.recipeId.toString());
                                         },
                                         child: Text("Save",
                                           textAlign: TextAlign.center,

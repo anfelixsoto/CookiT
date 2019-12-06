@@ -88,7 +88,7 @@ class _Favorites extends State<Favorites> {
   }
 
 
-  Future<List<dynamic>> getFavorites() async {
+  Future<List<String>> getFavorites() async {
     DocumentSnapshot querySnapshot = await Firestore.instance
         .collection('users')
         .document(userId)
@@ -98,7 +98,7 @@ class _Favorites extends State<Favorites> {
         querySnapshot.data['favorites'] is List) {
 
       print(List<String>.from(querySnapshot.data['favorites']));
-      return List<dynamic>.from(querySnapshot.data['favorites']);
+      return List<String>.from(querySnapshot.data['favorites']);
     }
     return [];
   }
@@ -137,11 +137,9 @@ class _Favorites extends State<Favorites> {
           ),
         ],
       ),
-      body: Scrollbar(
-        //Displaying all recipes in list in app's main page
-        child: FutureBuilder<List<dynamic>>(
+      body: FutureBuilder<List<String>>(
           future: getFavorites(),
-          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+          builder: (context, AsyncSnapshot<List<String>> snapshot) {
               if (!snapshot.hasData)
                     return Container(
                         alignment: FractionalOffset.center,
@@ -158,7 +156,7 @@ class _Favorites extends State<Favorites> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, i) =>
                       ListTile(
-                        title: Text(snapshot.data[i].data.toString()),
+                        title: Text(snapshot.data[i]),
                         onTap: () {
                           Scaffold.of(context).showSnackBar(
                               SnackBar(
@@ -176,7 +174,7 @@ class _Favorites extends State<Favorites> {
                 );
               }
               }
-        ),
+
       ),
     );
   }

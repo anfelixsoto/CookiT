@@ -28,7 +28,7 @@ class UserOperations {
     return url;
   }
 
-  static Future<void> addToFavorites(String userId, int recipeId) async {
+  static Future<void> addToFavorites(String userId, String recipeId) async {
     //DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
     //DocumentSnapshot snapshot = await favoritesReference.get();
     Firestore.instance.collection('users')

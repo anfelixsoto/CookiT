@@ -31,4 +31,35 @@ class UserOperations {
 
   }
 
+  Future<bool> addToFavorites(String userId, String recipeId) {
+    DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
+
+    return Firestore.instance.runTransaction((Transaction favoritesOperations) async {
+      DocumentSnapshot postSnapshot = await favoritesOperations.get(favoritesReference);
+      if (postSnapshot.exists) {
+        // Extend 'favorites' if the list does not contain the recipe ID:
+        if (!postSnapshot.data['favorites'].contains(recipeId)) {
+          await favoritesOperations.update(favoritesReference, <String, dynamic>{
+            'favorites': FieldValue.arrayUnion([recipeId])
+          });
+          // Delete the recipe ID from 'favorites':
+        } else {
+          await favoritesOperations.update(favoritesReference, <String, dynamic>{
+            'favorites': FieldValue.arrayRemove([recipeId])
+          });
+        }
+      } else {
+        // Create a document for the current user in collection 'users'
+        // and add a new array 'favorites' to the document:
+        await favoritesOperations.set(favoritesReference, {
+          'favorites': [recipeId]
+        });
+      }
+    }).then((result) {
+      return true;
+    }).catchError((error) {
+      print('Error: $error');
+      return false;
+    });
+  }
 }

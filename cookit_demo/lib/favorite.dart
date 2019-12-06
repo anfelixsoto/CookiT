@@ -2,6 +2,8 @@
 //favorite.dart
 //This file allows people to search through their favorite.
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 //Global Variable for List.
@@ -35,13 +37,71 @@ class Favorites extends StatefulWidget {
 class _Favorites extends State<Favorites> {
   final List<String> yum = food;
   _SearchAppBarDelegate _searchDelegate;
+  FirebaseUser currentUser;
+
+  bool loading = false;
+  DocumentReference userRef;
+  String profileImage;
+  String userId;
 
   @override
   void initState() {
     super.initState();
     //Initializing search delegate with sorted list of recipes
+    loadCurrentUser();
+    getUserRef();
     _searchDelegate = _SearchAppBarDelegate(food);
   }
+
+  void loadCurrentUser() {
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      setState(() {
+        this.currentUser = user;
+
+      });
+    });
+  }
+
+  Future<void> getUserRef() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+
+    FirebaseUser user = await _auth.currentUser();
+    List<String> favorites = await getFavorites();
+
+    setState((){
+      userRef = _firestore.collection('users').document(user.uid);
+      userId = user.uid;
+      userRef.get().then((data) {
+        if (data.exists) {
+          profileImage = data.data['profileImage'].toString();
+
+
+
+        }
+      });
+
+
+      //print(user.displayName.toString());
+    });
+  }
+
+  Future<List<String>> getFavorites() async {
+    DocumentSnapshot querySnapshot = await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .get();
+    if (querySnapshot.exists &&
+        querySnapshot.data.containsKey('favorites') &&
+        querySnapshot.data['favorites'] is List) {
+      // Create a new List<String> from List<dynamic>
+      return List<String>.from(querySnapshot.data['favorites']);
+    }
+    return [];
+  }
+
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +113,6 @@ class _Favorites extends State<Favorites> {
               Icons.arrow_back,
               color: Colors.white,
               size: 24.0,
-              semanticLabel: 'Text to announce in accessibility modes',
             ),
             onPressed: () {
               Navigator.pop(context);

@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/recipeId.dart';
+import 'package:cookit_demo/service/UserOperations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 void main(){
@@ -24,19 +27,69 @@ Widget buildError(BuildContext context, FlutterErrorDetails error) {
 
 class RecipeDetails extends StatefulWidget {
   final Recipe recipe;
-  RecipeDetails({Key key,@required this.recipe}):super(key:key);
+  final RecipeId recipeId;
+  RecipeDetails({Key key,@required this.recipe,@required this.recipeId}):super(key:key);
 
   @override
   _RecipeDetails createState() => _RecipeDetails();
 }
 class _RecipeDetails extends State<RecipeDetails>{
   Recipe recipe;
+  FirebaseUser currentUser;
+  String username;
+  DocumentReference userRef;
+  String currEmail;
+  String userId;
+
 
   @override
   void initState(){
     super.initState();
     recipe = widget.recipe;
+    getUserRef();
   }
+
+  Future<List<String>> getFavorites() async {
+    DocumentSnapshot querySnapshot = await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .get();
+    if (querySnapshot.exists &&
+        querySnapshot.data.containsKey('favorites') &&
+        querySnapshot.data['favorites'] is List) {
+      // Create a new List<String> from List<dynamic>
+      return List<String>.from(querySnapshot.data['favorites']);
+    }
+    return [];
+  }
+
+
+
+  Future<void> getUserRef() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final Firestore _firestore = Firestore.instance;
+
+    FirebaseUser user = await _auth.currentUser();
+    List<String> favorites = await getFavorites();
+
+    setState((){
+      userRef = _firestore.collection('users').document(user.uid);
+      userId = user.uid;
+      /*userRef.get().then((data) {
+        if (data.exists) {
+          profileImage = data.data['profileImage'].toString();
+
+
+
+        }
+      });*/
+
+
+      //print(user.displayName.toString());
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context){
@@ -114,7 +167,9 @@ class _RecipeDetails extends State<RecipeDetails>{
                                       child:MaterialButton(
                                         minWidth: MediaQuery.of(context).size.width,
                                         padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                        onPressed: (){},
+                                        onPressed: (){
+                                          UserOperations.addToFavorites(userId, widget.recipeId.toString());
+                                        },
                                         child: Text("Save",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(

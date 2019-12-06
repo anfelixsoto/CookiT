@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 //Global Variable for List.
-List<String> food = ["baked fish", "fruit tart", "pb&j burger"];
 
 void main() => runApp(MyApp());
 
@@ -35,7 +34,6 @@ class Favorites extends StatefulWidget {
 }
 
 class _Favorites extends State<Favorites> {
-  final List<String> yum = food;
   _SearchAppBarDelegate _searchDelegate;
   FirebaseUser currentUser;
 
@@ -43,6 +41,7 @@ class _Favorites extends State<Favorites> {
   DocumentReference userRef;
   String profileImage;
   String userId;
+  List<int> favorites;
 
   @override
   void initState() {
@@ -50,7 +49,7 @@ class _Favorites extends State<Favorites> {
     //Initializing search delegate with sorted list of recipes
     loadCurrentUser();
     getUserRef();
-    _searchDelegate = _SearchAppBarDelegate(food);
+
   }
 
   void loadCurrentUser() {
@@ -67,7 +66,8 @@ class _Favorites extends State<Favorites> {
     final Firestore _firestore = Firestore.instance;
 
     FirebaseUser user = await _auth.currentUser();
-    List<String> favorites = await getFavorites();
+
+    //_searchDelegate = _SearchAppBarDelegate(favorites);
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
@@ -75,7 +75,8 @@ class _Favorites extends State<Favorites> {
       userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
-
+          favorites = List.from(data.data['favorites']);
+          print(favorites);
 
 
         }
@@ -86,6 +87,7 @@ class _Favorites extends State<Favorites> {
     });
   }
 
+
   Future<List<String>> getFavorites() async {
     DocumentSnapshot querySnapshot = await Firestore.instance
         .collection('users')
@@ -94,11 +96,16 @@ class _Favorites extends State<Favorites> {
     if (querySnapshot.exists &&
         querySnapshot.data.containsKey('favorites') &&
         querySnapshot.data['favorites'] is List) {
-      // Create a new List<String> from List<dynamic>
+
+      print(List<String>.from(querySnapshot.data['favorites']));
       return List<String>.from(querySnapshot.data['favorites']);
     }
     return [];
   }
+
+
+
+
 
   
 
@@ -130,29 +137,44 @@ class _Favorites extends State<Favorites> {
           ),
         ],
       ),
-      body: Scrollbar(
-        //Displaying all recipes in list in app's main page
-        child: ListView.builder(
-          itemCount: food.length,
-          itemBuilder: (context, idx) =>
-              ListTile(
-                //title: Text(kWords[idx]),
-                title: Text(food[idx]),
-                onTap: () {
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text("Click the Search action"),
-                          action: SnackBarAction(
-                            label: 'Search',
-                            onPressed: (){
-                              showSearchPage(context, _searchDelegate);
-                            },
-                          )
-                      )
-                  );
-                },
-              ),
-        ),
+      body: FutureBuilder<List<String>>(
+          future: getFavorites(),
+          builder: (context, AsyncSnapshot<List<String>> snapshot) {
+              if (!snapshot.hasData)
+                    return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: CircularProgressIndicator());
+                    else if(snapshot.data.length == 0){
+                      return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text('No Posts')
+                    );
+              } else{
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, i) =>
+                      ListTile(
+                        title: Text(snapshot.data[i]),
+                        onTap: () {
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text("Click the Search action"),
+                                  action: SnackBarAction(
+                                    label: 'Search',
+                                    onPressed: (){
+                                      showSearchPage(context, _searchDelegate);
+                                    },
+                                  )
+                              )
+                          );
+                        },
+                      ),
+                );
+              }
+              }
+
       ),
     );
   }

@@ -159,10 +159,6 @@ class _PostUploadState extends State<PostUpload> {
     });
   }
 
-
-
-
-
   submitPost(BuildContext context) async {
    // uploadPic(context); // upload pic upon submit
 
@@ -207,10 +203,6 @@ class _PostUploadState extends State<PostUpload> {
 
     @override
     Widget build(BuildContext context) {
-
-
-
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -273,11 +265,6 @@ class _PostUploadState extends State<PostUpload> {
                onChanged: (input) => caption = input,
              ),
            ),
-
-
-
-
-
            ],
 
          )

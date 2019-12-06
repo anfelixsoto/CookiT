@@ -1,7 +1,13 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/ImageUpload.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/service/Authentication.dart';
-
+import 'package:image_picker/image_picker.dart';
 import 'main.dart';
+import 'model/User.dart';
+import 'package:path/path.dart';
 
 class LoginSignupPage extends StatefulWidget{
   LoginSignupPage({this.auth,this.loginCallback});
@@ -16,15 +22,25 @@ class LoginSignupPage extends StatefulWidget{
 class _LoginSignupState extends State<LoginSignupPage>{
   final _formKey = new GlobalKey<FormState>();
 
-  String _email, _password, _errorMessage;
-  bool _isLoginForm, _isLoading;
+  File _profileUrl;
+  String _username, _email, _password, _repeatPassword, _errorMessage, profileIm;
+  bool _isLoginForm = true;
+  bool _isLoading;
   bool isEmpty = true;
+  bool emptyForm = true;
 
   bool validateAndSave(){
     final form = _formKey.currentState;
     if(form.validate()){
       form.save();
       return true;
+    }
+    return false;
+  }
+
+  bool passwordsMatch(){
+    if(_password == _repeatPassword) {
+       return true;
     }
     return false;
   }
@@ -40,8 +56,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
         if(_isLoginForm){
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
-        }else{
-          userId = await widget.auth.signUp(_email, _password);
+        }else if(!_isLoginForm && passwordsMatch()){
+          profileIm = await widget.auth.uploadImage(_profileUrl);
+          userId = await widget.auth.signUp(_username, _email, _password, profileIm);
           print('Signed up user: $userId');
         }
         setState(() {
@@ -59,6 +76,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
           _formKey.currentState.reset();
         });
       }
+    }
+    if(!passwordsMatch()){
+      _errorMessage = "Passwords don't match";
     }
   }
 
@@ -98,9 +118,54 @@ class _LoginSignupState extends State<LoginSignupPage>{
       ),
       body: Stack(
         children: <Widget>[
-          showForm(),
+          _isLoginForm ? showLoginForm() : showSignUpForm(context),
         ],
       )
+    );
+  }
+  Widget showLoginForm(){
+    return new Container(
+      padding: EdgeInsets.all(16.0),
+      child: new Form(
+        key: _formKey,
+        child: new ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            showLogo(),
+            showWelcomText(),
+            showEmailInput(),
+            showPasswordInput(),
+            showPrimaryButton(),
+            showSecondaryButton(),
+            showErrorMessage(),
+            showCircularProgress(),
+          ],
+        ),
+      )
+    );
+  }
+
+  Widget showSignUpForm(BuildContext context){
+    return new Container(
+        padding: EdgeInsets.all(16.0),
+        child: new Form(
+          key: _formKey,
+          child: new ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              showWelcomText(),
+              handleNullImage(context),
+              showUserNameInput(),
+              showEmailInput(),
+              showPasswordInput(),
+              showRepeatPasswordInput(),
+              showErrorMessage(),
+              showPrimaryButton(),
+              showSecondaryButton(),
+              showCircularProgress(),
+            ],
+          ),
+        )
     );
   }
 
@@ -135,28 +200,37 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showForm(){
-    return new Container(
-      padding: EdgeInsets.all(16.0),
-      child: new Form(
-        key: _formKey,
-        child: new ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            showLogo(),
-            showWelcomText(),
-            showEmailInput(),
-            showPasswordInput(),
-            showPrimaryButton(),
-            showSecondaryButton(),
-            showErrorMessage(),
-            showCircularProgress(),
-          ],
-        ),
-      )
+  Widget showUserNameInput(){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      child: Row(
+        children: <Widget>[
+          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+            child: Icon(
+              Icons.person_outline,
+              color: Colors.grey,
+            ),
+          ),
+          Container(
+            height: 30.0,
+            width: 1.0,
+            color: Colors.grey.withOpacity(0.5),
+            margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+          ),
+          new Expanded(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: 'Enter username',
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+              validator: (value) => value.isEmpty ? 'Username can\'t be empty' : null,
+              onSaved: (value) => _username = value.trim(),
+            ),
+          )
+        ],
+      ),
     );
   }
-
 
   Widget showEmailInput(){
     return Padding(
@@ -165,7 +239,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
         children: <Widget>[
           new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
           child: Icon(
-            Icons.person_outline,
+            Icons.mail_outline,
             color: Colors.grey,
           ),
           ),
@@ -216,6 +290,39 @@ class _LoginSignupState extends State<LoginSignupPage>{
               ),
               validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
               onSaved: (value) => _password = value.trim(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget showRepeatPasswordInput(){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      child: Row(
+        children: <Widget>[
+          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+            child: Icon(
+              Icons.lock_open,
+              color: Colors.grey,
+            ),
+          ),
+          Container(
+            height: 30.0,
+            width: 1.0,
+            color: Colors.grey.withOpacity(0.5),
+            margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+          ),
+          new Expanded(
+            child: TextFormField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Confirm Password',
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+              validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+              onSaved: (value) => _repeatPassword = value.trim(),
             ),
           )
         ],
@@ -283,6 +390,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
       isEmpty =true;
       return new Text(
         _errorMessage,
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 13.0,
           color: Colors.red,
@@ -307,4 +415,88 @@ class _LoginSignupState extends State<LoginSignupPage>{
         width: 0.0,
       );
     }
+
+    Future<String> uploadProfileImage(BuildContext context) async{
+      String fileName = basename(_profileUrl.path);
+      StorageReference firebaseStorageRef  = FirebaseStorage.instance.ref().child("UserProfileImage/" + fileName);
+      StorageUploadTask uploadTask = firebaseStorageRef.putFile(_profileUrl);
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      String downloadUrl = await firebaseStorageRef.getDownloadURL();
+      return downloadUrl;
+    }
+
+    openGallery(BuildContext context) async{
+    var profileImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    this.setState((){
+      _profileUrl = profileImage;
+    });
+    //profileIm = await uploadProfileImage(context);
+    Navigator.of(context).pop();
+    }
+
+    openCamera(BuildContext context) async{
+      var profileImage = await ImagePicker.pickImage(source: ImageSource.camera);
+      this.setState((){
+        _profileUrl = profileImage;
+      });
+      //profileIm = await uploadProfileImage(context);
+      Navigator.of(context).pop();
+    }
+
+  Future<void> showOptions(BuildContext context) {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Select From: '),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              GestureDetector(
+                child: Text('Gallery'),
+                onTap: (){openGallery(context);},),
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text('Camera'),
+                onTap: () {openCamera(context);},),
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text('Cancel',
+                    style: TextStyle(color: Colors.redAccent,)),
+                onTap: () {Navigator.pop(context);},)
+            ],
+          ),
+        ),);
+    });
+  }
+  
+  Widget handleNullImage(BuildContext context){
+    if(_profileUrl == null){
+      return Container(
+          padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 50.0),
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.account_circle,
+                      color: Colors.grey[300],
+                      size: 100.0,
+                    ),
+                    onPressed: (){
+                      showOptions(context);
+                    },
+                  )
+              )
+            ],
+          )
+      );
+    } else {
+      return Material(
+        elevation: 4.0,
+        shape: CircleBorder(),
+        clipBehavior: Clip.hardEdge,
+        color: Colors.transparent,
+        child: Image.file(_profileUrl, fit: BoxFit.scaleDown, width: 100.0, height: 100.0,),
+      );
+    }
+  }
 }

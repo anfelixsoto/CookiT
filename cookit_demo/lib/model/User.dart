@@ -6,20 +6,21 @@ class User {
   String email;
   String imageUrls;
   String role;
+  String profileImage;
 
   User({
     this.user_name,
     this.email,
-    this.imageUrls,
     this.role,
+    this.profileImage,
   });
 
   factory User.fromDoc(DocumentSnapshot doc) {
     return User (
       user_name: doc['user_name'],
       email: doc['email'],
-      imageUrls: doc['imageUrls'],
-      role: doc['role']
+      role: doc['role'],
+      profileImage: doc['profileImage'],
     );
   }
 

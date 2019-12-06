@@ -72,6 +72,11 @@ class StartPage extends StatelessWidget{
         body: Center(
             child: Column(
               children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 48.0,
+                  child: Image.asset('assets/images/user_login.png'),
+                ),
                 AvatarGlow(
                   endRadius: 90,
                   duration: Duration(seconds: 2),
@@ -84,14 +89,20 @@ class StartPage extends StatelessWidget{
                       shape: CircleBorder(),
                       child: CircleAvatar(
                         backgroundColor: Colors.grey[100],
-                        child: FlutterLogo(
-                          size: 50.0,
+                        child: Text(
+                            "CookiT",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.lightGreen,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         radius: 50.0,
                       ))),
                 DelayedAnimation(
                   child: Text(
-                    "Hi There",
+                    "Hi there!",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 35.0,
@@ -112,7 +123,7 @@ class StartPage extends StatelessWidget{
                 DelayedAnimation(
                   child: Text("Cook Book",
                     style: TextStyle(fontSize: 20.0, color: Colors.white))),
-                SizedBox(height: 200.0, width: 270,),
+                SizedBox(height: 50.0, width: 270,),
                 primaryButton,
               ],
             ))));

@@ -6,7 +6,6 @@ import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/service/RootPage.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/model/User.dart';
 
@@ -111,88 +110,72 @@ class HomeState extends State<Home> {
     }
   }
 
-
-
-
-
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
         child: Card(
-          child: Padding(
-            padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-          child: Column(
-              children: <Widget>[
-
-
-
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(
-                      "https://picsum.photos/250?image=9",
+          margin: const EdgeInsets.only(left: 0.0, right: 0.0),
+          child: Container(
+            color: Colors.grey[100],
+            margin: const EdgeInsets.only(top: 20.0),
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage(
+                        "https://picsum.photos/250?image=9",
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                      document['email'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    trailing: Text(
+                      document['title'],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
                     ),
                   ),
-
-                  contentPadding: EdgeInsets.all(0),
-
-                 title: Text(
-                   document['email'],
-                   style: TextStyle(
-                     fontWeight: FontWeight.bold,
-                   ),),
-
-
-                  trailing: Text(
-                    document['title'],
-                    style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 11,
-                    ),
+                  Image.network(
+                    document['imageUrl'],
+                    height: 170,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
                   ),
-
-                ),
-                Image.network(
-                  document['imageUrl'],
-
-                  height: 170,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
-                Divider(),
-                ListTile(
-                  title: Text(
-                      document['description'],
-                      style: TextStyle(fontWeight: FontWeight.w500)),
-
-                ),
-                ButtonBar(
-                  alignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Text('Cook it'),
-                      textColor: Colors.lightBlueAccent,
-                      onPressed: () { print('pressed'); },
-                    ),
-                    FlatButton(
-                      child: Text('Next time'),
-                      textColor: Colors.orangeAccent,
-                      onPressed: () { print('pressed'); },
-                    ),
-
-                    showDelete(Post.fromDoc(document).id.toString(), role.toString()),
-
-                  ],
-                ),
-
-
-      ]
-      ),
-      ),
-      ),);
+                  Divider(),
+                  ListTile(
+                    title: Text(
+                        document['description'],
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                  ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text('Cook it'),
+                        textColor: Colors.lightBlueAccent,
+                        onPressed: () { print('pressed'); },
+                      ),
+                      FlatButton(
+                        child: Text('Next time'),
+                        textColor: Colors.orangeAccent,
+                        onPressed: () { print('pressed'); },
+                      ),
+                      showDelete(Post.fromDoc(document).id.toString(), role.toString()),
+                    ],
+                  ),
+                ]
+            ),
+          ),
+        ),);
     }).toList();
   }
-
 
   signOut() async{
     try{
@@ -202,11 +185,6 @@ class HomeState extends State<Home> {
       print(e);
     }
   }
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {

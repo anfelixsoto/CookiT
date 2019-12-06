@@ -26,19 +26,39 @@ class UserOperations {
       }
     });
     return url;
-
-
-
   }
 
-  Future<bool> addToFavorites(String userId, String recipeId) {
-    DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
+  static Future<void> addToFavorites(String userId, int recipeId) async {
+    //DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
+    //DocumentSnapshot snapshot = await favoritesReference.get();
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+          if (data.exists) {
+             data.reference.updateData({
+               'favorites': FieldValue.arrayUnion([recipeId]),
+             });
+      } else{
+            data.reference.setData({
+              'favorites': [recipeId],
+            });
+          }
+    });
+    /*if(snapshot.exists ) {
+      snapshot.data["favorites"];
+      await favoritesReference.update(favoritesReference, <String, dynamic>{
+        'favorites': FieldValue.arrayUnion([recipeId])
+      });
+      //print("exists");
+    }*/
 
+
+    /*
     return Firestore.instance.runTransaction((Transaction favoritesOperations) async {
-      DocumentSnapshot postSnapshot = await favoritesOperations.get(favoritesReference);
-      if (postSnapshot.exists) {
+      DocumentSnapshot snapshot = await favoritesOperations.get(favoritesReference);
+      if (snapshot.exists) {
         // Extend 'favorites' if the list does not contain the recipe ID:
-        if (!postSnapshot.data['favorites'].contains(recipeId)) {
+        if (!snapshot.data['favorites'].contains(recipeId)) {
           await favoritesOperations.update(favoritesReference, <String, dynamic>{
             'favorites': FieldValue.arrayUnion([recipeId])
           });
@@ -60,6 +80,8 @@ class UserOperations {
     }).catchError((error) {
       print('Error: $error');
       return false;
-    });
+    });*/
   }
+
+
 }

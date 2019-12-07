@@ -2,22 +2,25 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
+import 'package:cookit_demo/ViewUser.dart';
 import 'package:cookit_demo/model/PostModel.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/service/RootPage.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/model/User.dart';
+import 'package:cookit_demo/UserScreen.dart';
+
 
 import 'package:cookit_demo/UserScreen.dart';
 
 void main() {
   runApp(MaterialApp(
     home: Home(),
+
   ));
 }
 class Home extends StatefulWidget {
@@ -45,6 +48,7 @@ class HomeState extends State<Home> {
   var role;
   var userQuery;
   bool isAdmin = false;
+  String userId;
 
 
   @override
@@ -68,6 +72,7 @@ class HomeState extends State<Home> {
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
+      userId= user.uid;
       userRef.get().then((data) {
             if (data.exists) {
               role = data.data['role'].toString();
@@ -81,6 +86,10 @@ class HomeState extends State<Home> {
 
       //print(user.displayName.toString());
     });
+  }
+
+  String getuserId() {
+    return userId;
   }
 
   /*
@@ -201,11 +210,16 @@ class HomeState extends State<Home> {
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
+      child:Container(
+        width: 500,
         child: Card(
+          clipBehavior: Clip.antiAlias,
+         // shape: shape,
 
           child: Padding(
-            padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+
           child: Column(
               children: <Widget>[
 
@@ -220,7 +234,7 @@ class HomeState extends State<Home> {
                     ),
                   ),
 
-                  contentPadding: EdgeInsets.all(0),
+                  contentPadding: EdgeInsets.all(7),
 
                  title: GestureDetector(
                    child:Text(
@@ -230,11 +244,12 @@ class HomeState extends State<Home> {
                         ),
                      ),
                    onTap: () {
-                     /*Navigator.push(
+
+                     Navigator.push(
                        context,
-                       MaterialPageRoute(builder: (context) => ViewUser(userId: document['userId'],
-                        )),
-                     );*/
+                       MaterialPageRoute(builder: (context) => ViewUser(userId: getuserId(), otherId: document['userId'],)
+                       ),
+                     );
                    },
 
                  ),
@@ -249,13 +264,21 @@ class HomeState extends State<Home> {
                   ),
 
                 ),
-                Image.network(
-                  document['imageUrl'],
+                Divider(),
+                   Center(
 
-                  height: 170,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
+                   child: ClipRect(
+                   child:Image.network(
+                      document['imageUrl'],
+
+                      height: 300,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+
+                  ),
+                   ),
+                   ),
+
                 Divider(),
                 ListTile(
                   title: Text(
@@ -264,7 +287,7 @@ class HomeState extends State<Home> {
 
                 ),
                 ButtonBar(
-                  alignment: MainAxisAlignment.start,
+                  alignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     FlatButton(
                       child: Text('Cook it'),
@@ -286,7 +309,10 @@ class HomeState extends State<Home> {
       ]
       ),
       ),
-      ),);
+
+      ),
+      )
+        );
     }).toList();
   }
 
@@ -351,7 +377,7 @@ class HomeState extends State<Home> {
                   );
                 default:
                   return ListView (
-                    padding: EdgeInsets.symmetric(horizontal: 50),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     children:
                     displayPosts(snapshot),
 

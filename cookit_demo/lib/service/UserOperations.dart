@@ -35,52 +35,35 @@ class UserOperations {
         .document(userId)
         .get().then((data) {
           if (data.exists) {
-             data.reference.updateData({
-               'favorites': FieldValue.arrayUnion([recipeId]),
-             });
+            if(!data.data["favorites"].contains(recipeId)) {
+              data.reference.updateData({
+                'favorites': FieldValue.arrayUnion([recipeId]),
+              });
+            }
       } else{
             data.reference.setData({
               'favorites': [recipeId],
             });
           }
     });
-    /*if(snapshot.exists ) {
-      snapshot.data["favorites"];
-      await favoritesReference.update(favoritesReference, <String, dynamic>{
-        'favorites': FieldValue.arrayUnion([recipeId])
-      });
-      //print("exists");
-    }*/
 
+  }
 
-    /*
-    return Firestore.instance.runTransaction((Transaction favoritesOperations) async {
-      DocumentSnapshot snapshot = await favoritesOperations.get(favoritesReference);
-      if (snapshot.exists) {
-        // Extend 'favorites' if the list does not contain the recipe ID:
-        if (!snapshot.data['favorites'].contains(recipeId)) {
-          await favoritesOperations.update(favoritesReference, <String, dynamic>{
-            'favorites': FieldValue.arrayUnion([recipeId])
-          });
-          // Delete the recipe ID from 'favorites':
-        } else {
-          await favoritesOperations.update(favoritesReference, <String, dynamic>{
-            'favorites': FieldValue.arrayRemove([recipeId])
+  static Future<void> removeFromFavorites(String userId, String recipeId) async {
+    //DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
+    //DocumentSnapshot snapshot = await favoritesReference.get();
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
+        if(data.data["favorites"].contains(recipeId)) {
+          data.reference.updateData({
+            'favorites': FieldValue.arrayRemove([recipeId]),
           });
         }
-      } else {
-        // Create a document for the current user in collection 'users'
-        // and add a new array 'favorites' to the document:
-        await favoritesOperations.set(favoritesReference, {
-          'favorites': [recipeId]
-        });
       }
-    }).then((result) {
-      return true;
-    }).catchError((error) {
-      print('Error: $error');
-      return false;
-    });*/
+    });
+
   }
 
 

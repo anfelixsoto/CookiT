@@ -52,6 +52,7 @@ class _UserProfile extends State<UserProfile> {
   DocumentReference userRef;
   String currEmail;
   String currId;
+  String role;
 
   var profilePic;
 
@@ -82,6 +83,9 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
+  String getRole() {
+    return role;
+  }
 
 
   Future<void> getUserRef() async {
@@ -97,6 +101,7 @@ class _UserProfile extends State<UserProfile> {
         if (data.exists) {
           currEmail = data.data['email'].toString();
           profilePic = data.data['profileImage'].toString();
+          role = data.data['role'].toString();
 
           print(profilePic);
 
@@ -259,6 +264,10 @@ showAvatar(String pic) {
     }
   }
 
+  void showAdminUI(){
+
+  }
+
 
 
   @override
@@ -269,8 +278,18 @@ showAvatar(String pic) {
         title: Text(showEmail()),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
-        actions: <Widget>[
-        ],
+        leading: role == "admin"
+            ?
+          new IconButton(
+            icon: new Icon(Icons.settings),
+            tooltip: "Manage",
+            onPressed: () => Navigator.of(context).pop(null),
+          )
+
+
+            :null,
+
+
       ),
           body: ListView(
             children: <Widget>[
@@ -471,14 +490,16 @@ class PostDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(post.title),
+
+
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(10),
 
         child: Card(
 
       child: Padding(
-      padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+      padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
       child: Column(
           children: <Widget>[
 
@@ -486,21 +507,28 @@ class PostDetails extends StatelessWidget {
 
             ListTile(
               leading: CircleAvatar(
-                child: post.profileImage != null
-                ? Image.network(
-                 post.profileImage,
-                ) : Image.network(
+                backgroundImage: post.profileImage == null ? NetworkImage(
                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                ): NetworkImage(
+                 post.profileImage,
                 ),
               ),
 
-              contentPadding: EdgeInsets.all(0),
+              contentPadding: EdgeInsets.all(7),
 
-              title: Text(
-                post.email,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),),
+              title: GestureDetector(
+                child:Text(
+                  post.email,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () {
+
+
+                },
+
+              ),
 
 
               trailing: Text(
@@ -511,17 +539,23 @@ class PostDetails extends StatelessWidget {
                 ),
               ),
 
-
             ),
             Divider(),
-            Divider(),
-            Image.network(
-              post.imageUrl,
+            Center(
 
-              height: 300,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
+              child: ClipRect(
+                child:Image.network(
+                  post.imageUrl,
+
+                  height: 300,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+
+                ),
+              ),
             ),
+
+
             Divider(),
             Divider(),
             ListTile(

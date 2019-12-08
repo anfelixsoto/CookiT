@@ -26,8 +26,21 @@ class AdminOperations {
         }
       });
     return url;
+  }
 
+  static void grantAdmin(String userId) {
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
 
+        if(data.data["role"] == "user") {
+          data.reference.updateData({
+            'role': 'admin',
+          });
+          }
+      }
+    });
 
   }
 

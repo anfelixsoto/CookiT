@@ -244,12 +244,23 @@ class HomeState extends State<Home> {
                         ),
                      ),
                    onTap: () {
+                    if(userId != document['userId'] ) {
 
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => ViewUser(userId: getuserId(), otherId: document['userId'],)
-                       ),
-                     );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            ViewUser(userId: userId.toString(),
+                                otherId: document['userId'].toString())
+                        ),
+                      );
+                    } else{
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                          auth: widget.auth,)),
+                      );
+                    }
+
                    },
 
                  ),

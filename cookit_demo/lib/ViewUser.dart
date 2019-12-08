@@ -42,17 +42,24 @@ class _ViewUser extends State<ViewUser> {
   List<Post> postsFeed = [];
   FirebaseUser currentUser;
   DocumentReference userRef;
+  DocumentReference otherUserRef;
+
   var role;
   var userQuery;
   bool isAdmin = false;
   String userId;
-
+  int postCount;
+  String profilePic;
+  String otherEmail;
+  String pic;
 
   @override
   void initState(){
     super.initState();
 
-
+    if(widget.userId.toString() == widget.otherId.toString()){
+      print("Current User");
+    }
     print(getPosts());
     getUserRef();
     //print(this.us);
@@ -69,14 +76,29 @@ class _ViewUser extends State<ViewUser> {
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
+
+
+      otherUserRef = _firestore.collection('users').document(widget.otherId.toString());
       userId= user.uid;
+
       userRef.get().then((data) {
         if (data.exists) {
           role = data.data['role'].toString();
+          pic =  data.data['profileImage'].toString();
+
           print('Role: ' + role);
           if (role == 'admin') {
             isAdmin = true;
           }
+
+        }
+      });
+
+      otherUserRef.get().then((data) {
+        if (data.exists) {
+          profilePic = data.data['profileImage'].toString();
+          otherEmail = data.data['email'].toString();
+          print(otherEmail);
 
         }
       });
@@ -103,17 +125,6 @@ class _ViewUser extends State<ViewUser> {
     }
   }
 */
-
-  Future<List<String>> getPosts() async {
-    List<String> temp = [];
-    final QuerySnapshot result = await Firestore.instance.collection('posts').getDocuments();
-    final List<DocumentSnapshot> documents = result.documents;
-    //documents.forEach((data) => temp.add(data.documentID));
-    for (var doc in documents){
-      temp.add(doc.toString());
-    }
-    return temp;
-  }
 
 
 
@@ -202,11 +213,12 @@ class _ViewUser extends State<ViewUser> {
 
 
 
+
+
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
 
-
     return snapshot.data.documents.map<Widget>((document){
-      if(widget.otherId == document['userId']) {
+      if(widget.otherId.toString() == document['userId'].toString()) {
         return Padding(
             padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
             child:Container(
@@ -312,14 +324,63 @@ class _ViewUser extends State<ViewUser> {
             )
         );
       } else{
-        return Card();
+        return Card(
+          child: Text('User not found'),
+        );
       }
     }).toList();
+  }
+
+  Future<List<Post>> getPosts() async {
+    List<Post> posts = [];
+    var snap = await Firestore.instance
+        .collection('posts')
+        .where("userId", isEqualTo: widget.otherId.toString())
+        .getDocuments();
+    for (var doc in snap.documents) {
+      posts.add(Post.fromDoc(doc));
+      //print(doc['user_name']);
+    }
+    setState(() {
+      postCount = snap.documents.length;
+    });
+    return posts.toList();
   }
 
 
 
 
+  Widget _buildAvatar() {
+    return new GestureDetector(
+        child: Container(
+          width: 180.0,
+          height: 180.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white30),
+          ),
+          margin: const EdgeInsets.only(top: 32.0, left: 16.0),
+          padding: const EdgeInsets.all(3.0),
+          child:  ClipOval(
+            child: (profilePic == null || profilePic == pic)
+                ?
+            Image.network(
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+            )
+                : Image.network(
+              profilePic,
+              height: 300,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+        ),
+        onTap:(){
+
+        }
+    );
+  }
 
 
   @override
@@ -329,8 +390,8 @@ class _ViewUser extends State<ViewUser> {
 
 
 
-        title: Text("Home"),
-        //centerTitle: true,
+        title: Text(otherEmail.toString()),
+        centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
 
@@ -348,51 +409,113 @@ class _ViewUser extends State<ViewUser> {
         
         ],
       ),
-      body: Container(
-        child: StreamBuilder(
-          stream: Firestore.instance.collection('posts').snapshots(),
-          builder: (context, snapshot) {
-            switch(snapshot.connectionState){
-              case ConnectionState.waiting:
-                return Center(
-                    child: CircularProgressIndicator()
+      body: ListView (
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              Center(
+                child: _buildAvatar(),
+              ),
+              Row(
+                children: <Widget>[
+
+
+
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+
+                          ],
+                        ),
+                        Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+
+                            ]),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+
+
+            ],
+          ),
+        ),
+        Divider(),
+        Divider(height: 0.0),
+        Container (
+          child: FutureBuilder<List<Post>>(
+            future: getPosts(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Container(
+                    alignment: FractionalOffset.center,
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: CircularProgressIndicator());
+              else if(snapshot.data.length == 0){
+                return Container(
+                    alignment: FractionalOffset.center,
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Text('No Posts')
                 );
-              default:
-                return ListView (
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  children:
-                  displayPosts(snapshot),
+              }
+              else {
+                // build the grid
+                return GridView.count(
 
-                  //Text(snapshot.data)
-                  // Text(snapshot.data.documents[0]['email']
-                );
-            }
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.0,
+                    //                    padding: const EdgeInsets.all(0.5),
+                    mainAxisSpacing: 1.5,
 
-          },
+                    crossAxisSpacing: 1.5,
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: snapshot.data.map((Post post) {
+                      return GridTile(
+                        child: showPosts(context, post, post.imageUrl, post.userId, post.email),
+                      );
+                    }).toList());
 
+
+              }
+            },
+
+          ),
+        ),
+      ]
+      ),
+
+    );
+  }
+
+  Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
+
+
+
+    return InkWell(
+      //  onTap: () => print("Post " + post.id +" pressed"),
+      onTap:() {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail,),
+        ),);
+      },
+      child: Container (
+        child: new Image.network(
+          url,
+          fit: BoxFit.cover,
         ),
       ),
-      /*
-      ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 50),
-        itemCount: posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          Map post = posts[index];
-          return Post(
-            img: post['img'],
-            name: post['name'],
-            dp: post['dp'],
-            time: post['time'],
-          );
-        },
-      ),*/
-      /*
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue.shade400,
-        child: Icon(
-          Icons.add,),
-        onPressed: (){},
-      ),*/
     );
   }
 
@@ -416,4 +539,135 @@ class _ViewUser extends State<ViewUser> {
 
 
 
+}
+
+
+class PostDetails extends StatelessWidget {
+
+
+  final Post post;
+  String currId;
+  String currEmail;
+
+
+  // In the constructor, require a Post.
+  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    // Use the Post to create the UI.
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(post.title),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(10),
+
+        child: Card(
+
+          child: Padding(
+            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+            child: Column(
+                children: <Widget>[
+
+
+
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: post.profileImage == null ? NetworkImage(
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                      ): NetworkImage(
+                        post.profileImage,
+                      ),
+                    ),
+
+                    contentPadding: EdgeInsets.all(7),
+
+                    title: GestureDetector(
+                      child:Text(
+                        post.email,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onTap: () {
+
+
+                      },
+
+                    ),
+
+
+                    trailing: Text(
+                      post.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
+                    ),
+
+                  ),
+                  Divider(),
+                  Center(
+
+                    child: ClipRect(
+                      child:Image.network(
+                        post.imageUrl,
+
+                        height: 300,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+
+                      ),
+                    ),
+                  ),
+
+
+                  Divider(),
+                  Divider(),
+                  ListTile(
+
+                    title: Text(
+                        post.description,
+                        style: TextStyle(fontWeight: FontWeight.w500)
+                    ),
+
+
+                  ),
+                  Divider(),
+                  Divider(),
+                  Divider(),
+                  Divider(),
+                  ButtonBar(
+
+                    alignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text('Cook it'),
+                        textColor: Colors.lightBlueAccent,
+                        onPressed: () { print('pressed'); },
+                      ),
+                      FlatButton(
+                        child: Text('Next time'),
+                        textColor: Colors.orangeAccent,
+                        onPressed: () { print('pressed'); },
+                      ),
+                      // show menu button
+                      //post.email == currEmail ?
+                      //showUserOptions(context, post, currId, currEmail): Container(),
+
+
+
+                    ],
+                  ),
+
+
+                ]
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

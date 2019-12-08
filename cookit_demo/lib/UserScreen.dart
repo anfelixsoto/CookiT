@@ -83,6 +83,14 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
+
+  String showUserId() {
+    if (currentUser != null) {
+      return currentUser.uid;
+    } else {
+      return "no current user";
+    }
+  }
   String getRole() {
     return role;
   }
@@ -102,6 +110,7 @@ class _UserProfile extends State<UserProfile> {
           currEmail = data.data['email'].toString();
           profilePic = data.data['profileImage'].toString();
           role = data.data['role'].toString();
+          username = data.data['user_name'].toString();
 
           print(profilePic);
 
@@ -229,7 +238,7 @@ showAvatar(String pic) {
       List<Post> posts = [];
       var snap = await Firestore.instance
           .collection('posts')
-          .where('email', isEqualTo: showEmail())
+          .where('userId', isEqualTo: showUserId())
           .getDocuments();
       for (var doc in snap.documents) {
         posts.add(Post.fromDoc(doc));
@@ -275,7 +284,7 @@ showAvatar(String pic) {
     return Scaffold(
       appBar: AppBar(
 
-        title: Text(showEmail()),
+        title: Text(username.toString()),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
         leading: role == "admin"
@@ -518,7 +527,7 @@ class PostDetails extends StatelessWidget {
 
               title: GestureDetector(
                 child:Text(
-                  post.email,
+                  post.username,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

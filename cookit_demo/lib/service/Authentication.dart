@@ -27,7 +27,7 @@ class Auth implements BaseAuth {
       FirebaseUser user = result.user;
       if (user != null) {
         Firestore.instance.collection('/users').document(user.uid).setData({
-          'username': '',
+          'user_name': '',
           'email': email,
           'profileImage': '',
           'role': 'user',

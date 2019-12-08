@@ -55,6 +55,7 @@ class _ViewUser extends State<ViewUser> {
   String otherEmail;
   String pic;
   String otherRole;
+  String otherUsername;
 
   @override
   void initState(){
@@ -102,6 +103,7 @@ class _ViewUser extends State<ViewUser> {
         if (data.exists) {
           profilePic = data.data['profileImage'].toString();
           otherEmail = data.data['email'].toString();
+          otherUsername = data.data['user_name'].toString();
           otherRole = data.data['role'].toString();
           print(otherEmail);
 
@@ -114,6 +116,10 @@ class _ViewUser extends State<ViewUser> {
 
   String getuserId() {
     return userId;
+  }
+
+  String getUsername() {
+    return otherUsername;
   }
 
   /*
@@ -400,7 +406,7 @@ class _ViewUser extends State<ViewUser> {
 
 
 
-        title: Text(otherEmail.toString()),
+        title: Text(getUsername().toString()),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
@@ -599,7 +605,7 @@ class PostDetails extends StatelessWidget {
 
                     title: GestureDetector(
                       child:Text(
-                        post.email,
+                        post.username,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),

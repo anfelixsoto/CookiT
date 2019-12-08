@@ -238,7 +238,7 @@ class HomeState extends State<Home> {
 
                  title: GestureDetector(
                    child:Text(
-                         document['email'],
+                         document['user_name'],
                          style: TextStyle(
                            fontWeight: FontWeight.bold,
                         ),

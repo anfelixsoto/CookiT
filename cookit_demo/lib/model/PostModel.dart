@@ -29,7 +29,7 @@ class Post {
       imageUrl: doc['imageUrl'],
       title: doc['title'],
       description: doc['description'],
-      username: doc['username'],
+      username: doc['user_name'],
       email: doc['email'],
       profileImage: doc['profileImage'],
       userId: doc['userId'],

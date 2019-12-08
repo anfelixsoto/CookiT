@@ -210,6 +210,7 @@ class _PostUploadState extends State<PostUpload> {
       email: showEmail(),
       profileImage: profileImage,
 
+
     );
 
     createPost(currPost);

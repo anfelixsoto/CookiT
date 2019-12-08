@@ -2,8 +2,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/UserScreen.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
+import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 
 import 'package:cookit_demo/editProfile.dart';
@@ -52,6 +54,7 @@ class _ViewUser extends State<ViewUser> {
   String profilePic;
   String otherEmail;
   String pic;
+  String otherRole;
 
   @override
   void initState(){
@@ -89,6 +92,7 @@ class _ViewUser extends State<ViewUser> {
           print('Role: ' + role);
           if (role == 'admin') {
             isAdmin = true;
+
           }
 
         }
@@ -98,6 +102,7 @@ class _ViewUser extends State<ViewUser> {
         if (data.exists) {
           profilePic = data.data['profileImage'].toString();
           otherEmail = data.data['email'].toString();
+          otherRole = data.data['role'].toString();
           print(otherEmail);
 
         }
@@ -128,64 +133,7 @@ class _ViewUser extends State<ViewUser> {
 
 
 
-  Widget showDelete(BuildContext context,String postId, String role, String url) {
 
-    return  Visibility(
-      visible: isAdmin,
-      child: IconButton(
-          icon: Icon(
-            Icons.remove_circle,
-            color: Colors.redAccent,
-            size: 30.0,
-          ),
-          onPressed: () {
-            showAlert(context, postId, role, url);
-          }
-      ),
-
-    );
-
-  }
-  Future<void> showAlert(BuildContext context, postId, role, url) {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Are you sure you want to delete this post? '),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              GestureDetector(
-                child: Text('Yes'),
-                onTap: (){
-
-                },
-              ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text('No'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    )
-                ),
-
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
-        ),
-      );
-    });
-  }
 
 
   Future<void> removeImage(String url) async{
@@ -310,7 +258,6 @@ class _ViewUser extends State<ViewUser> {
                               onPressed: () { print('pressed'); },
                             ),
 
-                            showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
 
                           ],
                         ),
@@ -350,6 +297,8 @@ class _ViewUser extends State<ViewUser> {
 
 
 
+
+
   Widget _buildAvatar() {
     return new GestureDetector(
         child: Container(
@@ -377,11 +326,72 @@ class _ViewUser extends State<ViewUser> {
 
         ),
         onTap:(){
-
+          //showAlert(context, widget.otherId, otherRole);
         }
     );
   }
+  Future<void> showAlert(BuildContext context, String userId, String role, String email) {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Seclect an option: '),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              GestureDetector(
+                child: Text('Delete user: ' + email.toString()),
+                onTap: (){
+                  //removeImage(url);
+                  AdminOperations.deleteUser(userId);
+                  Navigator.pop(context);
+                },
+              ),
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text('Grant admin role'),
+                onTap: () {
+                  AdminOperations.grantAdmin(userId);
+                  Navigator.pop(context);
+                },
+              ),
 
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                    )
+                ),
+
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget showDelete(BuildContext context, String userId, String role, String email) {
+
+    return  Visibility(
+
+      child: IconButton(
+          icon: Icon(
+            Icons.more_vert,
+            color: Colors.white,
+            size: 30.0,
+          ),
+          onPressed: () {
+            showAlert(context, userId, role, email);
+          }
+      ),
+
+    );
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -394,15 +404,17 @@ class _ViewUser extends State<ViewUser> {
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
+          role == "admin"?
 
-          new IconButton(
+         showDelete(context, userId, role,otherEmail)
+              :  new IconButton(
             icon: Icon(
               Icons.account_circle,
               color: Colors.white,
-              size: 40.0,
+              size: 30.0,
             ),
             onPressed: () {
-
+              showDelete(context, widget.otherId, role, otherEmail);
             },
 
           ),
@@ -507,7 +519,7 @@ class _ViewUser extends State<ViewUser> {
       //  onTap: () => print("Post " + post.id +" pressed"),
       onTap:() {
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail,),
+          builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, currRole: role,),
         ),);
       },
       child: Container (
@@ -548,10 +560,11 @@ class PostDetails extends StatelessWidget {
   final Post post;
   String currId;
   String currEmail;
+  String currRole;
 
 
   // In the constructor, require a Post.
-  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail}) : super(key: key);
+  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail,  @required this.currRole}) : super(key: key);
 
 
   @override
@@ -654,8 +667,10 @@ class PostDetails extends StatelessWidget {
                         onPressed: () { print('pressed'); },
                       ),
                       // show menu button
-                      //post.email == currEmail ?
-                      //showUserOptions(context, post, currId, currEmail): Container(),
+                     // post.email == currEmail ?
+
+
+
 
 
 

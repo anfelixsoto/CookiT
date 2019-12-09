@@ -54,7 +54,7 @@ class HomeState extends State<Home> {
   bool isAdmin = false;
   String username;
   String userId;
-
+  String profilePic = " ";
 
   @override
   void initState(){
@@ -82,6 +82,8 @@ class HomeState extends State<Home> {
             if (data.exists) {
               role = data.data['role'].toString();
               username = data.data['user_name'].toString();
+              profilePic = data.data['profileImage'].toString();
+              log("profilePic " + profilePic);
               print('Role: ' + role);
               if (role == 'admin') {
                 isAdmin = true;
@@ -222,7 +224,7 @@ class HomeState extends State<Home> {
             child: (profilePic == null || profilePic.toString() == "")
                 ?
             Image.network(
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+              '//https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
             )
                 : Image.network(
               profilePic,
@@ -259,21 +261,28 @@ class HomeState extends State<Home> {
 
           child: Column(
               children: <Widget>[
-
-
-
                 ListTile(
-                  leading: ClipOval(
-                    child:Image.network(
-                      document['profileImage'] != ""?
-                      document['profileImage']: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-
-
-                      fit: BoxFit.cover,
-
-                    ),
+                  leading: IconButton(
+                    icon:  document['profileImage'] != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(document['profileImage'])):
+                    Icon(Icons.account_circle, color: Colors.white, size: 100.0),
+                    onPressed: (){
+                      if(userId != document['userId'] ) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              ViewUser(userId: userId.toString(),
+                                  otherId: document['userId'].toString())
+                          ),
+                        );
+                      } else{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                            auth: widget.auth,)),
+                        );
+                      }
+                    },
                   ),
-
                   contentPadding: EdgeInsets.all(7),
 
                  title: GestureDetector(
@@ -396,11 +405,8 @@ class HomeState extends State<Home> {
         actions: <Widget>[
 
           new IconButton(
-            icon: Icon(
-              Icons.account_circle,
-              color: Colors.white,
-              size: 40.0,
-            ),
+            icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic)):
+                  Icon(Icons.account_circle, color: Colors.white, size: 40.0),
             onPressed: () {
               Navigator.push(
                 context,
@@ -485,8 +491,4 @@ class HomeState extends State<Home> {
 
     );
   }
-
-
-
-
 }

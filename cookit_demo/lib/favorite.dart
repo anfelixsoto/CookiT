@@ -161,22 +161,8 @@ class _Favorites extends State<Favorites> {
                             ),
                           ),
                           onTap: () {
-                            if(userId != document['userId'] ) {
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    ViewUser(userId: userId.toString(),
-                                        otherId: document['userId'].toString())
-                                ),
-                              );
-                            } else{
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
-                                  auth: widget.auth,)),
-                              );
-                            }
+
 
                           },
 
@@ -228,7 +214,7 @@ class _Favorites extends State<Favorites> {
                             onPressed: () { print('pressed'); },
                           ),
 
-                          showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
+                          //showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
 
                         ],
                       ),

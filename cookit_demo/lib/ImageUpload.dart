@@ -191,7 +191,8 @@ class _PostUploadState extends State<PostUpload> {
       'email': post.email,
       'profileImage': profileImage,
       'userId': userId,
-      'user_name': username
+      'user_name': username,
+      'recipeId': "",
     }).then((doc){
       id = doc.documentID;
     });

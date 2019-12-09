@@ -122,7 +122,7 @@ class HomeState extends State<Home> {
     for (var doc in documents){
       temp.add(doc.toString());
     }
-    return temp;
+    return temp.reversed;
   }
 
 

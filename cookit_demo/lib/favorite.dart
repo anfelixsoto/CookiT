@@ -44,6 +44,10 @@ class _Favorites extends State<Favorites> {
   String userId;
   List<String> favorites;
   List<Recipe> recipes = [];
+  List<String> favNames;
+
+  String filterRecipes;
+  TextEditingController filterController = new TextEditingController();
 
   @override
   void initState() {
@@ -81,162 +85,127 @@ class _Favorites extends State<Favorites> {
           print(favorites);
 
 
+
         }
       });
 
 
+
       //print(user.displayName.toString());
+    });
+
+    filterController.addListener(() {
+      setState(() {
+        filterRecipes = filterController.text;
+      });
     });
   }
 
+  @override
+  void dispose() {
+    filterController.dispose();
+    super.dispose();
+  }
 
   Future<List<Recipe>> getFavorites() async {
-    List<String> recipeIds = [];
-    List<Recipe> temp =[];
-
-    DocumentSnapshot querySnapshot = await Firestore.instance
+    List<Recipe> temp = [];
+    List<Recipe> results = [];
+    List<String> names = [];
+    var snap= await Firestore.instance
         .collection('users')
         .document(userId)
         .get();
-    if (querySnapshot.exists &&
-        querySnapshot.data.containsKey('favorites') &&
-        querySnapshot.data['favorites'] is List) {
-        for(var id in querySnapshot.data['favorites']) {
-          recipeIds.add(id.toString());
-        }
-      //print(List<String>.from(querySnapshot.data['favorites']));
-      //return List<String>.from(querySnapshot.data['favorites']);
-    }
+
+    temp = List.from(snap.data['favorites']);
+
+    for(var i in temp){
 
 
 
-
-    for( var recipeId in recipeIds){
-      DocumentSnapshot snap = await Firestore.instance
+      DocumentSnapshot snapItem = await Firestore.instance
           .collection('recipes')
-          .document(recipeId)
+          .document(i.toString())
           .get();
-      recipes.add(Recipe.fromDoc(snap));
-
+     results.add(Recipe.fromDoc(snapItem));
 
     }
 
 
-    for (var recipe in recipes){
-      print(recipe.name + ", ");
-    }
-
-    return recipes;
+    return results.toList();
   }
+
+
+
+
+
 
   List<Widget> displayFavorites(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
+      if(document['name'].toString().contains(filterRecipes)) {
+        return Padding(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
+            child: Container(
+              width: 500,
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                // shape: shape,
+
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+
+                  child: Column(
+                      children: <Widget>[
 
 
-      return Padding(
-          padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
-          child:Container(
-            width: 500,
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              // shape: shape,
+                        Center(
 
-              child: Padding(
-                padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+                          child: ClipRect(
+                            child: document['imageURL'].toString() != "" ?
+                            Image.network(
+                              document['imageURL'],
+                              height: 200,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              fit: BoxFit.cover,
+                            )
+                                : Container(
+                              padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
+                              margin: const EdgeInsets.only(
+                                  top: 0, bottom: 0.0),
+                              height: 200,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              color: Colors.blueGrey[100],
 
-                child: Column(
-                    children: <Widget>[
-
-
-
-                      ListTile(
-                        leading: ClipOval(
-                          child:Image.network(
-                            document['imageUrl'] != ""?
-                            document['imageUrl']: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-
-
-                            fit: BoxFit.cover,
-
-                          ),
-                        ),
-
-                        contentPadding: EdgeInsets.all(7),
-
-                        title: GestureDetector(
-                          child:Text(
-                            document['user_name'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          onTap: () {
-
-
-
-                          },
-
-                        ),
-
-
-                        trailing: Text(
-                          document['title'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 11,
-                          ),
-                        ),
-
-                      ),
-                      Divider(),
-                      Center(
-
-                        child: ClipRect(
-                          child:Image.network(
-                            document['imageUrl'],
-
-                            height: 300,
-                            width: MediaQuery.of(context).size.width,
-                            fit: BoxFit.cover,
 
                           ),
                         ),
-                      ),
 
-                      Divider(),
-                      ListTile(
-                        title: Text(
-                            document['description'],
-                            style: TextStyle(fontWeight: FontWeight.w500)),
+                        Divider(),
 
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          FlatButton(
-                            child: Text('Cook it'),
-                            textColor: Colors.lightBlueAccent,
-                            onPressed: () { print('pressed'); },
+                        Divider(),
+                        ListTile(
+                          leading: Text(
+                            document['name'].toString(),
                           ),
-                          FlatButton(
-                            child: Text('Next time'),
-                            textColor: Colors.orangeAccent,
-                            onPressed: () { print('pressed'); },
-                          ),
-
-                          //showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
-
-                        ],
-                      ),
+                        ),
 
 
-                    ]
+                      ]
+                  ),
                 ),
-              ),
 
-            ),
-          )
-      );
+              ),
+            )
+        );
+      }else{
+        return new Container();
+      }
     }).toList();
   }
 
@@ -269,28 +238,39 @@ class _Favorites extends State<Favorites> {
             icon: const Icon(Icons.search),
             //Don't block the main thread
             onPressed: () {
-              showSearchPage(context, _searchDelegate);
+              TextField(
+                decoration: new InputDecoration(
+                    labelText: "Search something"
+                ),
+                controller: filterController,
+              );
             },
           ),
         ],
       ),
-      body: FutureBuilder <List<Recipe>>(
-          future: getFavorites(),
-          builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return Container(
-                  child: ListView.builder(
-                      itemCount: recipes.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Text('${recipes[index].name}');
-                      }
-                  )
-              );
+      body:Container(
+        child: StreamBuilder(
+          stream: Firestore.instance.collection('recipes').snapshots(),
+          builder: (context, snapshot) {
+            switch(snapshot.connectionState){
+              case ConnectionState.waiting:
+                return Center(
+                    child: CircularProgressIndicator()
+                );
+              default:
+                return ListView (
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  children:
+                  displayFavorites(snapshot),
+
+                  //Text(snapshot.data)
+                  // Text(snapshot.data.documents[0]['email']
+                );
             }
-              }
+
+          },
+
+        ),
       ),
     );
   }

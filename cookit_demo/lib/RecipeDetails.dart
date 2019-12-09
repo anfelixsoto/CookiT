@@ -134,82 +134,101 @@ class _RecipeDetails extends State<RecipeDetails>{
                   return */
                    Container(
                     child: Padding(
-                      padding: const EdgeInsets.all(36.0),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                       child: ListView(
                         children: <Widget>[
                           SizedBox(height: 5.0,),
                           new Container(
-                            height:150.0,
-                            width:600.0,
-                            child:Image.network(
-                              recipe.imageURL,
-                              fit: BoxFit.fill,),
+                              height:250.0,
+                              width: MediaQuery.of(context).size.width,
+                              child:Image.network(
+                                recipe.imageURL,
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.cover,
+                                //fit: BoxFit.fill,
+                              )
                           ),
-                          new Container(
-                            height: 120.0,
-                            child:ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Container(
-                                  width:160.0,
-                                  child:ListView(
-                                    children: <Widget>[
-                                          new Text(
-                                            recipe.name,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                              color: Colors.black,)
-                                          ),
-                                          new Text(
-                                            recipe.description,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15.0,
-                                              color: Colors.grey,)
-                                          ),
-                                        ]
-                                  ),
-                                ),
-                                Container(
-                                  width:160.0,
-                                  child:Padding(
-                                    padding:EdgeInsets.fromLTRB(30.0, 40.0, 35.0, 45.0),
-                                    child:Material(
-                                      elevation: 5.0,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      color: Colors.lightGreen,
-                                      child:MaterialButton(
-                                        minWidth: MediaQuery.of(context).size.width,
-                                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                        onPressed: (){
-                                          UserOperations.addToSave(userId, widget.recipeId.rid.toString());
-                                          //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
-                                          RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
-                                        },
-                                        child: Text("Save",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+
+
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
+                            child: Container(
+                              height: 120.0,
+                              width: 300,
+                              child:ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: <Widget>[
+                                    Container(
+
+                                      width:200.0,
+                                      child:ListView(
+                                          children: <Widget>[
+                                            new Text(
+                                                recipe.name,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0,
+                                                  color: Colors.black,)
+                                            ),
+                                            new Text(
+                                                recipe.description,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15.0,
+                                                  color: Colors.grey,)
+                                            ),
+                                          ]
+                                      ),
+                                    ),
+
+                                    Container(
+                                      width:200.0,
+                                      child:Padding(
+                                        padding:EdgeInsets.fromLTRB(20.0, 40, 40.0, 45.0),
+                                        child:Material(
+                                          elevation: 5.0,
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          color: Colors.orangeAccent,
+                                          child:MaterialButton(
+
+                                            minWidth: MediaQuery.of(context).size.width,
+                                            onPressed: (){
+                                              UserOperations.addToSave(userId, widget.recipeId.rid.toString());
+                                              //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+                                              RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+                                            },
+                                            child: Text("Save",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ]
+                                  ]
+                              ),
                             ),
                           ),
+
+
                           new Container(
-                            height: 80.0,
+                            height: 100.0,
                             child:ListView(
                               scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 25),
+
                               children: <Widget>[
+
+
                                   Container(
-                                  width:120.0,
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  width:130.0,
                                   child:ListView(
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
                                         children: <Widget>[
                                           new Text(
                                             recipe.ingredients.length.toString(),
@@ -227,12 +246,14 @@ class _RecipeDetails extends State<RecipeDetails>{
                                               fontSize: 20.0,
                                               color: Colors.black,)
                                           ),
+                                        
                                         ]
                                       ),
                                   ),
                                   Container(
-                                  width:80.0,
+                                  width:120.0,
                                   child:ListView(
+                                      padding: EdgeInsets.symmetric(horizontal: 0),
                                         children: <Widget>[
                                           new Text(
                                             recipe.prepTime.toString(),
@@ -256,6 +277,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   Container(
                                   width:100.0,
                                   child:ListView(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
                                         children: <Widget>[
                                           new Text(
                                             recipe.numCalories.toString(),
@@ -286,7 +308,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                               child:Material(
                                 elevation: 5.0,
                                 borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.lightGreen,
+                                color: Colors.lightBlueAccent,
                                 child:MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),

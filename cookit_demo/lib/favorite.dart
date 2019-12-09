@@ -43,6 +43,7 @@ class _Favorites extends State<Favorites> {
   String profileImage;
   String userId;
   List<String> favorites;
+  List<Recipe> recipes = [];
 
   @override
   void initState() {
@@ -91,7 +92,8 @@ class _Favorites extends State<Favorites> {
 
   Future<List<Recipe>> getFavorites() async {
     List<String> recipeIds = [];
-    List<Recipe> recipes = [];
+    List<Recipe> temp =[];
+
     DocumentSnapshot querySnapshot = await Firestore.instance
         .collection('users')
         .document(userId)
@@ -108,6 +110,7 @@ class _Favorites extends State<Favorites> {
 
 
 
+
     for( var recipeId in recipeIds){
       DocumentSnapshot snap = await Firestore.instance
           .collection('recipes')
@@ -115,7 +118,14 @@ class _Favorites extends State<Favorites> {
           .get();
       recipes.add(Recipe.fromDoc(snap));
 
+
     }
+
+
+    for (var recipe in recipes){
+      print(recipe.name + ", ");
+    }
+
     return recipes;
   }
 
@@ -267,39 +277,19 @@ class _Favorites extends State<Favorites> {
       body: FutureBuilder <List<Recipe>>(
           future: getFavorites(),
           builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
-              if (!snapshot.hasData)
-                    return Container(
-                        alignment: FractionalOffset.center,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: CircularProgressIndicator());
-                    else if(snapshot.data.length == 0){
-                      return Container(
-                        alignment: FractionalOffset.center,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Text('No Posts')
-                    );
-              } else{
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, i) =>
-                      ListTile(
-                        title: Text(snapshot.data[i].name.toString()),
-                        onTap: () {
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text("Click the Search action"),
-                                  action: SnackBarAction(
-                                    label: 'Search',
-                                    onPressed: (){
-                                      showSearchPage(context, _searchDelegate);
-                                    },
-                                  )
-                              )
-                          );
-                        },
-                      ),
-                );
-              }
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              return Container(
+                  child: ListView.builder(
+                      itemCount: recipes.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Text('${recipes[index].name}');
+                      }
+                  )
+              );
+            }
               }
       ),
     );

@@ -263,8 +263,13 @@ class HomeState extends State<Home> {
               children: <Widget>[
                 ListTile(
                   leading: IconButton(
-                    icon:  document['profileImage'] != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(document['profileImage'])):
-                    Icon(Icons.account_circle, color: Colors.white, size: 100.0),
+                    icon:  document['profileImage'] != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(document['profileImage'])):
+                      CircleAvatar(
+                        radius: 15.0,
+                      backgroundImage: NetworkImage(
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                        ),
+                      ),
                     onPressed: (){
                       if(userId != document['userId'] ) {
                         Navigator.push(

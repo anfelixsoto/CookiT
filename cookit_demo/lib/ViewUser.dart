@@ -593,13 +593,15 @@ class PostDetails extends StatelessWidget {
 
 
                   ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: post.profileImage == null ? NetworkImage(
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                      ): NetworkImage(
-                        post.profileImage,
+                    leading: IconButton(
+                      icon:  post.profileImage != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(post.profileImage)):
+                      CircleAvatar(
+                        radius: 15.0,
+                        backgroundImage: NetworkImage(
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                        ),
                       ),
-                    ),
+                  ),
 
                     contentPadding: EdgeInsets.all(7),
 

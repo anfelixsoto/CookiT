@@ -1,8 +1,12 @@
+import 'dart:collection';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
+import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/service/RootPage.dart';
@@ -45,6 +49,7 @@ class HomeState extends State<Home> {
   var role;
   var userQuery;
   bool isAdmin = false;
+  String username;
 
 
   @override
@@ -71,11 +76,11 @@ class HomeState extends State<Home> {
       userRef.get().then((data) {
             if (data.exists) {
               role = data.data['role'].toString();
+              username = data.data['user_name'].toString();
               print('Role: ' + role);
               if (role == 'admin') {
                 isAdmin = true;
               }
-
         }
       });
 
@@ -224,7 +229,8 @@ class HomeState extends State<Home> {
 
                  title: GestureDetector(
                    child:Text(
-                         document['email'],
+                          //getUsername(document['email']).toString() == null ? document['email'].toString() : getUsername(document['email']).toString(),
+                         document['user_name'] == null ? document['email'] : document['user_name'],
                          style: TextStyle(
                            fontWeight: FontWeight.bold,
                         ),
@@ -378,13 +384,16 @@ class HomeState extends State<Home> {
           );
         },
       ),*/
-          /*
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue.shade400,
+        backgroundColor: Colors.lightGreen,
         child: Icon(
-          Icons.add,),
-        onPressed: (){},
-      ),*/
+          Icons.search,
+        color: Colors.white,),
+        onPressed: (){
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context) => RecipeSearch()));
+        },
+      ),
     );
   }
 

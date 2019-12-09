@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/SavePage.dart';
 import 'package:cookit_demo/favorite.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
@@ -83,7 +86,6 @@ class _UserProfile extends State<UserProfile> {
     }
   }
 
-
   Future<void> getUserRef() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _firestore = Firestore.instance;
@@ -97,10 +99,9 @@ class _UserProfile extends State<UserProfile> {
         if (data.exists) {
           currEmail = data.data['email'].toString();
           profilePic = data.data['profileImage'].toString();
-
+          username = data.data['user_name'].toString();
+          log(username);
           print(profilePic);
-
-
         }
       });
 
@@ -266,10 +267,21 @@ showAvatar(String pic) {
     return Scaffold(
       appBar: AppBar(
 
-        title: Text(showEmail()),
+        title: Text(username.toString(),),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.bookmark_border,
+            color: Colors.yellow,
+            size: 40.0,),
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SavePage()),
+              );
+            },
+          )
         ],
       ),
           body: ListView(
@@ -474,15 +486,12 @@ class PostDetails extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-
         child: Card(
 
       child: Padding(
       padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
       child: Column(
           children: <Widget>[
-
-
 
             ListTile(
               leading: CircleAvatar(

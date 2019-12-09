@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
@@ -30,6 +32,7 @@ class RecipeDetails extends StatefulWidget {
   final RecipeId recipeId;
   RecipeDetails({Key key,@required this.recipe,@required this.recipeId}):super(key:key);
 
+
   @override
   _RecipeDetails createState() => _RecipeDetails();
 }
@@ -40,6 +43,8 @@ class _RecipeDetails extends State<RecipeDetails>{
   DocumentReference userRef;
   String currEmail;
   String userId;
+  bool saved = false;
+  bool favorite = false;
 
 
   @override
@@ -64,7 +69,6 @@ class _RecipeDetails extends State<RecipeDetails>{
   }
 
 
-
   Future<void> getUserRef() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _firestore = Firestore.instance;
@@ -75,6 +79,14 @@ class _RecipeDetails extends State<RecipeDetails>{
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
+
+      String recipeId = widget.recipeId.rid.toString();
+      //log(recipeId);
+
+      for(var i = 0; i < favorites.length; i++){
+        log(favorites[i]);
+      }
+
       /*userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
@@ -88,7 +100,6 @@ class _RecipeDetails extends State<RecipeDetails>{
       //print(user.displayName.toString());
     });
   }
-
 
 
   @override
@@ -109,6 +120,9 @@ class _RecipeDetails extends State<RecipeDetails>{
               leading: IconButton(icon:Icon(Icons.arrow_back),
                 onPressed: () => Navigator.pop(context, false),
               ),
+              actions: <Widget>[
+
+              ],
             ),
             backgroundColor: Colors.white,
             body: Center(
@@ -168,7 +182,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         minWidth: MediaQuery.of(context).size.width,
                                         padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                         onPressed: (){
-                                          UserOperations.addToFavorites(userId, widget.recipeId.toString());
+                                          UserOperations.addToSave(userId, widget.recipeId.rid.toString());
                                         },
                                         child: Text("Save",
                                           textAlign: TextAlign.center,
@@ -305,6 +319,28 @@ class _RecipeDetails extends State<RecipeDetails>{
             ),
             ),
           );
+  }
+
+  Widget showStar(){
+    if(favorite){
+      return IconButton(
+        icon: Icon(Icons.favorite_border,
+        color: Colors.red,
+        size: 40),
+        onPressed: (){
+          UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+        },
+      );
+    } else{
+      return IconButton(
+        icon: Icon(Icons.favorite,
+            color: Colors.red,
+            size: 40),
+        onPressed: (){
+          UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
+        },
+      );
+    }
   }
 
 }

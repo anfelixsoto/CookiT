@@ -83,5 +83,32 @@ class UserOperations {
     });*/
   }
 
+  static  Future<void> deleteFavorite(String userId, String recipeId){
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data){
+          if(data.exists){
+            data.reference.updateData({
+              'favorites' : FieldValue.arrayRemove([recipeId]),
+            });
+          }
+    });
+  }
+
+  static Future<void> addToSave(String userId, String recipeId) async{
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data){
+      if(data.exists){
+        data.reference.updateData({
+          'saved' : FieldValue.arrayUnion([recipeId]),
+        });
+      } else{
+        data.reference.setData({
+          'saved': [recipeId],
+        });
+      }
+    });
+  }
 
 }

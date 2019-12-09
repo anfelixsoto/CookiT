@@ -119,6 +119,131 @@ class _Favorites extends State<Favorites> {
     return recipes;
   }
 
+  List<Widget> displayFavorites(AsyncSnapshot snapshot) {
+    return snapshot.data.documents.map<Widget>((document){
+
+
+      return Padding(
+          padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
+          child:Container(
+            width: 500,
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              // shape: shape,
+
+              child: Padding(
+                padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+
+                child: Column(
+                    children: <Widget>[
+
+
+
+                      ListTile(
+                        leading: ClipOval(
+                          child:Image.network(
+                            document['imageUrl'] != ""?
+                            document['imageUrl']: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+
+
+                            fit: BoxFit.cover,
+
+                          ),
+                        ),
+
+                        contentPadding: EdgeInsets.all(7),
+
+                        title: GestureDetector(
+                          child:Text(
+                            document['user_name'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap: () {
+                            if(userId != document['userId'] ) {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    ViewUser(userId: userId.toString(),
+                                        otherId: document['userId'].toString())
+                                ),
+                              );
+                            } else{
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                                  auth: widget.auth,)),
+                              );
+                            }
+
+                          },
+
+                        ),
+
+
+                        trailing: Text(
+                          document['title'],
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 11,
+                          ),
+                        ),
+
+                      ),
+                      Divider(),
+                      Center(
+
+                        child: ClipRect(
+                          child:Image.network(
+                            document['imageUrl'],
+
+                            height: 300,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+
+                          ),
+                        ),
+                      ),
+
+                      Divider(),
+                      ListTile(
+                        title: Text(
+                            document['description'],
+                            style: TextStyle(fontWeight: FontWeight.w500)),
+
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text('Cook it'),
+                            textColor: Colors.lightBlueAccent,
+                            onPressed: () { print('pressed'); },
+                          ),
+                          FlatButton(
+                            child: Text('Next time'),
+                            textColor: Colors.orangeAccent,
+                            onPressed: () { print('pressed'); },
+                          ),
+
+                          showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
+
+                        ],
+                      ),
+
+
+                    ]
+                ),
+              ),
+
+            ),
+          )
+      );
+    }).toList();
+  }
+
 
 
 

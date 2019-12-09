@@ -280,7 +280,6 @@ class HomeState extends State<Home> {
                    child:Text(
                           //getUsername(document['email']).toString() == null ? document['email'].toString() : getUsername(document['email']).toString(),
                          document['user_name'] == null ? document['email'] : document['user_name'],
-                         document['user_name'],
                          style: TextStyle(
                            fontWeight: FontWeight.bold,
                         ),

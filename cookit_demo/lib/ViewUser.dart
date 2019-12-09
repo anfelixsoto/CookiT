@@ -317,7 +317,7 @@ class _ViewUser extends State<ViewUser> {
           margin: const EdgeInsets.only(top: 32.0, left: 16.0),
           padding: const EdgeInsets.all(3.0),
           child:  ClipOval(
-            child: (profilePic == null || profilePic == pic)
+            child: (profilePic == null || profilePic == "" )
                 ?
             Image.network(
               'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
@@ -412,7 +412,7 @@ class _ViewUser extends State<ViewUser> {
         actions: <Widget>[
           role == "admin"?
 
-         showDelete(context, userId, role,otherEmail)
+         showDelete(context, widget.otherId, role,otherEmail)
               :  new IconButton(
             icon: Icon(
               Icons.account_circle,
@@ -420,7 +420,7 @@ class _ViewUser extends State<ViewUser> {
               size: 30.0,
             ),
             onPressed: () {
-              showDelete(context, widget.otherId, role, otherEmail);
+              //showDelete(context, widget.otherId, role, otherEmail);
             },
 
           ),

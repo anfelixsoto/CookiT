@@ -70,11 +70,11 @@ class AdminOperations {
         .get().then((data) {
       if (data.exists) {
 
-        if(data.data["role"] == "user") {
+
 
           //data.reference.delete();
           print(data.data["user_name"].toString());
-        }
+
       }
     });
 

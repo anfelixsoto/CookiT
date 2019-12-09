@@ -54,7 +54,7 @@ class _UserProfile extends State<UserProfile> {
   String currId;
   String role;
 
-  var profilePic;
+  String profilePic;
 
 
   @override
@@ -161,7 +161,7 @@ showAvatar(String pic) {
       margin: const EdgeInsets.only(top: 32.0, left: 16.0),
       padding: const EdgeInsets.all(3.0),
       child:  ClipOval(
-    child: profilePic == null
+    child: (profilePic == null || profilePic.toString() == "")
     ?
      Image.network(
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',

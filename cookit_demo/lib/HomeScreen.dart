@@ -202,13 +202,45 @@ class HomeState extends State<Home> {
       return null;
     }
   }
+  Widget buildPostsAvatar(String profilePic) {
+    return new GestureDetector(
+        child: Container(
+          width: 180.0,
+          height: 180.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white30),
+          ),
+          margin: const EdgeInsets.only(top: 32.0, left: 16.0),
+          padding: const EdgeInsets.all(3.0),
+          child:  ClipOval(
+            child: (profilePic == null || profilePic.toString() == "")
+                ?
+            Image.network(
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+            )
+                : Image.network(
+              profilePic,
+              height: 300,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+          ),
 
+        ),
+        onTap:(){
+
+        }
+    );
+  }
 
 
 
 
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
+
+
       return Padding(
         padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
       child:Container(
@@ -226,11 +258,14 @@ class HomeState extends State<Home> {
 
 
                 ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: document['profileImage'] == null ? NetworkImage(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                    ): NetworkImage(
-                      document['profileImage'],
+                  leading: ClipOval(
+                    child:Image.network(
+                      document['profileImage'] != ""?
+                      document['profileImage']: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+
+
+                      fit: BoxFit.cover,
+
                     ),
                   ),
 

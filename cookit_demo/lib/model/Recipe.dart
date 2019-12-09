@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/Name.dart';
 import 'package:cookit_demo/model/Instruction.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 
 class Recipe{
+  String id;
   String name;
   String description;
   String imageURL;
@@ -20,7 +22,7 @@ class Recipe{
   @JsonKey(defaultValue: [''])
   List<String> instructions;
   
-  Recipe({this.name,this.description,this.imageURL,this.numCalories,this.prepTime,this.servings,this.ingredients,this.instructions});
+  Recipe({this.id, this.name,this.description,this.imageURL,this.numCalories,this.prepTime,this.servings,this.ingredients,this.instructions});
 
   factory Recipe.fromJSON(Map<String,dynamic> json){
     return Recipe(
@@ -33,6 +35,20 @@ class Recipe{
       ingredients:(json['extendedIngredients'] as List).map((p) => Name.fromJson(p).name).toList(),
       instructions:(json['analyzedInstructions'].isNotEmpty)?(json['analyzedInstructions'][0]['steps'] as List).map((p) => Instruction.fromJson(p).step).toList():null,
       );
+  }
+
+  factory Recipe.fromDoc(DocumentSnapshot doc) {
+    return Recipe (
+      id: doc['id'],
+      name: doc['name'],
+      description: doc['description'],
+      imageURL: doc['imageURL'] ,
+      numCalories: doc['numCalories'],
+      prepTime: doc['prepTime'],
+      servings: doc['servings'],
+      ingredients: doc['ingredients'],
+      instructions: doc['instructions'],
+    );
   }
 
   static FutureOr<Recipe> fetchRecipe(int id) async {

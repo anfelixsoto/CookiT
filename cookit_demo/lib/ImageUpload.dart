@@ -38,6 +38,7 @@ class _PostUploadState extends State<PostUpload> {
   DocumentReference userRef;
   String profileImage;
   String userId;
+  String username;
   @override
   void initState() {
     super.initState();
@@ -66,6 +67,7 @@ class _PostUploadState extends State<PostUpload> {
       userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
+          username = data.data['user_name'].toString();
 
 
 
@@ -180,6 +182,8 @@ class _PostUploadState extends State<PostUpload> {
   }
 
   void createPost(Post post) {
+
+    String id;
     Firestore.instance.collection('posts').add({
       'imageUrl': post.imageUrl,
       'title': post.title,
@@ -187,7 +191,17 @@ class _PostUploadState extends State<PostUpload> {
       'email': post.email,
       'profileImage': profileImage,
       'userId': userId,
+      'user_name': username
+    }).then((doc){
+      id = doc.documentID;
     });
+
+    // update the id field
+    Firestore.instance.collection('posts').document(id).updateData({
+      'id': id,
+    });
+
+
   }
 
 
@@ -209,6 +223,7 @@ class _PostUploadState extends State<PostUpload> {
       description: caption,
       email: showEmail(),
       profileImage: profileImage,
+
 
     );
 

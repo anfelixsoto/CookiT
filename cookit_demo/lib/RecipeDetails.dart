@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/recipeId.dart';
+import 'package:cookit_demo/service/RecipeOperations.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -183,6 +184,8 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                         onPressed: (){
                                           UserOperations.addToSave(userId, widget.recipeId.rid.toString());
+                                          //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+                                          RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
                                         },
                                         child: Text("Save",
                                           textAlign: TextAlign.center,

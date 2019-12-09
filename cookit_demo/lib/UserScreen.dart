@@ -55,8 +55,9 @@ class _UserProfile extends State<UserProfile> {
   DocumentReference userRef;
   String currEmail;
   String currId;
+  String role;
 
-  var profilePic;
+  String profilePic;
 
 
   @override
@@ -85,6 +86,17 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
+  
+  String showUserId() {
+    if (currentUser != null) {
+      return currentUser.uid;
+    } else {
+      return "no current user";
+    }
+  }
+  String getRole() {
+    return role;
+  }
 
   Future<void> getUserRef() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -99,8 +111,12 @@ class _UserProfile extends State<UserProfile> {
         if (data.exists) {
           currEmail = data.data['email'].toString();
           profilePic = data.data['profileImage'].toString();
+          
           username = data.data['user_name'].toString();
           log(username);
+          role = data.data['role'].toString();
+          username = data.data['user_name'].toString();
+          
           print(profilePic);
         }
       });
@@ -148,7 +164,7 @@ showAvatar(String pic) {
       margin: const EdgeInsets.only(top: 32.0, left: 16.0),
       padding: const EdgeInsets.all(3.0),
       child:  ClipOval(
-    child: profilePic == null
+    child: (profilePic == null || profilePic.toString() == "")
     ?
      Image.network(
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
@@ -225,7 +241,7 @@ showAvatar(String pic) {
       List<Post> posts = [];
       var snap = await Firestore.instance
           .collection('posts')
-          .where('email', isEqualTo: showEmail())
+          .where('userId', isEqualTo: showUserId())
           .getDocuments();
       for (var doc in snap.documents) {
         posts.add(Post.fromDoc(doc));
@@ -260,13 +276,16 @@ showAvatar(String pic) {
     }
   }
 
+  void showAdminUI(){
+
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: Text(username.toString(),),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
@@ -283,6 +302,19 @@ showAvatar(String pic) {
             },
           )
         ],
+        title: Text(username.toString()),
+        centerTitle: true,
+        backgroundColor: Colors.lightGreen,
+        leading: role == "admin"
+            ?
+          new IconButton(
+            icon: new Icon(Icons.settings),
+            tooltip: "Manage",
+            onPressed: () => Navigator.of(context).pop(null),
+          )
+
+
+            :null,
       ),
           body: ListView(
             children: <Widget>[
@@ -483,33 +515,42 @@ class PostDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(post.title),
+
+
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(10),
         child: Card(
 
       child: Padding(
-      padding:EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+      padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
       child: Column(
           children: <Widget>[
 
             ListTile(
               leading: CircleAvatar(
-                child: post.profileImage != null
-                ? Image.network(
-                 post.profileImage,
-                ) : Image.network(
+                backgroundImage: post.profileImage == null ? NetworkImage(
                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                ): NetworkImage(
+                 post.profileImage,
                 ),
               ),
 
-              contentPadding: EdgeInsets.all(0),
+              contentPadding: EdgeInsets.all(7),
 
-              title: Text(
-                post.email,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),),
+              title: GestureDetector(
+                child:Text(
+                  post.username,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () {
+
+
+                },
+
+              ),
 
 
               trailing: Text(
@@ -520,17 +561,23 @@ class PostDetails extends StatelessWidget {
                 ),
               ),
 
-
             ),
             Divider(),
-            Divider(),
-            Image.network(
-              post.imageUrl,
+            Center(
 
-              height: 300,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
+              child: ClipRect(
+                child:Image.network(
+                  post.imageUrl,
+
+                  height: 300,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+
+                ),
+              ),
             ),
+
+
             Divider(),
             Divider(),
             ListTile(

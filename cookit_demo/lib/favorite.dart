@@ -3,6 +3,7 @@
 //This file allows people to search through their favorite.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,7 @@ class _Favorites extends State<Favorites> {
   DocumentReference userRef;
   String profileImage;
   String userId;
-  List<int> favorites;
+  List<String> favorites;
 
   @override
   void initState() {
@@ -88,7 +89,9 @@ class _Favorites extends State<Favorites> {
   }
 
 
-  Future<List<String>> getFavorites() async {
+  Future<List<Recipe>> getFavorites() async {
+    List<String> recipeIds = [];
+    List<Recipe> recipes = [];
     DocumentSnapshot querySnapshot = await Firestore.instance
         .collection('users')
         .document(userId)
@@ -96,11 +99,24 @@ class _Favorites extends State<Favorites> {
     if (querySnapshot.exists &&
         querySnapshot.data.containsKey('favorites') &&
         querySnapshot.data['favorites'] is List) {
-
-      print(List<String>.from(querySnapshot.data['favorites']));
-      return List<String>.from(querySnapshot.data['favorites']);
+        for(var id in querySnapshot.data['favorites']) {
+          recipeIds.add(id.toString());
+        }
+      //print(List<String>.from(querySnapshot.data['favorites']));
+      //return List<String>.from(querySnapshot.data['favorites']);
     }
-    return [];
+
+
+
+    for( var recipeId in recipeIds){
+      DocumentSnapshot snap = await Firestore.instance
+          .collection('recipes')
+          .document(recipeId)
+          .get();
+      recipes.add(Recipe.fromDoc(snap));
+
+    }
+    return recipes;
   }
 
 
@@ -137,9 +153,9 @@ class _Favorites extends State<Favorites> {
           ),
         ],
       ),
-      body: FutureBuilder<List<String>>(
+      body: FutureBuilder <List<Recipe>>(
           future: getFavorites(),
-          builder: (context, AsyncSnapshot<List<String>> snapshot) {
+          builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
               if (!snapshot.hasData)
                     return Container(
                         alignment: FractionalOffset.center,
@@ -156,7 +172,7 @@ class _Favorites extends State<Favorites> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, i) =>
                       ListTile(
-                        title: Text(snapshot.data[i]),
+                        title: Text(snapshot.data[i].name.toString()),
                         onTap: () {
                           Scaffold.of(context).showSnackBar(
                               SnackBar(

@@ -24,7 +24,7 @@ class RecipeInstructions extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Colors.lightGreen,
               automaticallyImplyLeading: true,
-              title: Text('CookiT'),
+              title: Text('Instructions'),
               leading: IconButton(icon:Icon(Icons.arrow_back),
                 onPressed: () => Navigator.pop(context, false),
               ),
@@ -38,7 +38,7 @@ class RecipeInstructions extends StatelessWidget {
                   return*/ LayoutBuilder(
     builder: (BuildContext context, BoxConstraints viewportConstraints) {
       return SingleChildScrollView(
-        padding:EdgeInsets.all(15.0),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight: viewportConstraints.maxHeight*5,
@@ -53,42 +53,55 @@ class RecipeInstructions extends StatelessWidget {
                     //mainAxisAlignment: MainAxisAlignment.start,
                     children:<Widget>[ 
                     Container(
-                      height:170.0,
-                      width:600.0,
+                      height:300.0,
+                      width:700.0,
                       alignment:Alignment.center,
                       child:Padding(
-                      padding: EdgeInsets.fromLTRB(10, 10, 50, 10),
-                        child: ListView(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: Container(
                           //scrollDirection: Axis.horizontal,
-                          primary:false,
-                          shrinkWrap: true,
-                          children: <Widget>[
-                            SizedBox(height: 5.0,),
-                            new Container(
-                              height:150.0,
-                              width:200.0,
+
+                           // SizedBox(height: 5.0,),
+
+                            child: Container(
+                              height:300.0,
+                              width: MediaQuery.of(context).size.width,
                               child:Image.network(
                                 recipe.imageURL,
-                                fit: BoxFit.fill,)
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.cover,
+                                //fit: BoxFit.fill,
+                                )
                             ),
-                          ]
+
                         ),
                       ),
                     //]
                    ),
-                      Flexible(
-                         fit:FlexFit.loose,
-                        //mainAxisSize: MainAxisSize.min,
-                        child://children:<Widget>[
-                          Container(height:120.0,child:
-                          ListView(
+
+                       Container(
+                        padding: EdgeInsets.all(10),
+                        height: 400,
+                        child:
+                      Row(
+
+
+
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        children:[
+                          Container(
+                            height:100.0,
+                            child: ListView(
                             scrollDirection: Axis.horizontal,
                             primary:false,
-                          shrinkWrap: true,
-                          
+                             shrinkWrap: true,
+
                           children: <Widget>[
+
                             Container(
-                              width:160.0,
+                              width: 270,
+
+                              padding: EdgeInsets.fromLTRB(5, 10, 20, 10),
                               //mainAxisSize: MainAxisSize.max,
                               //children:<Widget>[
                                     child:ListView(
@@ -127,7 +140,7 @@ class RecipeInstructions extends StatelessWidget {
                               //]
                             ),
                                      Container(
-                                       width:120.0,
+                                       width:100,
                                         child:ListView(
                                           physics:NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
@@ -136,7 +149,7 @@ class RecipeInstructions extends StatelessWidget {
                                               child:Material(
                                                 elevation: 5.0,
                                                 borderRadius: BorderRadius.circular(10.0),
-                                                color: Colors.lightGreen,
+                                                color: Colors.lightBlueAccent,
                                                 child:MaterialButton(
                                                   minWidth: MediaQuery.of(context).size.width,
                                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
@@ -152,6 +165,7 @@ class RecipeInstructions extends StatelessWidget {
                                                       fontSize: 15.0,
                                                       fontWeight: FontWeight.bold,
                                                       color: Colors.white,
+
                                                   ),
                                                 ),
                                               ),
@@ -162,8 +176,11 @@ class RecipeInstructions extends StatelessWidget {
                                      ),
                                 ]
                              ),
-                           // ] 
-                          ), ),   
+                      ),
+                           ]
+      ),
+        ),
+
                           //Expanded(
                             //mainAxisSize: MainAxisSize.min,
                             //children:<Widget>[

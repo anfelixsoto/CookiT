@@ -141,7 +141,7 @@ class _Favorites extends State<Favorites> {
 
   List<Widget> displayFavorites(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
-      if(document['name'].toString().contains(filterRecipes)) {
+      if(document['name'].toString() != "") {
         return Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
             child: Container(

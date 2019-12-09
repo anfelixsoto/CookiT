@@ -122,6 +122,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                 onPressed: () => Navigator.pop(context, false),
               ),
               actions: <Widget>[
+                showStar(),
 
               ],
             ),
@@ -351,16 +352,17 @@ class _RecipeDetails extends State<RecipeDetails>{
       return IconButton(
         icon: Icon(Icons.favorite_border,
         color: Colors.red,
-        size: 40),
+        size: 30),
         onPressed: (){
           UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+          RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
         },
       );
     } else{
       return IconButton(
         icon: Icon(Icons.favorite,
             color: Colors.red,
-            size: 40),
+            size: 30),
         onPressed: (){
           UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
         },

@@ -261,32 +261,40 @@ class HomeState extends State<Home> {
 
           child: Column(
               children: <Widget>[
-                ListTile(
-                  leading: IconButton(
-                    icon:  document['profileImage'] != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(document['profileImage'])):
+                Padding(
+                  padding:EdgeInsets.symmetric(horizontal: 0),
+
+                  child: ListTile(
+
+                  leading: SizedBox(
+                    child: IconButton(
+                      iconSize: 50,
+                      icon:  document['profileImage'] != "" ? CircleAvatar(radius: 50.0, backgroundImage: NetworkImage(document['profileImage'])):
                       CircleAvatar(
-                        radius: 15.0,
-                      backgroundImage: NetworkImage(
+                        radius: 50.0,
+                        backgroundImage: NetworkImage(
                           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
                         ),
                       ),
-                    onPressed: (){
-                      if(userId != document['userId'] ) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              ViewUser(userId: userId.toString(),
-                                  otherId: document['userId'].toString())
-                          ),
-                        );
-                      } else{
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
-                            auth: widget.auth,)),
-                        );
-                      }
-                    },
+
+                      onPressed: (){
+                        if(userId != document['userId'] ) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                ViewUser(userId: userId.toString(),
+                                    otherId: document['userId'].toString())
+                            ),
+                          );
+                        } else{
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                              auth: widget.auth,)),
+                          );
+                        }
+                      },
+                    ),
                   ),
                   contentPadding: EdgeInsets.all(7),
 
@@ -321,15 +329,22 @@ class HomeState extends State<Home> {
                  ),
 
 
-                  trailing: Text(
+
+                  trailing:
+                  Padding(
+                    padding:EdgeInsets.fromLTRB(0.0, 0.0, 30.0, 5.0),
+
+                    child:Text(
                     document['title'],
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
                       fontSize: 11,
                     ),
                   ),
-
+                  ),
                 ),
+                ),
+
                 Divider(),
                    Center(
 

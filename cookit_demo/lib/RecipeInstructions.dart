@@ -79,9 +79,9 @@ class RecipeInstructions extends StatelessWidget {
                     //]
                    ),
 
-                       Container(
+                      Container(
                         padding: EdgeInsets.all(10),
-                        height: 400,
+                        height: 160,
                         child:
                       Row(
 
@@ -90,7 +90,7 @@ class RecipeInstructions extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                         children:[
                           Container(
-                            height:100.0,
+                            height:150.0,
                             child: ListView(
                             scrollDirection: Axis.horizontal,
                             primary:false,
@@ -100,8 +100,8 @@ class RecipeInstructions extends StatelessWidget {
 
                             Container(
                               width: 270,
-
-                              padding: EdgeInsets.fromLTRB(5, 10, 20, 10),
+                              height:150,
+                              padding: EdgeInsets.fromLTRB(5, 0, 20, 0),
                               //mainAxisSize: MainAxisSize.max,
                               //children:<Widget>[
                                     child:ListView(
@@ -145,7 +145,7 @@ class RecipeInstructions extends StatelessWidget {
                                           physics:NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       children: <Widget>[Padding(
-                                              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),//was 30
+                                              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),//was 30
                                               child:Material(
                                                 elevation: 5.0,
                                                 borderRadius: BorderRadius.circular(10.0),
@@ -185,19 +185,22 @@ class RecipeInstructions extends StatelessWidget {
                             //mainAxisSize: MainAxisSize.min,
                             //children:<Widget>[
                               //child:
-                              Flexible(
-                                fit:FlexFit.loose,
+
+
+                              Container(
+                                padding:EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),//was 30
+                                //fit:FlexFit.loose,
                                     //width:300.0,
                                     //height:25.0,
-                                    child:
-                                      new Text(
+                                    child: new Text(
                                         "Ingredients",
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20.0,
                                           color: Colors.black,)
-                                      ),
+                                    ),
+
                               ),
                            // ]
                          // ),
@@ -205,9 +208,10 @@ class RecipeInstructions extends StatelessWidget {
                              //fit:FlexFit.loose,
                             //mainAxisSize: MainAxisSize.min,
                             //children:<Widget>[
-                              //child:Container(
+                              Container(
+                                padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),//was 30
                                // width:300.0,
-                                ListView.builder(
+                                child: ListView.builder(
                                   physics:NeverScrollableScrollPhysics(),
                                   primary:false,
                                   shrinkWrap: true,
@@ -222,6 +226,7 @@ class RecipeInstructions extends StatelessWidget {
                                     );
                                   }
                                 ),
+                              ),
                               //),
                             //]
                           //),
@@ -229,7 +234,7 @@ class RecipeInstructions extends StatelessWidget {
                             //mainAxisSize: MainAxisSize.min,
                             //children:<Widget>[
                               height:50.00,
-                              padding:EdgeInsets.fromLTRB(0, 30, 0, 0),
+                            padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),//was 30
                                 child:Text(
                                   "Instructions",
                                   style: TextStyle(
@@ -243,22 +248,27 @@ class RecipeInstructions extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children:<Widget>[*/
                             Flexible(
-                              child:
+                              child:Container(
+                                padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),//was 30
+
+                                child:
                                 ListView.builder(
-                                  physics:NeverScrollableScrollPhysics(),
-                                  //scrollDirection: Axis.horizontal,
-                                  itemCount: recipe.instructions.length,
-                                  shrinkWrap: true,
-                                  primary:false,
-                                  itemBuilder: (context, index) {
-                                    return new Text(recipe.instructions[index],
-                                      style: TextStyle(
-                                        fontSize: 15.0,
-                                        color: Colors.grey,
-                                      )
-                                    );
-                                  }
-                                ),)
+                                    physics:NeverScrollableScrollPhysics(),
+                                    //scrollDirection: Axis.horizontal,
+                                    itemCount: recipe.instructions.length,
+                                    shrinkWrap: true,
+                                    primary:false,
+                                    itemBuilder: (context, index) {
+                                      return new Text(recipe.instructions[index],
+                                          style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: Colors.grey,
+                                          )
+                                      );
+                                    }
+                                ),
+                              )
+                             )
                            /* ]
                           ),*/
                     ]

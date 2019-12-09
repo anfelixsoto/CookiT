@@ -315,7 +315,6 @@ class _Favorites extends State<Favorites> {
                 );
               }
               }
-
       ),
     );
   }

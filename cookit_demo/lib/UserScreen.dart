@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/SavePage.dart';
 import 'package:cookit_demo/favorite.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
@@ -95,7 +98,6 @@ class _UserProfile extends State<UserProfile> {
     return role;
   }
 
-
   Future<void> getUserRef() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _firestore = Firestore.instance;
@@ -109,12 +111,13 @@ class _UserProfile extends State<UserProfile> {
         if (data.exists) {
           currEmail = data.data['email'].toString();
           profilePic = data.data['profileImage'].toString();
+
+          username = data.data['user_name'].toString();
+          log(username);
           role = data.data['role'].toString();
           username = data.data['user_name'].toString();
 
           print(profilePic);
-
-
         }
       });
 
@@ -123,58 +126,58 @@ class _UserProfile extends State<UserProfile> {
   }
 
 
-showAvatar(String pic) {
+  showAvatar(String pic) {
 
-      return GestureDetector(
+    return GestureDetector(
         child: ClipOval(
-        child: profilePic == null
-            ? new CircleAvatar(
-          child: Image.network(
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-          ),
-        )
-            : new CircleAvatar(
-          child: Image.network(
-              profilePic
+          child: profilePic == null
+              ? new CircleAvatar(
+            child: Image.network(
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+            ),
+          )
+              : new CircleAvatar(
+            child: Image.network(
+                profilePic
+            ),
           ),
         ),
-        ),
-          onTap:(){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => editProfile()),
-            );
-          }
-      );
+        onTap:(){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => editProfile()),
+          );
+        }
+    );
 
-}
+  }
 
   Widget _buildAvatar() {
     return new GestureDetector(
-    child: Container(
-      width: 180.0,
-      height: 180.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white30),
-      ),
-      margin: const EdgeInsets.only(top: 32.0, left: 16.0),
-      padding: const EdgeInsets.all(3.0),
-      child:  ClipOval(
-    child: (profilePic == null || profilePic.toString() == "")
-    ?
-     Image.network(
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-    )
-        : Image.network(
-    profilePic,
-      height: 300,
-      width: MediaQuery.of(context).size.width,
-      fit: BoxFit.cover,
-    ),
-    ),
+        child: Container(
+          width: 180.0,
+          height: 180.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white30),
+          ),
+          margin: const EdgeInsets.only(top: 32.0, left: 16.0),
+          padding: const EdgeInsets.all(3.0),
+          child:  ClipOval(
+            child: (profilePic == null || profilePic.toString() == "")
+                ?
+            Image.network(
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+            )
+                : Image.network(
+              profilePic,
+              height: 300,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+          ),
 
-    ),
+        ),
         onTap:(){
           Navigator.push(
             context,
@@ -234,20 +237,20 @@ showAvatar(String pic) {
   }
 
 
-    Future<List<Post>> getPosts() async {
-      List<Post> posts = [];
-      var snap = await Firestore.instance
-          .collection('posts')
-          .where('userId', isEqualTo: showUserId())
-          .getDocuments();
-      for (var doc in snap.documents) {
-        posts.add(Post.fromDoc(doc));
-      }
-      setState(() {
-        postCount = snap.documents.length;
-      });
-      return posts.toList();
+  Future<List<Post>> getPosts() async {
+    List<Post> posts = [];
+    var snap = await Firestore.instance
+        .collection('posts')
+        .where('userId', isEqualTo: showUserId())
+        .getDocuments();
+    for (var doc in snap.documents) {
+      posts.add(Post.fromDoc(doc));
     }
+    setState(() {
+      postCount = snap.documents.length;
+    });
+    return posts.toList();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -258,7 +261,7 @@ showAvatar(String pic) {
     }
     //else if (index == 1) {
 
-      /*Navigator.push(
+    /*Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Home(
            )),
@@ -283,136 +286,147 @@ showAvatar(String pic) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        title: Text(username.toString()),
+        title: Text(username.toString(),),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
-        leading: role == "admin"
-            ?
-          new IconButton(
-            icon: new Icon(Icons.settings),
-            tooltip: "Manage",
-            onPressed: () => Navigator.of(context).pop(null),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.bookmark_border,
+              color: Colors.yellow,
+              size: 40.0,),
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SavePage()),
+              );
+            },
           )
+        ],
+//        title: Text(username.toString()),
+//        centerTitle: true,
+//        backgroundColor: Colors.lightGreen,
+        leading: role == "admin" ?
+        new IconButton(
+          icon: new Icon(Icons.settings),
+          tooltip: "Manage",
+          onPressed: () => Navigator.of(context).pop(null),
+        )
 
 
             :null,
-
-
       ),
-          body: ListView(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: _buildAvatar(),
-                    ),
-                    Row(
-                      children: <Widget>[
+      body: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  Center(
+                    child: _buildAvatar(),
+                  ),
+                  Row(
+                    children: <Widget>[
 
 
 
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                findRecipes('What to Cook'),
+                                showFavorites('Favorites'),
+                              ],
+                            ),
+                            Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  findRecipes('What to Cook'),
-                                  showFavorites('Favorites'),
-                                ],
-                              ),
-                              Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
 
-                                  ]),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-
-
-                  ],
-                ),
-              ),
-              Divider(),
-              //buildImageViewButtonBar(),
-              Divider(height: 0.0),
-              Container (
-                 child: FutureBuilder<List<Post>>(
-                  future: getPosts(),
-                 builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      return Container(
-                          alignment: FractionalOffset.center,
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: CircularProgressIndicator());
-                    else if(snapshot.data.length == 0){
-                      return Container(
-                          alignment: FractionalOffset.center,
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text('No Posts')
-                      );
-                    }
-                    else {
-                    // build the grid
-                          return GridView.count(
-
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.0,
-                          //                    padding: const EdgeInsets.all(0.5),
-                          mainAxisSpacing: 1.5,
-
-                          crossAxisSpacing: 1.5,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: snapshot.data.map((Post post) {
-                            return GridTile(
-                                child: showPosts(context, post, post.imageUrl, currId, currEmail),
-                            );
-                          }).toList());
-                        }
-                    },
-
+                                ]),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-               ),
-              //Divider(height: 10.0),
 
-            ]
 
-        ),
-        bottomNavigationBar: BottomNavigationBar( // footer
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text('Profile'),
+                ],
+              ),
             ),
-           /* BottomNavigationBarItem(
+            Divider(),
+            //buildImageViewButtonBar(),
+            Divider(height: 0.0),
+            Container (
+              child: FutureBuilder<List<Post>>(
+                future: getPosts(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: CircularProgressIndicator());
+                  else if(snapshot.data.length == 0){
+                    return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text('No Posts')
+                    );
+                  }
+                  else {
+                    // build the grid
+                    return GridView.count(
+
+                        crossAxisCount: 3,
+                        childAspectRatio: 1.0,
+                        //                    padding: const EdgeInsets.all(0.5),
+                        mainAxisSpacing: 1.5,
+
+                        crossAxisSpacing: 1.5,
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: snapshot.data.map((Post post) {
+                          return GridTile(
+                            child: showPosts(context, post, post.imageUrl, currId, currEmail),
+                          );
+                        }).toList());
+                  }
+                },
+
+              ),
+            ),
+            //Divider(height: 10.0),
+
+          ]
+
+      ),
+      bottomNavigationBar: BottomNavigationBar( // footer
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            title: Text('Profile'),
+          ),
+          /* BottomNavigationBarItem(
               icon: Icon(Icons.home),
               title: Text('Home'),
-
             ),*/
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline),
-              title: Text('New Post'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline),
+            title: Text('New Post'),
 
-            ),
+          ),
 
-          ],
-          currentIndex: _currentIndex,
-          selectedItemColor: Colors.amber[800],
-          onTap: _onItemTapped,
-        ),
+        ],
+        currentIndex: _currentIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
+      ),
 
-      );
+    );
   }
 }
 
@@ -421,19 +435,19 @@ Widget showPosts(BuildContext context, Post post, url, String currId, String cur
 
 
   return InkWell(
-  //  onTap: () => print("Post " + post.id +" pressed"),
+    //  onTap: () => print("Post " + post.id +" pressed"),
     onTap:() {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail,),
 
-        ),
+      ),
       );
     },
     child: Container (
-    child: new Image.network(
-      url,
-      fit: BoxFit.cover,
-    ),
+      child: new Image.network(
+        url,
+        fit: BoxFit.cover,
+      ),
     ),
   );
 }
@@ -504,110 +518,107 @@ class PostDetails extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-
         child: Card(
 
-      child: Padding(
-      padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-      child: Column(
-          children: <Widget>[
+          child: Padding(
+            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+            child: Column(
+                children: <Widget>[
+
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: post.profileImage == null ? NetworkImage(
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                      ): NetworkImage(
+                        post.profileImage,
+                      ),
+                    ),
+
+                    contentPadding: EdgeInsets.all(7),
+
+                    title: GestureDetector(
+                      child:Text(
+                        post.username,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onTap: () {
 
 
+                      },
 
-            ListTile(
-              leading: CircleAvatar(
-                backgroundImage: post.profileImage == null ? NetworkImage(
-                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                ): NetworkImage(
-                 post.profileImage,
-                ),
-              ),
+                    ),
 
-              contentPadding: EdgeInsets.all(7),
 
-              title: GestureDetector(
-                child:Text(
-                  post.username,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    trailing: Text(
+                      post.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
+                    ),
+
                   ),
-                ),
-                onTap: () {
+                  Divider(),
+                  Center(
+
+                    child: ClipRect(
+                      child:Image.network(
+                        post.imageUrl,
+
+                        height: 300,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+
+                      ),
+                    ),
+                  ),
 
 
-                },
+                  Divider(),
+                  Divider(),
+                  ListTile(
 
-              ),
+                    title: Text(
+                        post.description,
+                        style: TextStyle(fontWeight: FontWeight.w500)
+                    ),
 
 
-              trailing: Text(
-                post.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w300,
-                  fontSize: 11,
-                ),
-              ),
+                  ),
+                  Divider(),
+                  Divider(),
+                  Divider(),
+                  Divider(),
+                  ButtonBar(
 
+                    alignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text('Cook it'),
+                        textColor: Colors.lightBlueAccent,
+                        onPressed: () { print('pressed'); },
+                      ),
+                      FlatButton(
+                        child: Text('Next time'),
+                        textColor: Colors.orangeAccent,
+                        onPressed: () { print('pressed'); },
+                      ),
+                      // show menu button
+                      post.email == currEmail ?
+                      showUserOptions(context, post, currId, currEmail): Container(),
+
+
+
+                    ],
+                  ),
+
+
+                ]
             ),
-            Divider(),
-            Center(
-
-              child: ClipRect(
-                child:Image.network(
-                  post.imageUrl,
-
-                  height: 300,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-
-                ),
-              ),
-            ),
-
-
-            Divider(),
-            Divider(),
-            ListTile(
-
-              title: Text(
-                  post.description,
-                  style: TextStyle(fontWeight: FontWeight.w500)
-              ),
-
-
-            ),
-            Divider(),
-            Divider(),
-            Divider(),
-            Divider(),
-            ButtonBar(
-
-              alignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                FlatButton(
-                  child: Text('Cook it'),
-                  textColor: Colors.lightBlueAccent,
-                  onPressed: () { print('pressed'); },
-                ),
-                FlatButton(
-                  child: Text('Next time'),
-                  textColor: Colors.orangeAccent,
-                  onPressed: () { print('pressed'); },
-                ),
-                // show menu button
-                post.email == currEmail ?
-                showUserOptions(context, post, currId, currEmail): Container(),
-
-
-
-              ],
-            ),
-
-
-          ]
-      ),
-    ),
-    ),
+          ),
+        ),
       ),
     );
   }
@@ -626,7 +637,7 @@ Widget showUserOptions(BuildContext context, Post post, String userId, String em
         ),
         onPressed: () {
 
-    showAlert(context, userId, email, post.id, post.email, post.imageUrl);
+          showAlert(context, userId, email, post.id, post.email, post.imageUrl);
 
         }
     ),
@@ -645,9 +656,9 @@ Future<void> showAlert(BuildContext context, String userId, email, String postId
               child: Text('Yes'),
               onTap: (){
 
-                  removeImage(url);
-                  UserOperations.deletePost(postId);
-                  Navigator.pop(context);
+                removeImage(url);
+                UserOperations.deletePost(postId);
+                Navigator.pop(context);
 
               },
             ),

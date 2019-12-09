@@ -182,6 +182,8 @@ class _PostUploadState extends State<PostUpload> {
   }
 
   void createPost(Post post) {
+
+    String id;
     Firestore.instance.collection('posts').add({
       'imageUrl': post.imageUrl,
       'title': post.title,
@@ -190,7 +192,16 @@ class _PostUploadState extends State<PostUpload> {
       'profileImage': profileImage,
       'userId': userId,
       'user_name': username
+    }).then((doc){
+      id = doc.documentID;
     });
+
+    // update the id field
+    Firestore.instance.collection('posts').document(id).updateData({
+      'id': id,
+    });
+
+
   }
 
 

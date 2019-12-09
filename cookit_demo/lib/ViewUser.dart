@@ -336,7 +336,7 @@ class _ViewUser extends State<ViewUser> {
         }
     );
   }
-  Future<void> showAlert(BuildContext context, String userId, String role, String email) {
+  Future<void> showAlert(BuildContext context, String userId, String role, String email, String url) {
     return showDialog(context: context,builder: (BuildContext context) {
       return AlertDialog(
         title: Text('Seclect an option: '),
@@ -346,7 +346,7 @@ class _ViewUser extends State<ViewUser> {
               GestureDetector(
                 child: Text('Delete user: ' + email.toString()),
                 onTap: (){
-                  //removeImage(url);
+                  adminRemovePic(url);
                   AdminOperations.deleteUser(userId);
                   Navigator.pop(context);
                 },
@@ -380,7 +380,33 @@ class _ViewUser extends State<ViewUser> {
     });
   }
 
-  Widget showDelete(BuildContext context, String userId, String role, String email) {
+  static Future<void> adminRemovePic(String url) async{
+    //Future<StorageReference> photoReference =
+    print("removing..");
+
+    try {
+
+      print (" deleteing..." + url.toString());
+      String path = url.toString().replaceAll(new RegExp(r'%2F'), '---');
+
+      String remove = path.split('---')[1].replaceAll('?alt', '---');
+      String img = remove.split('---')[0];
+      print(img);
+      final StorageReference storageReference =
+      FirebaseStorage.instance.ref().child("UserProfileImage/" + img);
+
+      storageReference.delete();
+      print (" deleted..." );
+
+
+    } catch (e) {
+      print("Something went wrong");
+      return null;
+    }
+  }
+
+
+  Widget showDelete(BuildContext context, String userId, String role, String email, String pic) {
 
     return  Visibility(
 
@@ -391,7 +417,7 @@ class _ViewUser extends State<ViewUser> {
             size: 30.0,
           ),
           onPressed: () {
-            showAlert(context, userId, role, email);
+            showAlert(context, userId, role, email, pic);
           }
       ),
 
@@ -412,7 +438,7 @@ class _ViewUser extends State<ViewUser> {
         actions: <Widget>[
           role == "admin"?
 
-         showDelete(context, widget.otherId, role,otherEmail)
+         showDelete(context, widget.otherId, role,otherEmail, profilePic)
               :  new IconButton(
             icon: Icon(
               Icons.account_circle,
@@ -420,7 +446,7 @@ class _ViewUser extends State<ViewUser> {
               size: 30.0,
             ),
             onPressed: () {
-              //showDelete(context, widget.otherId, role, otherEmail);
+
             },
 
           ),

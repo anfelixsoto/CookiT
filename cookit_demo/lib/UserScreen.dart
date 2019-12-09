@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/SavePage.dart';
 import 'package:cookit_demo/favorite.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
@@ -83,7 +86,7 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
-
+  
   String showUserId() {
     if (currentUser != null) {
       return currentUser.uid;
@@ -94,7 +97,6 @@ class _UserProfile extends State<UserProfile> {
   String getRole() {
     return role;
   }
-
 
   Future<void> getUserRef() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -109,12 +111,13 @@ class _UserProfile extends State<UserProfile> {
         if (data.exists) {
           currEmail = data.data['email'].toString();
           profilePic = data.data['profileImage'].toString();
+          
+          username = data.data['user_name'].toString();
+          log(username);
           role = data.data['role'].toString();
           username = data.data['user_name'].toString();
-
+          
           print(profilePic);
-
-
         }
       });
 
@@ -283,7 +286,22 @@ showAvatar(String pic) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
+        title: Text(username.toString(),),
+        centerTitle: true,
+        backgroundColor: Colors.lightGreen,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.bookmark_border,
+            color: Colors.yellow,
+            size: 40.0,),
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SavePage()),
+              );
+            },
+          )
+        ],
         title: Text(username.toString()),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
@@ -297,8 +315,6 @@ showAvatar(String pic) {
 
 
             :null,
-
-
       ),
           body: ListView(
             children: <Widget>[
@@ -504,15 +520,12 @@ class PostDetails extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-
         child: Card(
 
       child: Padding(
       padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
       child: Column(
           children: <Widget>[
-
-
 
             ListTile(
               leading: CircleAvatar(

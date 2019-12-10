@@ -133,7 +133,7 @@ class HomeState extends State<Home> {
         visible: isAdmin,
         child: IconButton(
           icon: Icon(
-            Icons.remove_circle,
+            Icons.remove_circle_outline,
             color: Colors.redAccent,
             size: 30.0,
           ),
@@ -455,6 +455,8 @@ class HomeState extends State<Home> {
                   );
                 default:
                   return ListView (
+                    physics: const AlwaysScrollableScrollPhysics(),
+
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     children:
                     displayPosts(snapshot),

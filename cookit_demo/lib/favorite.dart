@@ -47,6 +47,7 @@ class _Favorites extends State<Favorites> {
   List<String> favorites;
   List<Recipe> recipes = [];
   List<String> favNames;
+  List<String> favs = [];
 
   String filterRecipes;
   TextEditingController filterController = new TextEditingController();
@@ -80,11 +81,14 @@ class _Favorites extends State<Favorites> {
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
+      List<String> temp = [];
       userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
-          favorites = List.from(data.data['favorites']);
-          print(favorites);
+          temp = List.from(data.data['favorites']);
+          for(var i = 0; i < temp.length; i++){
+            favs.add(temp[i]);
+          }
 
 
 
@@ -108,6 +112,40 @@ class _Favorites extends State<Favorites> {
     filterController.dispose();
     super.dispose();
   }
+
+
+  Future<List<Recipe>> getRecipeDetails(List<String> temp) async{
+    List<Recipe> recipeDetails = [];
+    Recipe recipe;
+    String rec_id, rec_name, rec_description, rec_imageURL;
+    double rec_numCal;
+    int rec_prepTime, rec_servings;
+    List<String> rec_ingredients;
+    List<String> rec_instructions;
+
+    for(var i in temp){
+      DocumentSnapshot snapshot = await Firestore.instance
+          .collection('recipes')
+          .document(i)
+          .get();
+      if(snapshot.exists){
+        rec_id = snapshot.data['id'].toString();
+        rec_name = snapshot.data['name'].toString();
+        rec_description = snapshot.data['description'].toString();
+        rec_imageURL = snapshot.data['imageURL'].toString();
+        rec_numCal = snapshot.data['numCalories'];
+        rec_prepTime = snapshot.data['prepTime'];
+        rec_servings = snapshot.data['servings'];
+        rec_ingredients = List<String>.from(snapshot.data['ingredients']);
+        rec_instructions = List<String>.from(snapshot.data['instructions']);
+        recipe = new Recipe(id: rec_id,name: rec_name,description: rec_description,imageURL: rec_imageURL ,numCalories: rec_numCal
+            ,prepTime: rec_prepTime,servings: rec_servings, ingredients: rec_ingredients,instructions: rec_instructions);
+        recipeDetails.add(recipe);
+      }
+    }
+    return recipeDetails;
+  }
+
 
   Future<List<Recipe>> getFavorites() async {
     List<Recipe> temp = [];
@@ -246,22 +284,83 @@ class _Favorites extends State<Favorites> {
         ],
       ),
       body:Container(
-        child: StreamBuilder(
-          stream: Firestore.instance.collection('recipes').snapshots(),
-          builder: (context, snapshot) {
+        child: FutureBuilder<List<Recipe>>(
+          future: getRecipeDetails(favs),
+          builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
             switch(snapshot.connectionState){
               case ConnectionState.waiting:
                 return Center(
                     child: CircularProgressIndicator()
                 );
               default:
-                return ListView (
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  children:
-                  displayFavorites(snapshot),
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (int, i) =>
 
-                  //Text(snapshot.data)
-                  // Text(snapshot.data.documents[0]['email']
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
+            child: Container(
+            width: 500,
+
+                   child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      // shape: shape,
+
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+                      child: Column(
+                          children: <Widget>[
+
+
+                            Center(
+
+                              child: ClipRect(
+                                child: snapshot.data[i].imageURL.toString() != "" ?
+                                Image.network(
+                                  snapshot.data[i].imageURL,
+                                  height: 200,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width,
+                                  fit: BoxFit.cover,
+                                )
+                                    : Container(
+                                  padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
+                                  margin: const EdgeInsets.only(
+                                      top: 0, bottom: 0.0),
+                                  height: 200,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width,
+                                  color: Colors.blueGrey[100],
+
+                                ),
+
+                              ),
+                            ),
+
+                            Divider(),
+
+                            Divider(),
+                            ListTile(
+                              leading: Text(
+                               snapshot.data[i].name,
+                              ),
+                            ),
+
+
+
+                          ]
+                        ),
+
+
+                      ),
+                    ),
+
+            ),
+                  ),
                 );
             }
 

@@ -2,6 +2,8 @@
 //favorite.dart
 //This file allows people to search through their favorite.
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -119,19 +121,14 @@ class _Favorites extends State<Favorites> {
     temp = List.from(snap.data['favorites']);
 
     for(var i in temp){
-
-
-
       DocumentSnapshot snapItem = await Firestore.instance
           .collection('recipes')
           .document(i.toString())
           .get();
      results.add(Recipe.fromDoc(snapItem));
-
+     log(i.toString());
     }
-
-
-    return results.toList();
+    return results;
   }
 
 

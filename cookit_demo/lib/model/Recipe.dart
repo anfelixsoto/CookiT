@@ -46,8 +46,8 @@ class Recipe{
       numCalories: doc['numCalories'],
       prepTime: doc['prepTime'],
       servings: doc['servings'],
-      ingredients: doc['ingredients'],
-      instructions: doc['instructions'],
+      ingredients: doc['ingredients'].cast<String>(),
+      instructions: doc['instructions'].cast<String>(),
     );
   }
 

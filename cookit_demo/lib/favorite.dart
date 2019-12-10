@@ -5,6 +5,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -453,7 +454,14 @@ class _Favorites extends State<Favorites> {
                                                             //shape: new RoundedRectangleBorder(
                                                             //borderRadius: new BorderRadius.circular(30.0)),
                                                             textColor: Colors.blue,
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                              Recipe selectRecipe = Recipe.fromDoc(recipe);
+                                                              Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe,)),
+                                                              );
+
+                                                            },
                                                           ),
 
                                                         ],

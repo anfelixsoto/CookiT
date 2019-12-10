@@ -38,7 +38,7 @@ class RecipeInstructions extends StatelessWidget {
                   return*/ LayoutBuilder(
     builder: (BuildContext context, BoxConstraints viewportConstraints) {
       return SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight: viewportConstraints.maxHeight*5,
@@ -47,22 +47,28 @@ class RecipeInstructions extends StatelessWidget {
             //minWidth: viewportConstraints.maxWidth,
             maxWidth: viewportConstraints.maxWidth,
           ),
+
                     child:Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
+
                     //mainAxisAlignment: MainAxisAlignment.start,
-                    children:<Widget>[ 
-                    Container(
+                    children:<Widget>[
+
+                      Center(
+                    child: Container(
                       height:300.0,
-                      width:700.0,
+
+                      width: 800,
                       alignment:Alignment.center,
                       child:Padding(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                         child: Container(
                           //scrollDirection: Axis.horizontal,
 
                            // SizedBox(height: 5.0,),
 
+                          child: Center(
                             child: Container(
                               height:300.0,
                               width: MediaQuery.of(context).size.width,
@@ -73,11 +79,14 @@ class RecipeInstructions extends StatelessWidget {
                                 //fit: BoxFit.fill,
                                 )
                             ),
+                          ),
 
                         ),
                       ),
+
                     //]
                    ),
+        ),
 
                       Container(
                         padding: EdgeInsets.all(10),
@@ -218,7 +227,7 @@ class RecipeInstructions extends StatelessWidget {
                                   //scrollDirection: Axis.vertical,
                                   itemCount: recipe.ingredients.length,
                                   itemBuilder: (context, index) {
-                                    return new Text(recipe.ingredients[index],
+                                    return new Text(recipe.ingredients[index] + "\n",
                                       style: TextStyle(
                                         fontSize: 15.0,
                                         color: Colors.grey,
@@ -249,7 +258,7 @@ class RecipeInstructions extends StatelessWidget {
                             children:<Widget>[*/
                             Flexible(
                               child:Container(
-                                padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),//was 30
+                                padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 50.0),//was 30
 
                                 child:
                                 ListView.builder(
@@ -259,7 +268,7 @@ class RecipeInstructions extends StatelessWidget {
                                     shrinkWrap: true,
                                     primary:false,
                                     itemBuilder: (context, index) {
-                                      return new Text(recipe.instructions[index],
+                                      return new Text((index+1).toString() + ". " +recipe.instructions[index]+"\n\n",
                                           style: TextStyle(
                                             fontSize: 15.0,
                                             color: Colors.grey,
@@ -272,7 +281,7 @@ class RecipeInstructions extends StatelessWidget {
                            /* ]
                           ),*/
                     ]
-                  )));}),      
+                  )));}),
                 /*} else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }

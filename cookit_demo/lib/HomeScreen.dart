@@ -485,7 +485,7 @@ class HomeState extends State<Home> {
         },
       ),*/
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Colors.lightBlueAccent,
         child: Icon(
           Icons.search,
         color: Colors.white,),

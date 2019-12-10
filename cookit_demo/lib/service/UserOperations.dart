@@ -73,9 +73,12 @@ class UserOperations {
           if(data.exists){
             data.reference.updateData({
               'favorites' : FieldValue.arrayRemove([recipeId]),
+
+
             });
           }
     });
+    print("Removed Favorited Recipe");
   }
 
   static Future<void> delete(String type, String userId, String recipeId){

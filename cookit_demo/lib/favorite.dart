@@ -126,7 +126,7 @@ class _Favorites extends State<Favorites> {
           .collection('recipes')
           .document(i.toString())
           .get();
-     results.add(Recipe.fromDoc(snapItem));
+      results.add(Recipe.fromDoc(snapItem));
 
     }
 
@@ -213,7 +213,7 @@ class _Favorites extends State<Favorites> {
 
 
 
-  
+
 
 
   @override

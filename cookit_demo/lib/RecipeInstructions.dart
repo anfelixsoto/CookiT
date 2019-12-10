@@ -156,7 +156,7 @@ class RecipeInstructions extends StatelessWidget {
                                                   onPressed: (){
                                                     Navigator.push(
                                                       context,
-                                                      MaterialPageRoute(builder: (context) => PostUpload())
+                                                      MaterialPageRoute(builder: (context) => PostUpload(recipeId: recipe.id.toString(),))
                                                   );
                                                   },
                                                   child: Text("Take a photo",

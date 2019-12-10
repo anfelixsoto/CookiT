@@ -20,7 +20,9 @@ void main(){
 
 class PostUpload extends StatefulWidget {
 
-
+  final String recipeId;
+  PostUpload({Key key, this.recipeId,})
+      : super(key: key);
 
   @override
   _PostUploadState createState() => _PostUploadState();
@@ -39,6 +41,7 @@ class _PostUploadState extends State<PostUpload> {
   String profileImage;
   String userId;
   String username;
+
   @override
   void initState() {
     super.initState();
@@ -192,7 +195,7 @@ class _PostUploadState extends State<PostUpload> {
       'profileImage': profileImage,
       'userId': userId,
       'user_name': username,
-      'recipeId': "",
+      'recipeId': widget.recipeId.toString(),
     }).then((doc){
       id = doc.documentID;
     });

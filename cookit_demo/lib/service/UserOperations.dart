@@ -78,6 +78,18 @@ class UserOperations {
     });
   }
 
+  static Future<void> delete(String type, String userId, String recipeId){
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data){
+          if(data.exists){
+            data.reference.updateData({
+              type : FieldValue.arrayRemove([recipeId]),
+            });
+          }
+    });
+  }
+
   static Future<void> addToSave(String userId, String recipeId) async{
     Firestore.instance.collection('users')
         .document(userId)

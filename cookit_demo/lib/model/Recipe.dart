@@ -53,7 +53,7 @@ class Recipe{
 
   static FutureOr<Recipe> fetchRecipe(int id) async {
     final response =
-        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey=1fcbb82f69a7495a8ec32f7c507f832d');
+        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey=7ac94b5970mshdce60b59cd29f19p107172jsn44b5d8a49bab');
 
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.

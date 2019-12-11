@@ -417,9 +417,8 @@ class HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
 
-
-
-        title: Text("Home"),
+        title: Text("Home", style: TextStyle(color: Colors.white)),
+        //color: Colors.white,
         //centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[

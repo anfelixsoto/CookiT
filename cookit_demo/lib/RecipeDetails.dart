@@ -114,7 +114,11 @@ class _RecipeDetails extends State<RecipeDetails>{
           return widget;
         },
           home: Scaffold(
+            resizeToAvoidBottomPadding: false,
             appBar: AppBar(
+                  iconTheme: IconThemeData(
+                color: Colors.white, //change your color here
+              ),
               backgroundColor: Colors.lightGreen,
               automaticallyImplyLeading: true,
               title: Text('CookiT'),

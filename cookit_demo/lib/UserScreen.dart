@@ -199,7 +199,7 @@ class _UserProfile extends State<UserProfile> {
         minWidth: 120.0,
         height: 40.0,
 
-        color: Colors.lightBlueAccent,
+        color: Colors.lightGreen,
         textColor: textColor,
         onPressed: () {
           Navigator.push(
@@ -223,7 +223,7 @@ class _UserProfile extends State<UserProfile> {
         minWidth: 120.0,
         height: 40.0,
 
-        color: Colors.lightBlueAccent,
+        color: Colors.lightGreen,
         textColor: textColor,
         onPressed: () {
           Navigator.push(
@@ -280,19 +280,20 @@ class _UserProfile extends State<UserProfile> {
 
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(username.toString(),),
+         iconTheme: IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+        title: Text(username.toString(), style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.bookmark_border,
-              color: Colors.yellow,
+              color: Colors.white,
               size: 40.0,),
             onPressed: (){
               Navigator.push(
@@ -315,7 +316,8 @@ class _UserProfile extends State<UserProfile> {
 
             :null,
       ),
-      body: ListView(
+      body: 
+        ListView(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -337,6 +339,10 @@ class _UserProfile extends State<UserProfile> {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment:
                               MainAxisAlignment.spaceEvenly,
+
+                              
+
+                              
                               children: <Widget>[
                                 findRecipes('What to Cook'),
                                 showFavorites('Favorites'),
@@ -597,7 +603,7 @@ class PostDetails extends StatelessWidget {
                     children: <Widget>[
                       FlatButton(
                         child: Text('Cook it'),
-                        textColor: Colors.lightBlueAccent,
+                        textColor: Colors.lightGreenAccent,
                         onPressed: () { print('pressed'); },
                       ),
                       FlatButton(

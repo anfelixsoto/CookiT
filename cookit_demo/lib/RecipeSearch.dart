@@ -99,7 +99,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
     final loginButton = Material(
         elevation: 5.0,
         borderRadius: BorderRadius.circular(30.0),
-        color: Colors.lightBlueAccent,
+        color: Colors.lightGreen,
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),

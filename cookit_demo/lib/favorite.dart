@@ -255,6 +255,9 @@ class _Favorites extends State<Favorites> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+            color: Colors.white, //change your color here
+        ),
         automaticallyImplyLeading: false,
         leading: IconButton(
             icon: Icon(
@@ -265,7 +268,7 @@ class _Favorites extends State<Favorites> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Favorites'),
+        title: Text('Favorites', style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           //Adding the search widget in AppBar
           IconButton(

@@ -55,7 +55,7 @@ class StartPage extends StatelessWidget{
                   MaterialPageRoute(builder: (context) => LetStart()));
             },
             child: Text(
-                ("Let's Get Strated").toUpperCase(),
+                ("push to login").toUpperCase(),
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -69,7 +69,8 @@ class StartPage extends StatelessWidget{
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             backgroundColor: Colors.lightGreen,
-            body: Center(
+            body:
+              Center(
                 child: Column(
                   children: <Widget>[
                     CircleAvatar(
@@ -100,7 +101,7 @@ class StartPage extends StatelessWidget{
                               ),
                               radius: 50.0,
                             ))),
-                    DelayedAnimation(
+                    /*DelayedAnimation(
                         child: Text(
                           "Hi there!",
                           style: TextStyle(
@@ -108,6 +109,7 @@ class StartPage extends StatelessWidget{
                             fontSize: 35.0,
                             color: Colors.white,),
                         )),
+                        */
                     DelayedAnimation(
                         child: Text(
                           "Welcome to CookiT",

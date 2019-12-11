@@ -307,13 +307,14 @@ class HomeState extends State<Home> {
                       textColor: Colors.lightBlueAccent,
                       onPressed: () {
                         print("cooki it:::");
+                        print(document['recipeId'].toString());
                        Firestore.instance.collection('recipes').document(document['recipeId'].toString()).get().then((data) {
                          //print(data.documentID);
                         Recipe postRecipe =  Recipe.fromDoc(data);
-                        print(postRecipe.name);
+                        print(postRecipe.id);
                         Navigator.push(
                              context,
-                             MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe.id,),)
+                             MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe,),)
                          );
 
                        });

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/recipeId.dart';
@@ -13,8 +14,9 @@ void main(){
 
 class RecipeInstructions extends StatelessWidget {
   final Recipe recipe;
-  final String rId;
-  RecipeInstructions({Key key,@required this.recipe, this.rId}):super(key:key);
+  final Recipe rId;
+  final RecipeId dbId;
+  RecipeInstructions({Key key,@required this.recipe, this.rId, this.dbId}):super(key:key);
 
 
 
@@ -175,10 +177,27 @@ class RecipeInstructions extends StatelessWidget {
                                                     minWidth: 110,
                                                     padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                                     onPressed: (){
+                                                      print("Rec Instsructions");
+                                                      print(recipe);
+                                                      if(dbId != null){
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => PostUpload(recipe:recipe, rid: dbId.rid.toString() ,))
+                                                        );
+
+                                                      } else {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => PostUpload(recipe:recipe, rid:rId.id ,))
+                                                        );
+                                                      }
+
+                                                      //print(recipe.id);
+                                                      /*
                                                       Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(builder: (context) => PostUpload(recipe:recipe, rid: rId,))
-                                                      );
+                                                          MaterialPageRoute(builder: (context) => PostUpload(recipe:recipe, rid: ,))
+                                                      );*/
                                                     },
                                                     child: Text("Take a photo",
                                                       textAlign: TextAlign.center,

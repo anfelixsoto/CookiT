@@ -251,7 +251,7 @@ class _SavePage extends State<SavePage> {
                                                             Recipe selectRecipe = Recipe.fromDoc(recipe);
                                                             Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe,)),
+                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe, )),
                                                             );
                                                           },
                                                         ),

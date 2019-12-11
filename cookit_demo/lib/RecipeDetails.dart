@@ -31,7 +31,7 @@ Widget buildError(BuildContext context, FlutterErrorDetails error) {
 class RecipeDetails extends StatefulWidget {
   final Recipe recipe;
   final RecipeId recipeId;
-  final String recid;
+  final Recipe recid;
   RecipeDetails({Key key,@required this.recipe, this.recipeId, this.recid}):super(key:key);
 
 
@@ -46,7 +46,7 @@ class _RecipeDetails extends State<RecipeDetails>{
   String currEmail;
   String userId;
   bool saved = false;
-  bool favorite = false;
+  bool favorite;
 
 
   @override
@@ -54,6 +54,11 @@ class _RecipeDetails extends State<RecipeDetails>{
     super.initState();
     recipe = widget.recipe;
     getUserRef();
+
+    if(widget.recipeId != null){
+      RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+    }
+    getFavorites();
   }
 
   Future<List<String>> getFavorites() async {
@@ -65,6 +70,15 @@ class _RecipeDetails extends State<RecipeDetails>{
         querySnapshot.data.containsKey('favorites') &&
         querySnapshot.data['favorites'] is List) {
       // Create a new List<String> from List<dynamic>
+
+      if(widget.recipeId != null && List<String>.from(querySnapshot.data['favorites']).contains(widget.recipeId.rid.toString())){
+        favorite = false;
+      } else if(widget.recid != null && List<String>.from(querySnapshot.data['favorites']).contains(widget.recid.id.toString())){
+        favorite = false;
+        print(favorite.toString());
+      }else{
+        favorite = false;
+      }
       return List<String>.from(querySnapshot.data['favorites']);
     }
     return [];
@@ -81,6 +95,7 @@ class _RecipeDetails extends State<RecipeDetails>{
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
+
 
       //String recipeId = recipe.toString();
       //log(recipeId);
@@ -123,7 +138,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                 onPressed: () => Navigator.pop(context, false),
               ),
               actions: <Widget>[
-                showStar(userId, recipe.id, recipe),
+                showStar(),
 
               ],
             ),
@@ -195,9 +210,23 @@ class _RecipeDetails extends State<RecipeDetails>{
 
                                             minWidth: MediaQuery.of(context).size.width,
                                             onPressed: (){
-                                              UserOperations.addToSave(userId, recipe.id);
-                                              //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
-                                              RecipeOperations.addToRecipes(recipe.id, recipe);
+                                              if(widget.recipeId  != null) {
+                                                UserOperations.addToSave(userId,
+                                                    widget.recipeId.rid
+                                                        .toString());
+                                                //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+                                                RecipeOperations.addToRecipes(
+                                                    widget.recipeId.rid
+                                                        .toString(), recipe);
+                                              }else{
+                                                UserOperations.addToSave(userId,
+                                                    widget.recid.id
+                                                        .toString());
+                                                //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+                                                RecipeOperations.addToRecipes(
+                                                    widget.recid.id
+                                                        .toString(), recipe);
+                                              }
                                             },
                                             child: Text("Save",
                                               textAlign: TextAlign.center,
@@ -315,6 +344,39 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                   onPressed: (){
+                                    //print((widget.recipeId.rid.toString()));
+
+                                    if(widget.recipeId != null){
+                                      Firestore.instance.collection('recipes').document(widget.recipeId.rid.toString()).get().then((data) {
+                                        //print(data.documentID);
+                                        Recipe postRecipe = Recipe.fromDoc(data);
+                                        print(postRecipe.id);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                RecipeInstructions(recipe: postRecipe,
+                                                  rId: postRecipe, dbId: widget.recipeId,),)
+                                        );
+
+                                      });
+                                    }else{
+
+                                      Firestore.instance.collection('recipes').document(widget.recid.id.toString()).get().then((data) {
+                                        //print(data.documentID);
+                                        Recipe postRecipe = Recipe.fromDoc(data);
+                                        print(postRecipe.id);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                RecipeInstructions(recipe: postRecipe,
+                                                  rId: widget.recid),)
+                                        );
+
+                                      });
+
+                                    }
+
+                                /*
                                     widget.recipeId != null ?
 
 
@@ -325,7 +387,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         :Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe, rId: widget.recid.toString()))
-                                    );
+                                    );*/
 
                                   },
                                   child: Text("Start Recipe",
@@ -356,7 +418,7 @@ class _RecipeDetails extends State<RecipeDetails>{
           );
   }
 
-  Widget showStar(String userId, String recipeId, Recipe recipe){
+  Widget showStar(){
     if(favorite == false){
       return IconButton(
         icon: Icon(Icons.favorite_border,
@@ -366,8 +428,18 @@ class _RecipeDetails extends State<RecipeDetails>{
           setState(() {
             favorite = true;
           });
-          UserOperations.addToFavorites(userId, recipe.id);
-          RecipeOperations.addToRecipes(recipe.id, recipe);
+          //print(widget.recipeId.rid.toString());
+          if(widget.recipeId != null){
+            UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+            RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+
+          }else{
+            UserOperations.addToFavorites(userId, widget.recid.id.toString());
+            RecipeOperations.addToRecipes(widget.recid.id.toString(), recipe);
+          }
+
+
+
           print("saved");
         },
       );
@@ -380,7 +452,13 @@ class _RecipeDetails extends State<RecipeDetails>{
           setState(() {
             favorite = false;
           });
-          UserOperations.deleteFavorite(userId, recipe.id);
+    if(widget.recipeId != null) {
+      UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
+    }else{
+      UserOperations.deleteFavorite(userId, widget.recid.id.toString());
+    }
+
+
         },
       );
     }

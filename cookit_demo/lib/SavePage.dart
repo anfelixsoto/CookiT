@@ -234,9 +234,13 @@ class _SavePage extends State<SavePage> {
                                                             backgroundImage: NetworkImage(recipe.data['imageURL']),
                                                           ),
                                                           title: Text(recipe.data['name'].toString()),
+
+                                                          
+
                                                           subtitle: Text("Prep Time: " + recipe.data['prepTime'].toString() + " | " +
                                                               "Servings: " + recipe.data['servings'].toString()
                                                           ),
+
                                                           trailing: IconButton(
                                                             icon: Icon(Icons.delete_outline, color: Colors.redAccent),
                                                             onPressed: (){

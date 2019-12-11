@@ -196,10 +196,11 @@ class HomeState extends State<Home> {
       child:Container(
         width: 500,
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
           color: Colors.grey[200],
           clipBehavior: Clip.antiAlias,
-          child: Padding(
-            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
           child: Column(
               children: <Widget>[
                 Padding(
@@ -235,7 +236,6 @@ class HomeState extends State<Home> {
                     ),
                   ),
                   contentPadding: EdgeInsets.all(7),
-
                  title: GestureDetector(
                    child:Text(
                           //getUsername(document['email']).toString() == null ? document['email'].toString() : getUsername(document['email']).toString(),
@@ -308,7 +308,7 @@ class HomeState extends State<Home> {
                     showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
                   ],
                 ),
-      ])))));
+      ]))));
     }).toList();
   }
 

@@ -4,13 +4,16 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
+import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/ViewUser.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/service/RootPage.dart';
+import 'package:cookit_demo/service/UserOperations.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -123,6 +126,20 @@ class HomeState extends State<Home> {
       temp.add(doc.toString());
     }
     return temp.reversed;
+  }
+
+  Future<List<Recipe>> getRecipe(String recipeId) async {
+    List<Recipe> temp = [];
+    final QuerySnapshot result = await Firestore.instance.collection('recipes').getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    //documents.forEach((data) => temp.add(data.documentID));
+    for (var doc in documents){
+      if(doc.documentID.toString() == recipeId){
+        temp.add(Recipe.fromDoc(doc));
+      }
+
+    }
+    return temp;
   }
 
 
@@ -373,7 +390,25 @@ class HomeState extends State<Home> {
                     FlatButton(
                       child: Text('Cook it'),
                       textColor: Colors.lightBlueAccent,
-                      onPressed: () { print('pressed'); },
+                      onPressed: () {
+                        print("cooki it:::");
+                       Firestore.instance.collection('recipes').document(document['recipeId'].toString()).get().then((data) {
+                         //print(data.documentID);
+                        Recipe postRecipe =  Recipe.fromDoc(data);
+                        print(postRecipe.name);
+                        Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe.id,),)
+                         );
+
+                       });
+
+
+
+
+
+
+                      },
                     ),
                     FlatButton(
                       child: Text('Next time'),

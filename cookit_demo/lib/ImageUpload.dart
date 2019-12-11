@@ -1,5 +1,6 @@
 import 'package:cookit_demo/UserScreen.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,8 +21,9 @@ void main(){
 
 class PostUpload extends StatefulWidget {
 
-  final String recipeId;
-  PostUpload({Key key, this.recipeId,})
+  final String rid;
+  final Recipe recipe;
+  PostUpload({Key key, @required this.recipe, @required this.rid,})
       : super(key: key);
 
   @override
@@ -195,7 +197,7 @@ class _PostUploadState extends State<PostUpload> {
       'profileImage': profileImage,
       'userId': userId,
       'user_name': username,
-      'recipeId': widget.recipeId.toString(),
+      'recipeId': widget.rid.toString(),
     }).then((doc){
       id = doc.documentID;
     });

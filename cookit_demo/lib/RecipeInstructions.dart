@@ -126,7 +126,7 @@ class RecipeInstructions extends StatelessWidget {
                                         ),
 
                                         new Padding (
-                                          padding:EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),//was 30
+                                          padding:EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),//was 30
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
@@ -138,24 +138,24 @@ class RecipeInstructions extends StatelessWidget {
                                                   new Text(
                                                       "Prep time: "+recipe.prepTime.toString(),
                                                       style: TextStyle(
-                                                        fontSize: 15.0,
+                                                        fontSize: 17.0,
                                                         color: Colors.grey,)
                                                   ),
                                                   new Text(
                                                       "Calories: "+recipe.numCalories.toString(),
                                                       style: TextStyle(
-                                                        fontSize: 15.0,
+                                                        fontSize: 17.0,
                                                         color: Colors.grey,)
                                                   ),
                                                   new Text(
                                                       "Serving size: "+recipe.servings.toString(),
                                                       style: TextStyle(
-                                                        fontSize: 15.0,
+                                                        fontSize: 17.0,
                                                         color: Colors.grey,)
                                                   ),
                                                 ],
                                               ),
-                                              new SizedBox(width: 140), // add some space
+                                              new SizedBox(width: 128), // add some space
 
                                               // the save button
 
@@ -247,7 +247,7 @@ class RecipeInstructions extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     return new Text(recipe.ingredients[index] + "\n",
                                       style: TextStyle(
-                                        fontSize: 15.0,
+                                        fontSize: 17.0,
                                         color: Colors.grey,
                                       )
                                     );
@@ -288,7 +288,7 @@ class RecipeInstructions extends StatelessWidget {
                                     itemBuilder: (context, index) {
                                       return new Text((index+1).toString() + ". " +recipe.instructions[index]+"\n\n",
                                           style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 17.0,
                                             color: Colors.grey,
                                           )
                                       );

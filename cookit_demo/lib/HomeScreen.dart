@@ -1,9 +1,9 @@
-import 'dart:collection';
 import 'dart:developer';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as prefix1;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:cookit_demo/UserScreen.dart';
 import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/ViewUser.dart';
@@ -15,11 +15,6 @@ import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/service/RootPage.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:cookit_demo/model/User.dart';
-import 'package:cookit_demo/UserScreen.dart';
 
 
 import 'package:cookit_demo/UserScreen.dart';
@@ -27,21 +22,16 @@ import 'package:cookit_demo/UserScreen.dart';
 void main() {
   runApp(MaterialApp(
     home: Home(),
-
   ));
 }
 class Home extends StatefulWidget {
   Home({Key key, this.auth, this.userId, this.logoutCallback, this.role})
       : super(key: key);
 
-
   final BaseAuth auth;
   final String userId;
   final VoidCallback logoutCallback;
   final String role;
-
-
-
 
   @override
   HomeState createState() => HomeState();
@@ -62,14 +52,8 @@ class HomeState extends State<Home> {
   @override
   void initState(){
     super.initState();
-
-
       print(getPosts());
       getUserRef();
-      //print(this.us);
-
-
-
   }
 
   Future<void> getUserRef() async {
@@ -93,29 +77,12 @@ class HomeState extends State<Home> {
               }
         }
       });
-
-      //print(user.displayName.toString());
     });
   }
 
   String getuserId() {
     return userId;
   }
-
-  /*
-  List<Widget> checkRole(AsyncSnapshot shot) {
-    if (userRef.snapshots() == null) {
-      print("Error");
-    }
-    AsyncSnapshot<DocumentSnapshot> snapshot = userRef;
-    AsyncSnapshot<DocumentSnapshot> snap = snapshot;
-    if (snap.data['role'] == 'admin') {
-      return displayAdminPosts(shot);
-    } else {
-      return displayPosts(shot);
-    }
-  }
-*/
 
   Future<List<String>> getPosts() async {
     List<String> temp = [];
@@ -128,24 +95,8 @@ class HomeState extends State<Home> {
     return temp.reversed;
   }
 
-  Future<List<Recipe>> getRecipe(String recipeId) async {
-    List<Recipe> temp = [];
-    final QuerySnapshot result = await Firestore.instance.collection('recipes').getDocuments();
-    final List<DocumentSnapshot> documents = result.documents;
-    //documents.forEach((data) => temp.add(data.documentID));
-    for (var doc in documents){
-      if(doc.documentID.toString() == recipeId){
-        temp.add(Recipe.fromDoc(doc));
-      }
-
-    }
-    return temp;
-  }
-
-
 
   Widget showDelete(BuildContext context,String postId, String role, String url) {
-
       return  Visibility(
         visible: isAdmin,
         child: IconButton(
@@ -154,14 +105,11 @@ class HomeState extends State<Home> {
             color: Colors.redAccent,
             size: 30.0,
           ),
-          onPressed: () {
-              showAlert(context, postId, role, url);
-            }
+          onPressed: () {showAlert(context, postId, role, url);}
           ),
-
       );
-
   }
+
   Future<void> showAlert(BuildContext context, postId, role, url) {
     return showDialog(context: context,builder: (BuildContext context) {
       return AlertDialog(
@@ -184,7 +132,6 @@ class HomeState extends State<Home> {
                   Navigator.pop(context);
                 },
               ),
-
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
                 child: Text(
@@ -193,7 +140,6 @@ class HomeState extends State<Home> {
                       color: Colors.redAccent,
                     )
                 ),
-
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -205,27 +151,21 @@ class HomeState extends State<Home> {
     });
   }
 
-
-  Future<void> removeImage(String url) async{
-    //Future<StorageReference> photoReference =
-
+  Future<void> removeImage(String url) async {
     try {
-      //String path;
       print (url);
       String path = url.replaceAll(new RegExp(r'%2F'), '---');
-     // print(path.split('---')[1]);
       String remove = path.split('---')[1].replaceAll('?alt', '---');
       String img = remove.split('---')[0];
       print(img);
       final StorageReference storageReference =
       FirebaseStorage.instance.ref().child("UserRecipes/" + img);
-
       storageReference.delete();
-
     } catch (e) {
       return null;
     }
   }
+
   Widget buildPostsAvatar(String profilePic) {
     return new GestureDetector(
         child: Container(
@@ -250,39 +190,29 @@ class HomeState extends State<Home> {
               fit: BoxFit.cover,
             ),
           ),
-
         ),
         onTap:(){
-
         }
     );
   }
 
-
-
-
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
-
-
       return Padding(
         padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
       child:Container(
         width: 500,
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          color: Colors.grey[200],
           clipBehavior: Clip.antiAlias,
-         // shape: shape,
-
-          child: Padding(
-            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
-
           child: Column(
               children: <Widget>[
                 Padding(
                   padding:EdgeInsets.symmetric(horizontal: 0),
-
                   child: ListTile(
-
                   leading: SizedBox(
                     child: IconButton(
                       iconSize: 50,
@@ -293,7 +223,6 @@ class HomeState extends State<Home> {
                           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
                         ),
                       ),
-
                       onPressed: (){
                         if(userId != document['userId'] ) {
                           Navigator.push(
@@ -314,7 +243,6 @@ class HomeState extends State<Home> {
                     ),
                   ),
                   contentPadding: EdgeInsets.all(7),
-
                  title: GestureDetector(
                    child:Text(
                           //getUsername(document['email']).toString() == null ? document['email'].toString() : getUsername(document['email']).toString(),
@@ -340,17 +268,11 @@ class HomeState extends State<Home> {
                           auth: widget.auth,)),
                       );
                     }
-
                    },
-
                  ),
-
-
-
                   trailing:
                   Padding(
                     padding:EdgeInsets.fromLTRB(0.0, 0.0, 30.0, 5.0),
-
                     child:Text(
                     document['title'],
                     style: TextStyle(
@@ -361,28 +283,21 @@ class HomeState extends State<Home> {
                   ),
                 ),
                 ),
-
                 Divider(),
                    Center(
-
                    child: ClipRect(
                    child:Image.network(
                       document['imageUrl'],
-
                       height: 300,
                       width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.cover,
-
-                  ),
+                      fit: BoxFit.cover),
                    ),
                    ),
-
                 Divider(),
                 ListTile(
                   title: Text(
                       document['description'],
                       style: TextStyle(fontWeight: FontWeight.w500)),
-
                 ),
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceEvenly,
@@ -415,20 +330,10 @@ class HomeState extends State<Home> {
                       textColor: Colors.orangeAccent,
                       onPressed: () { print('pressed'); },
                     ),
-
                     showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
-
                   ],
                 ),
-
-
-      ]
-      ),
-      ),
-
-      ),
-      )
-        );
+      ]))));
     }).toList();
   }
 
@@ -442,40 +347,33 @@ class HomeState extends State<Home> {
     }
   }
 
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-
-
-        title: Text("Home"),
+        title: Text("Home",
+        style: TextStyle(color: Colors.lightGreen),
+        ),
         //centerTitle: true,
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: new IconButton(
+          icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic)):
+          Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                auth: widget.auth,)),
+            );
+          },
+        ),
         actions: <Widget>[
-
-          new IconButton(
-            icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic)):
-                  Icon(Icons.account_circle, color: Colors.white, size: 40.0),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
-                  auth: widget.auth,)),
-              );
-            },
-
-          ),
           new FlatButton(onPressed: signOut,
               child: new Text('Logout',
               style: new TextStyle(
                 fontSize: 17.0,
-                color: Colors.white,
+                color: Colors.lightGreen,
               ))),
         ],
       ),
@@ -491,36 +389,17 @@ class HomeState extends State<Home> {
                 default:
                   return ListView (
                     physics: const AlwaysScrollableScrollPhysics(),
-
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                     children:
                     displayPosts(snapshot),
-
-                    //Text(snapshot.data)
-                    // Text(snapshot.data.documents[0]['email']
                    );
                   }
-
                 },
-
             ),
       ),
-          /*
-      ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 50),
-        itemCount: posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          Map post = posts[index];
-          return Post(
-            img: post['img'],
-            name: post['name'],
-            dp: post['dp'],
-            time: post['time'],
-          );
-        },
-      ),*/
+
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.lightGreen,
         child: Icon(
           Icons.search,
         color: Colors.white,),
@@ -543,9 +422,7 @@ class HomeState extends State<Home> {
             return Text('Loading...');
           }
         }
-
       )
-
     );
   }
 }

@@ -1,26 +1,18 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
 import 'package:cookit_demo/SavePage.dart';
 import 'package:cookit_demo/favorite.dart';
-import 'package:cookit_demo/recipeResults.dart';
-import 'package:cookit_demo/Model/User.dart';
 import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/service/Authentication.dart';
-
 import 'package:cookit_demo/editProfile.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:splashscreen/splashscreen.dart';
-import 'dart:io';
 
 import 'model/PostModel.dart';
+
 void main(){
   runApp(new MaterialApp(
     home: UserProfile(),
@@ -194,7 +186,7 @@ class _UserProfile extends State<UserProfile> {
     Color textColor = Colors.white,
   }) {
     return new ClipRRect(
-      borderRadius: new BorderRadius.circular(100.0),
+      borderRadius: new BorderRadius.circular(15.0),
       child: new MaterialButton(
         minWidth: 120.0,
         height: 40.0,
@@ -218,11 +210,10 @@ class _UserProfile extends State<UserProfile> {
     Color textColor = Colors.white,
   }) {
     return new ClipRRect(
-      borderRadius: new BorderRadius.circular(100.0),
+      borderRadius: new BorderRadius.circular(15.0),
       child: new MaterialButton(
         minWidth: 120.0,
         height: 40.0,
-
         color: Colors.lightBlueAccent,
         textColor: textColor,
         onPressed: () {
@@ -286,9 +277,10 @@ class _UserProfile extends State<UserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(username.toString(),),
+        title: Text(username.toString(),
+        style: TextStyle(color: Colors.lightGreen),),
         centerTitle: true,
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Colors.white,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.bookmark_border,
@@ -306,14 +298,9 @@ class _UserProfile extends State<UserProfile> {
 //        centerTitle: true,
 //        backgroundColor: Colors.lightGreen,
         leading: role == "admin" ?
-        new IconButton(
-          icon: new Icon(Icons.settings),
-          tooltip: "Manage",
-          onPressed: () => Navigator.of(context).pop(null),
-        )
-
-
-            :null,
+        new IconButton( icon: new Icon(Icons.settings), tooltip: "Manage", onPressed: () => Navigator.of(context).pop(null), ) :
+        new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
+          onPressed: () => Navigator.of(context).pop(context),),
       ),
       body: ListView(
           children: <Widget>[
@@ -326,9 +313,6 @@ class _UserProfile extends State<UserProfile> {
                   ),
                   Row(
                     children: <Widget>[
-
-
-
                       Expanded(
                         flex: 1,
                         child: Column(
@@ -346,7 +330,6 @@ class _UserProfile extends State<UserProfile> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-
                                 ]),
                           ],
                         ),
@@ -383,9 +366,7 @@ class _UserProfile extends State<UserProfile> {
 
                         crossAxisCount: 3,
                         childAspectRatio: 1.0,
-                        //                    padding: const EdgeInsets.all(0.5),
                         mainAxisSpacing: 1.5,
-
                         crossAxisSpacing: 1.5,
                         shrinkWrap: true,
                         physics: const AlwaysScrollableScrollPhysics(),
@@ -453,9 +434,7 @@ Widget showPosts(BuildContext context, Post post, url, String currId, String cur
 }
 
 Widget showDelete(String postId, String role, String url) {
-
   return  Visibility(
-
     child: IconButton(
         icon: Icon(
           Icons.remove_circle,
@@ -512,19 +491,19 @@ class PostDetails extends StatelessWidget {
     // Use the Post to create the UI.
     return Scaffold(
       appBar: AppBar(
-        title: Text(post.title),
-
-
+        title: Text(post.title,
+        style: TextStyle(color: Colors.lightGreen),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: Card(
-
           child: Padding(
             padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
             child: Column(
                 children: <Widget>[
-
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage: post.profileImage == null ? NetworkImage(
@@ -533,9 +512,7 @@ class PostDetails extends StatelessWidget {
                         post.profileImage,
                       ),
                     ),
-
                     contentPadding: EdgeInsets.all(7),
-
                     title: GestureDetector(
                       child:Text(
                         post.username,
@@ -543,14 +520,8 @@ class PostDetails extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onTap: () {
-
-
-                      },
-
+                      onTap: () {},
                     ),
-
-
                     trailing: Text(
                       post.title,
                       style: TextStyle(
@@ -558,25 +529,17 @@ class PostDetails extends StatelessWidget {
                         fontSize: 11,
                       ),
                     ),
-
                   ),
-                  Divider(),
                   Center(
-
                     child: ClipRect(
                       child:Image.network(
                         post.imageUrl,
-
                         height: 300,
                         width: MediaQuery.of(context).size.width,
                         fit: BoxFit.cover,
-
                       ),
                     ),
                   ),
-
-
-                  Divider(),
                   Divider(),
                   ListTile(
 
@@ -587,12 +550,7 @@ class PostDetails extends StatelessWidget {
 
 
                   ),
-                  Divider(),
-                  Divider(),
-                  Divider(),
-                  Divider(),
                   ButtonBar(
-
                     alignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       FlatButton(
@@ -608,9 +566,6 @@ class PostDetails extends StatelessWidget {
                       // show menu button
                       post.email == currEmail ?
                       showUserOptions(context, post, currId, currEmail): Container(),
-
-
-
                     ],
                   ),
 

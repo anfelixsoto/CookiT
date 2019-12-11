@@ -117,12 +117,15 @@ class RecipeInstructions extends StatelessWidget {
                                       //scrollDirection: Axis.vertical,
                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        new Text(
-                                          recipe.name,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0,
-                                            color: Colors.black,)
+                                        new Container(
+                                          width: 300,
+                                          child: Text(
+                                            recipe.name,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                              color: Colors.black,)
+                                          ),
                                         ),
 
                                         new Padding (

@@ -122,7 +122,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                 onPressed: () => Navigator.pop(context, false),
               ),
               actions: <Widget>[
-                showStar(),
+                showStar(userId, widget.recipeId.rid.toString(), recipe),
 
               ],
             ),
@@ -347,15 +347,19 @@ class _RecipeDetails extends State<RecipeDetails>{
           );
   }
 
-  Widget showStar(){
-    if(favorite){
+  Widget showStar(String userId, String recipeId, Recipe recipe){
+    if(favorite == false){
       return IconButton(
         icon: Icon(Icons.favorite_border,
         color: Colors.red,
         size: 30),
         onPressed: (){
+          setState(() {
+            favorite = true;
+          });
           UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
           RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+          print("saved");
         },
       );
     } else{
@@ -364,6 +368,9 @@ class _RecipeDetails extends State<RecipeDetails>{
             color: Colors.red,
             size: 30),
         onPressed: (){
+          setState(() {
+            favorite = false;
+          });
           UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
         },
       );

@@ -224,7 +224,7 @@ class HomeState extends State<Home> {
             child: (profilePic == null || profilePic.toString() == "")
                 ?
             Image.network(
-              '//https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
             )
                 : Image.network(
               profilePic,
@@ -272,8 +272,8 @@ class HomeState extends State<Home> {
                       icon:  document['profileImage'] != "" ? CircleAvatar(radius: 50.0, backgroundImage: NetworkImage(document['profileImage'])):
                       CircleAvatar(
                         radius: 50.0,
-                        backgroundImage: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                        backgroundImage: AssetImage(
+                          'assets/images/profile.jpg',
                         ),
                       ),
 

@@ -125,7 +125,7 @@ class _SavedPage extends State<SavePage>{
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('BookMarks',
+        title: new Text('Bookmarks',
           style: TextStyle(color: Colors.lightGreen,),),
         centerTitle: true,
         backgroundColor: Colors.white,

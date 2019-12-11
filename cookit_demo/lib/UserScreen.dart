@@ -517,12 +517,18 @@ class PostDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     // Use the Post to create the UI.
     return Scaffold(
+      resizeToAvoidBottomInset: false, // set it to false
+
       appBar: AppBar(
-        title: Text(post.title),
+        title: Text(post.title, style: TextStyle(color: Colors.white)),
+        
+        iconTheme: IconThemeData(
+            color: Colors.white, //change your color here
+        ),
 
 
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
         child: Card(
 

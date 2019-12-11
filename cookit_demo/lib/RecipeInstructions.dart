@@ -119,7 +119,7 @@ class RecipeInstructions extends StatelessWidget {
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0,
-                                            color: Colors.black,)
+                                            color: Colors.white,)
                                         ),
                                         new Text(
                                           "Prep time: "+recipe.prepTime.toString(),

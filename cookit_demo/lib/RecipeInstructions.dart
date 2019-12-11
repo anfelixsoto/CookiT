@@ -94,30 +94,28 @@ class RecipeInstructions extends StatelessWidget {
                         child:
                       Row(
 
+                          crossAxisAlignment: CrossAxisAlignment.center,
 
-
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          //mainAxisAlignment: MainAxisAlignment.center,
                         children:[
                           Container(
                             height:150.0,
-                            child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            primary:false,
-                             shrinkWrap: true,
+                            child: Row(
+
 
                           children: <Widget>[
 
+
+
                             Container(
-                              width: 270,
-                              height:150,
-                              padding: EdgeInsets.fromLTRB(5, 0, 20, 0),
+
+
+                              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
                               //mainAxisSize: MainAxisSize.max,
                               //children:<Widget>[
-                                    child:ListView(
+                                    child:Column(
                                       //scrollDirection: Axis.vertical,
-                                      physics:NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      primary:false,
+                                     crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         new Text(
                                           recipe.name,
@@ -126,63 +124,83 @@ class RecipeInstructions extends StatelessWidget {
                                             fontSize: 20.0,
                                             color: Colors.black,)
                                         ),
-                                        new Text(
-                                          "Prep time: "+recipe.prepTime.toString(),
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.grey,)
+
+                                        new Padding (
+                                          padding:EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),//was 30
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                            children: <Widget>[
+                                              new Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                                children: <Widget>[
+                                                  new Text(
+                                                      "Prep time: "+recipe.prepTime.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey,)
+                                                  ),
+                                                  new Text(
+                                                      "Calories: "+recipe.numCalories.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey,)
+                                                  ),
+                                                  new Text(
+                                                      "Serving size: "+recipe.servings.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey,)
+                                                  ),
+                                                ],
+                                              ),
+                                              new SizedBox(width: 140), // add some space
+
+                                              // the save button
+
+
+                                              new Padding(
+                                                padding:EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),//was 30
+                                                child:Material(
+                                                  elevation: 5.0,
+                                                  borderRadius: BorderRadius.circular(10.0),
+                                                  color: Colors.lightBlueAccent,
+                                                  child:MaterialButton(
+                                                    minWidth: 110,
+                                                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                                                    onPressed: (){
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => PostUpload(recipeId: recipe.id.toString(),))
+                                                      );
+                                                    },
+                                                    child: Text("Take a photo",
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
+
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+
+
+                                            ],
+                                          ),
+
                                         ),
-                                        new Text(
-                                          "Calories: "+recipe.numCalories.toString(),
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.grey,)
-                                        ),
-                                        new Text(
-                                          "Serving size: "+recipe.servings.toString(),
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.grey,)
-                                        ),
+
+
                                       ]
                                     ),
                               //]
                             ),
-                                     Container(
-                                       width:100,
-                                        child:ListView(
-                                          physics:NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      children: <Widget>[Padding(
-                                              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),//was 30
-                                              child:Material(
-                                                elevation: 5.0,
-                                                borderRadius: BorderRadius.circular(10.0),
-                                                color: Colors.lightBlueAccent,
-                                                child:MaterialButton(
-                                                  minWidth: MediaQuery.of(context).size.width,
-                                                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                                  onPressed: (){
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => PostUpload(recipeId: recipe.id.toString(),))
-                                                  );
-                                                  },
-                                                  child: Text("Take a photo",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.white,
 
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ),
-                                      ]
-                                      ),
-                                     ),
                                 ]
                              ),
                       ),

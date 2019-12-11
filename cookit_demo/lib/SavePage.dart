@@ -1,48 +1,80 @@
+//Daichi Kanasugi
+//favorite.dart
+//This file allows people to search through their favorite.
+
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cookit_demo/RecipeDetails.dart';
-import 'package:cookit_demo/service/Authentication.dart';
+import 'package:cookit_demo/RecipeInstructions.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-import 'model/Recipe.dart';
+//Global Variable for List.
 
-void main() => runApp(SavePage());
+void main() => runApp(MyApp());
 
-class SavePage extends StatefulWidget{
-  SavePage({Key key, this.auth, this.userId}) : super(key: key);
-
-  final BaseAuth auth;
-  final String userId;
-
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
-  _SavedPage createState() => new _SavedPage();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'SearchAppBarRecipe',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SavePage(title: 'SearchAppBarRecipe'),
+    );
+  }
 }
 
-class _SavedPage extends State<SavePage>{
+class SavePage extends StatefulWidget {
+  SavePage({Key key, this.title}) : super(key: key);
 
-  FirebaseUser currentUser;
-
-  bool isLoading = false;
-  DocumentReference userRef;
-  String userId;
-  List<String> savedRecipes = [];
-  List<Recipe> userRecipes = [];
+  final String title;
 
   @override
-  void initState(){
+  _SavePage createState() => _SavePage();
+}
+
+class _SavePage extends State<SavePage> {
+  FirebaseUser currentUser;
+
+  bool loading = false;
+  DocumentReference userRef;
+  String profileImage;
+  String userId;
+  List<String> savedRecipes;
+  List<Recipe> recipes = [];
+  List<String> favNames;
+  List<String> saved = [];
+
+  List<String> filterRecipes;
+  TextEditingController editingController = TextEditingController();
+  var items = List<String>();
+  TextEditingController filterController = new TextEditingController();
+
+  @override
+  void initState() {
     super.initState();
-    loadCurrentUser;
+    //Initializing search delegate with sorted list of recipes
+    loadCurrentUser();
     getUserRef();
+    getFavs();
+
+
   }
 
-  void loadCurrentUser(){
-    FirebaseAuth.instance.currentUser().then((FirebaseUser user){
+  void getFavs(){
+    print(saved);
+  }
+  void loadCurrentUser() {
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
         this.currentUser = user;
+
       });
     });
   }
@@ -53,41 +85,43 @@ class _SavedPage extends State<SavePage>{
 
     FirebaseUser user = await _auth.currentUser();
 
-    setState(() {
-      List<String> temp = [];
+    //_searchDelegate = _SearchAppBarDelegate(favorites);
+
+    setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
-      userRef.get().then((data){
-        if(data.exists){
+      List<String> temp = [];
+      userRef.get().then((data) {
+        if (data.exists) {
+          profileImage = data.data['profileImage'].toString();
           temp = List.from(data.data['saved']);
           for(var i = 0; i < temp.length; i++){
-            savedRecipes.add(temp[i]);
+            saved.add(temp[i]);
           }
-          goThroughList();
         }
+      });
+
+
+
+
+
+
+      //print(user.displayName.toString());
+    });
+
+    filterController.addListener(() {
+      setState(() {
+        //filterRecipes = filterController.text;
       });
     });
   }
 
-  void goThroughList(){
-    for(var i = 0; i < savedRecipes.length; i++){
-      log('savedRecipes[' + i.toString() + ']:' + savedRecipes[i]);
-    }
+  @override
+  void dispose() {
+    filterController.dispose();
+    super.dispose();
   }
 
-  Future<List<String>> getSavedRecipes() async {
-    DocumentSnapshot querySnapshot = await Firestore.instance
-        .collection('users')
-        .document(userId)
-        .get();
-    if(querySnapshot.exists &&
-        querySnapshot.data.containsKey('saved') &&
-        querySnapshot.data['saved'] is List){
-      return List<String>.from(querySnapshot.data['saved']);
-    }
-
-    return [];
-  }
 
   Future<List<Recipe>> getRecipeDetails(List<String> temp) async{
     List<Recipe> recipeDetails = [];
@@ -97,6 +131,7 @@ class _SavedPage extends State<SavePage>{
     int rec_prepTime, rec_servings;
     List<String> rec_ingredients;
     List<String> rec_instructions;
+
 
     for(var i in temp){
       DocumentSnapshot snapshot = await Firestore.instance
@@ -116,17 +151,19 @@ class _SavedPage extends State<SavePage>{
         recipe = new Recipe(id: rec_id,name: rec_name,description: rec_description,imageURL: rec_imageURL ,numCalories: rec_numCal
             ,prepTime: rec_prepTime,servings: rec_servings, ingredients: rec_ingredients,instructions: rec_instructions);
         recipeDetails.add(recipe);
+
       }
     }
+
     return recipeDetails;
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('BookMarks',
-          style: TextStyle(color: Colors.lightGreen,),),
+    return Scaffold(
+      appBar: AppBar(
+        title: new Text('Bookmarks',
+        style: TextStyle(color: Colors.lightGreen)),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -137,77 +174,102 @@ class _SavedPage extends State<SavePage>{
           onPressed: (){Navigator.pop(context);},
         ),
       ),
-      body: FutureBuilder<List<Recipe>>(
-          future: getRecipeDetails(savedRecipes),
-          builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
-            if (!snapshot.hasData)
-              return Container(
-                  alignment: FractionalOffset.center,
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: CircularProgressIndicator());
-            else if(snapshot.data.length == 0){
-              return Container(
-                  alignment: FractionalOffset.center,
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text('No Bookmarked Items!')
-              );
-            } else{
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (int, i) =>
-                    ListTile(
-                      leading: CircleAvatar(radius: 30.0,
-                      backgroundImage: NetworkImage(snapshot.data[i].imageURL),
-                      ),
-                      title: Text(snapshot.data[i].name),
-                      subtitle: Text(""),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete_outline,
-                          color: Colors.redAccent,
-                        ),
-                        onPressed: (){
-                          showAlert('saved', context, userId, snapshot.data[i].id);
-                        },
-                      ),
-                      onTap: () {
-                        //TODO: Implement recipeDetails
-                      },
-                    ),
-              );
-            }
-          }
+      body:Column(
+          children: <Widget>[
+            Expanded(
+              child: StreamBuilder(
+                  stream: Firestore.instance
+                      .collection('users')
+                      .document(userId)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    print(snapshot);
+                    switch(snapshot.connectionState){
+                      case ConnectionState.waiting:
+                        return Center(
+                            child: CircularProgressIndicator()
+                        );
+                      default:
+                        List savedList = snapshot.data['saved'];
+                        return new ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: List.generate(snapshot.data['saved'].length, (index) {
+                            //print(snapshot.data['favorites'][index]);
+                            List temp3 = [];
+                            if(!temp3.contains(snapshot.data['saved'][index].toString())) {
+                              temp3.add(snapshot.data['saved'][index].toString());
+                            }
+                            return  StreamBuilder(
+                                stream: Firestore.instance
+                                    .collection('recipes')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  print(snapshot);
+                                  switch(snapshot.connectionState){
+                                    case ConnectionState.waiting:
+                                      return Center(
+                                          child: CircularProgressIndicator()
+                                      );
+                                    default:
+                                    // List videosList = snapshot.data;
+                                      return ListView.builder(
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data.documents.length,
+                                        itemBuilder: (context, recipeId) {
+                                          DocumentSnapshot recipe = snapshot.data.documents[recipeId];
+                                          if(temp3.contains(recipe.documentID) ) {
+                                            return Container(
+                                              height: 100,
+                                              padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                              child: Card(
+                                                clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                      children: <Widget>[
+                                                        ListTile(
+                                                          leading: CircleAvatar(radius: 30.0,
+                                                            backgroundImage: NetworkImage(recipe.data['imageURL']),
+                                                          ),
+                                                          title: Text(recipe.data['name'].toString()),
+                                                          subtitle: Text(""),
+                                                          trailing: IconButton(
+                                                            icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                                                            onPressed: (){
+                                                              UserOperations.delete('saved', userId, recipe.documentID);
+                                                            },
+                                                          ),
+                                                          onTap: () {
+                                                            Recipe selectRecipe = Recipe.fromDoc(recipe);
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe,)),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ]
+                                                  ),
+                                                ),
+                                              );
+                                          } return Container(
+                                          );
+                                        },
+                                      );
+                                  }
+                                }
+                            );
+                          }
+                          ),
+                        );
+                    }
+                  }
+              ),),
+
+          ]
+
       ),
     );
-  }
-
-  Future<void> showAlert(String type, BuildContext context, String userId, String recipeId){
-    return showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        title: Text('Are you sure you want to delete this?'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Padding(padding: EdgeInsets.all(8.0),),
-              GestureDetector(
-                child: Text('Yes'),
-                onTap: (){
-                  UserOperations.delete(type, userId, recipeId);
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => SavePage()
-                  ));
-                },
-              ),
-              Padding(padding: EdgeInsets.all(8.0),),
-              GestureDetector(
-                child: Text('No'),
-                onTap: (){
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      );
-    });
   }
 }

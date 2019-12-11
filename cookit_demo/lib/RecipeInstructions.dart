@@ -13,7 +13,9 @@ void main(){
 
 class RecipeInstructions extends StatelessWidget {
   final Recipe recipe;
-  RecipeInstructions({Key key,@required this.recipe}):super(key:key);
+  final String rId;
+  RecipeInstructions({Key key,@required this.recipe, this.rId}):super(key:key);
+
 
 
   @override
@@ -118,7 +120,7 @@ class RecipeInstructions extends StatelessWidget {
                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         new Container(
-                                          width: 300,
+                                          width: 380,
                                           child: Text(
                                             recipe.name,
                                             style: TextStyle(
@@ -175,7 +177,7 @@ class RecipeInstructions extends StatelessWidget {
                                                     onPressed: (){
                                                       Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(builder: (context) => PostUpload(recipeId: recipe.id.toString(),))
+                                                          MaterialPageRoute(builder: (context) => PostUpload(recipe:recipe, rid: rId,))
                                                       );
                                                     },
                                                     child: Text("Take a photo",

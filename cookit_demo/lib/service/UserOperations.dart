@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/User.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -66,6 +67,13 @@ class UserOperations {
 
   }
 
+  static Future<DocumentSnapshot> getRecipeFromDB(String recipeId) {
+    return Firestore.instance.collection('recipes')
+        .document(recipeId)
+        .get();
+
+    //return data;
+  }
   static  Future<void> deleteFavorite(String userId, String recipeId){
     Firestore.instance.collection('users')
         .document(userId)

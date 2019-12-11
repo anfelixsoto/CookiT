@@ -31,7 +31,8 @@ Widget buildError(BuildContext context, FlutterErrorDetails error) {
 class RecipeDetails extends StatefulWidget {
   final Recipe recipe;
   final RecipeId recipeId;
-  RecipeDetails({Key key,@required this.recipe,@required this.recipeId}):super(key:key);
+  final String recid;
+  RecipeDetails({Key key,@required this.recipe, this.recipeId, this.recid}):super(key:key);
 
 
   @override
@@ -81,7 +82,7 @@ class _RecipeDetails extends State<RecipeDetails>{
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
 
-      String recipeId = widget.recipeId.rid.toString();
+      //String recipeId = recipe.toString();
       //log(recipeId);
 
       for(var i = 0; i < favorites.length; i++){
@@ -122,7 +123,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                 onPressed: () => Navigator.pop(context, false),
               ),
               actions: <Widget>[
-                showStar(userId, widget.recipeId.rid.toString(), recipe),
+                showStar(userId, recipe.id, recipe),
 
               ],
             ),
@@ -194,9 +195,9 @@ class _RecipeDetails extends State<RecipeDetails>{
 
                                             minWidth: MediaQuery.of(context).size.width,
                                             onPressed: (){
-                                              UserOperations.addToSave(userId, widget.recipeId.rid.toString());
+                                              UserOperations.addToSave(userId, recipe.id);
                                               //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
-                                              RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+                                              RecipeOperations.addToRecipes(recipe.id, recipe);
                                             },
                                             child: Text("Save",
                                               textAlign: TextAlign.center,
@@ -314,10 +315,18 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                   onPressed: (){
+                                    widget.recipeId != null ?
+
+
                                    Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe))
+                                        MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe, rId: widget.recipeId.rid.toString()))
+                                    )
+                                        :Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe, rId: widget.recid.toString()))
                                     );
+
                                   },
                                   child: Text("Start Recipe",
                                     textAlign: TextAlign.center,
@@ -357,8 +366,8 @@ class _RecipeDetails extends State<RecipeDetails>{
           setState(() {
             favorite = true;
           });
-          UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
-          RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+          UserOperations.addToFavorites(userId, recipe.id);
+          RecipeOperations.addToRecipes(recipe.id, recipe);
           print("saved");
         },
       );
@@ -371,7 +380,7 @@ class _RecipeDetails extends State<RecipeDetails>{
           setState(() {
             favorite = false;
           });
-          UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
+          UserOperations.deleteFavorite(userId, recipe.id);
         },
       );
     }

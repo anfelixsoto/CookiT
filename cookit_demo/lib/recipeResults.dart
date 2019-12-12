@@ -202,7 +202,7 @@ class _RecipeResults extends State<RecipeResults>{
                                                             //Recipe selectRecipe = Recipe.fromDoc(recipe);
                                                             Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: rec[index], recid: rec[index], )),
+                                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: rec[index], recipeId: recipeList[index], )),
                                                             );
                                                           },
                                                         ),

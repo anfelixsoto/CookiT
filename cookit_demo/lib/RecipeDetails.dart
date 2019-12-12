@@ -46,7 +46,7 @@ class _RecipeDetails extends State<RecipeDetails>{
   String currEmail;
   String userId;
   bool saved = false;
-  bool favorite;
+  bool favorite = false;
 
 
   @override
@@ -70,15 +70,21 @@ class _RecipeDetails extends State<RecipeDetails>{
         querySnapshot.data.containsKey('favorites') &&
         querySnapshot.data['favorites'] is List) {
       // Create a new List<String> from List<dynamic>
+      print(querySnapshot.data['favorites']);
+      querySnapshot.data.forEach((m,v) {
+        print(v);
+      });
 
-      if(widget.recipeId != null && List<String>.from(querySnapshot.data['favorites']).contains(widget.recipeId.rid.toString())){
-        favorite = false;
-      } else if(widget.recid != null && List<String>.from(querySnapshot.data['favorites']).contains(widget.recid.id.toString())){
-        favorite = false;
-        print(favorite.toString());
-      }else{
-        favorite = false;
-      }
+      setState(() {
+        if(widget.recipeId != null && List<String>.from(querySnapshot.data['favorites']).contains(widget.recipeId.rid.toString())){
+          favorite = true;
+        } else if(widget.recid != null && List<String>.from(querySnapshot.data['favorites']).contains(widget.recid.id.toString())){
+          favorite = true;
+          print(favorite.toString());
+        }else{
+          favorite = false;
+        }
+      });
       return List<String>.from(querySnapshot.data['favorites']);
     }
     return [];
@@ -95,6 +101,23 @@ class _RecipeDetails extends State<RecipeDetails>{
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
+
+      userRef.get().then((data){
+        //print(List<String>.from(data.data["favorites"]).contains(1059776));
+
+        setState((){
+          if(widget.recipeId != null && List<String>.from(data.data["favorites"]).contains(widget.recipeId.rid.toString())){
+            favorite = true;
+          } else if(widget.recid != null && List<String>.from(data.data["favorites"]).contains(widget.recid.id.toString())){
+            favorite = true;
+            print(favorite.toString());
+          }else{
+            favorite = false;
+          }
+
+
+        });
+      });
 
 
       //String recipeId = recipe.toString();

@@ -195,7 +195,7 @@ class _Favorites extends State<Favorites> {
     return snapshot.data.documents.map<Widget>((document){
       if(document['name'].toString() != "") {
         return Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 1),
             child: Container(
               width: 500,
               child: Card(
@@ -223,7 +223,7 @@ class _Favorites extends State<Favorites> {
                               fit: BoxFit.cover,
                             )
                                 : Container(
-                              padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
+                              padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                               margin: const EdgeInsets.only(
                                   top: 0, bottom: 0.0),
                               height: 200,
@@ -281,41 +281,31 @@ class _Favorites extends State<Favorites> {
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.lightGreen,
               size: 24.0,
             ),
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Favorites'),
+        title: Text(
+            'Favorites',
+              style: TextStyle(
+                color: Colors.lightGreen,
+              ),
+        ),
+
         actions: <Widget>[
           //Adding the search widget in AppBar
-          IconButton(
-            tooltip: 'Search',
-            icon: const Icon(Icons.search),
-            //Don't block the main thread
-            onPressed: () {
 
-            },
-          ),
         ],
+        backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       body:Column(
 
         children: <Widget>[
 
-            TextField(
-                decoration: new InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                  hintText: 'Search by name',
-                ),
-               onChanged: (string) {
-                  setState(() {
 
-                  });
-
-               },
-            ),
 
 
           Expanded(
@@ -377,6 +367,7 @@ class _Favorites extends State<Favorites> {
                                       if(temp3.contains(recipe.documentID) ) {
                                         return Container(
                                           height: 250,
+
                                           padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                                           child: Card(
 
@@ -392,6 +383,8 @@ class _Favorites extends State<Favorites> {
 
                                                     Center(
 
+                                                      child: Padding(
+                                                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                                       child: ClipRect(
                                                         child: recipe.data['imageURL'].toString() != "" ?
                                                         Image.network(
@@ -417,6 +410,7 @@ class _Favorites extends State<Favorites> {
                                                         ),
 
                                                       ),
+                                          ),
                                                     ),
 
 
@@ -458,7 +452,7 @@ class _Favorites extends State<Favorites> {
                                                               Recipe selectRecipe = Recipe.fromDoc(recipe);
                                                               Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe,)),
+                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe, rId: selectRecipe,)),
                                                               );
 
                                                             },
@@ -479,7 +473,7 @@ class _Favorites extends State<Favorites> {
 
                                           ),);
                                       } return Container(
-                                        padding: EdgeInsets.only(top: 0.0, bottom: 5.0),
+                                        padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                                       );
                                     },
                                   );

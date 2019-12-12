@@ -2,7 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/HomeScreen.dart';
 import 'package:cookit_demo/ImageUpload.dart';
+import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/UserScreen.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/recipeResults.dart';
 import 'package:cookit_demo/Model/User.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
@@ -410,7 +412,7 @@ class _ViewUser extends State<ViewUser> {
       child: IconButton(
           icon: Icon(
             Icons.more_vert,
-            color: Colors.white,
+            color: Colors.lightGreen,
             size: 30.0,
           ),
           onPressed: () {
@@ -674,7 +676,17 @@ class PostDetails extends StatelessWidget {
                       FlatButton(
                         child: Text('Cook it'),
                         textColor: Colors.lightBlueAccent,
-                        onPressed: () { print('pressed'); },
+                        onPressed: () {
+                          Firestore.instance.collection('recipes').document(post.recipeId).get().then((data) {
+                            //print(data.documentID);
+                            Recipe postRecipe =  Recipe.fromDoc(data);
+                            print(postRecipe.id);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe,),)
+                            );
+                          });
+                          },
                       ),
                       FlatButton(
                         child: Text('Next time'),

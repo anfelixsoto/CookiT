@@ -219,6 +219,45 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                   onPressed: (){
+<<<<<<< Updated upstream
+=======
+                                    //print((widget.recipeId.rid.toString()));
+
+                                    if(widget.recipeId != null){
+                                      Firestore.instance.collection('recipes').document(widget.recipeId.rid.toString()).get().then((data) {
+                                        //print(data.documentID);
+                                        Recipe postRecipe = Recipe.fromDoc(data);
+                                        print(postRecipe.id);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                RecipeInstructions(recipe: postRecipe,
+                                                  rId: postRecipe, dbId: widget.recipeId),)
+                                        );
+
+                                      });
+                                    }else{
+
+                                      Firestore.instance.collection('recipes').document(widget.recid.id.toString()).get().then((data) {
+                                        //print(data.documentID);
+                                        Recipe postRecipe = Recipe.fromDoc(data);
+                                        print(postRecipe.id);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                RecipeInstructions(recipe: postRecipe,
+                                                  rId: widget.recid),)
+                                        );
+
+                                      });
+
+                                    }
+
+                                /*
+                                    widget.recipeId != null ?
+
+
+>>>>>>> Stashed changes
                                    Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe))

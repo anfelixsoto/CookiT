@@ -187,7 +187,7 @@ showAvatar(String pic) {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RecipeSearch()),
+            MaterialPageRoute(builder: (context) => new RecipeSearch()),
           );
         },
         child: new Text(text),

@@ -58,6 +58,44 @@ class _RecipeResults extends State<RecipeResults>{
 
   @override
   Widget build(BuildContext context){
+    final resultsHeader=Center(
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(36.0),
+          child: ListView(
+            children: <Widget>[
+              SizedBox(height: 20.0,),
+              Text(
+                "Recipe Results",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 35.0,
+                  color: Colors.lightGreen,)
+              ),
+              SizedBox(height: 30.0,),
+              Text(
+                getIngredientString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Colors.grey,)
+              ),
+              SizedBox(height:50.0),
+              Text(
+                "No recipes found :(",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30.0,
+                  color: Colors.lightGreen,)
+              ),
+            ]
+          ),
+        ),
+      ),
+    );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -91,6 +129,21 @@ class _RecipeResults extends State<RecipeResults>{
                   builder: (context, snapshot2) {
                     if (snapshot2.hasData) {
                       List<Recipe> rec=snapshot2.data;
+                      for(int i=0;i<rec.length;i++){
+                        Recipe rTest=rec[i];
+                        if(rTest==null||
+                          rTest.ingredients==null||
+                          rTest.instructions==null||
+                          rTest.instructions.isEmpty||
+                          rTest.ingredients.isEmpty){
+                            rec.removeAt(i);
+                            i--;
+                          }
+                        }
+                        if(rec.length==0){
+                          return resultsHeader;
+                        }
+                        else{
                         return Center(
                           child: Container(
                             child: Padding(
@@ -121,12 +174,7 @@ class _RecipeResults extends State<RecipeResults>{
                                       itemCount: rec.length,
                                       itemBuilder: (context, index) {
                                         if(rec.length>0){
-                                        Recipe rTest=rec[index];
-                                        if(rTest!=null&&
-                                        rTest.ingredients!=null&&
-                                        rTest.instructions!=null&&
-                                        rTest.instructions.isNotEmpty&&
-                                        rTest.ingredients.isNotEmpty){
+                                        //Recipe rTest=rec[index];
                                             return new Padding(
                                             padding:EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
                                             child:Material(
@@ -157,8 +205,8 @@ class _RecipeResults extends State<RecipeResults>{
                                         else{
                                           return SizedBox(height:0.0);
                                         }
-                                        }return SizedBox(height:0.0);
-                                          }),
+                                        return SizedBox(height:0.0);
+                                        }),
                                       //},
                                     ),
                                   //),
@@ -167,6 +215,7 @@ class _RecipeResults extends State<RecipeResults>{
                             ),
                           ),
                         );
+                        }
                       } 
                       else if(snapshot2.hasError){
                         //return Text("${snapshot2.error}");

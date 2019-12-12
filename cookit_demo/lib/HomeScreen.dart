@@ -382,9 +382,13 @@ class HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue.shade400,
         child: Icon(
-          Icons.add,),
-        onPressed: (){},
-      ),*/
+          Icons.search,
+        color: Colors.white,),
+        onPressed: (){
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context) => new RecipeSearch()));
+        },
+      ),
     );
   }
 
@@ -398,11 +402,9 @@ class HomeState extends State<Home> {
           }else{
             return Text('Loading...');
           }
-        }
+        }*/
 
-      )
-
-    );
+      );
   }
 
 

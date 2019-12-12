@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
 
-void main(){
-  runApp(MaterialApp(
-    title: 'CookiT Login',
-    home: RecipeSearch(),
-  ));
-}
+void main() => runApp(
+      new MaterialApp(
+        builder: (context, child) => new SafeArea(child: child),
+        home: new RecipeSearch(),
+      ),
+    );
 
 class RecipeSearch extends StatefulWidget {
-  final state = _RecipeSearchState();
+  var state = new _RecipeSearchState();
   final _count=0;
   bool flag;
   List<TextField> fields;
@@ -21,7 +21,8 @@ class RecipeSearch extends StatefulWidget {
   @override
   _RecipeSearchState createState() {
     flag=false;
-  return _RecipeSearchState();
+    state=new  _RecipeSearchState();
+    return state;
   }
 
   RecipeSearch();
@@ -33,10 +34,10 @@ class RecipeSearch extends StatefulWidget {
 
 class _RecipeSearchState extends State<RecipeSearch> {
 
-  static var controllerList=new List<TextEditingController>();
-  static var listOfFields = <Widget>[];
+  var controllerList=new List<TextEditingController>();
+  var listOfFields = <Widget>[];
   int _count=0;
-  static bool flag=false;
+  bool flag=false;
 
   void _add() {
     controllerList.add(new TextEditingController());
@@ -52,6 +53,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
         ),
       ));
       setState(() => ++_count);
+      print(_count);
   }
 
   List<String> getIngredients(){

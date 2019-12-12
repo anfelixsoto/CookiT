@@ -22,9 +22,6 @@ void main(){
 
 
 class UserProfile extends StatefulWidget {
-
-
-
   UserProfile({Key key, this.auth, this.userId, this.logoutCallback})
       : super(key: key);
   final String userId;
@@ -340,7 +337,6 @@ class _UserProfile extends State<UserProfile> {
                 ],
               ),
             ),
-            Divider(),
             //buildImageViewButtonBar(),
             Divider(height: 0.0),
             Container (
@@ -371,7 +367,7 @@ class _UserProfile extends State<UserProfile> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         children: snapshot.data.map((Post post) {
                           return GridTile(
-                            child: showPosts(context, post, post.imageUrl, currId, currEmail),
+                            child: showPosts(context, post, post.imageUrl, currId, currEmail, profilePic),
                           );
                         }).toList());
                   }
@@ -386,12 +382,12 @@ class _UserProfile extends State<UserProfile> {
   }
 }
 
-Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
+Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail, String profileImage){
   return InkWell(
     //  onTap: () => print("Post " + post.id +" pressed"),
     onTap:() {
       Navigator.push(context, MaterialPageRoute(
-        builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail,),
+        builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, profileImage: profileImage,),
       ),
       );
     },
@@ -451,10 +447,11 @@ class PostDetails extends StatelessWidget {
   final Post post;
   String currId;
   String currEmail;
+  String profileImage;
 
 
   // In the constructor, require a Post.
-  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail}) : super(key: key);
+  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail, @required this.profileImage}) : super(key: key);
 
 
   @override
@@ -467,11 +464,18 @@ class PostDetails extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
+        actions: <Widget>[
+          IconButton(
+              icon: profileImage != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(profileImage)):
+              Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
+              onPressed: () {}
+          ),
+          ]
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: Container(
-          height: 600.0,
+          height: 500.0,
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
@@ -522,14 +526,8 @@ class PostDetails extends StatelessWidget {
                           post.description,
                           style: TextStyle(fontWeight: FontWeight.w500)
                       ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        // show menu button
-                        post.email == currEmail ?
-                        showUserOptions(context, post, currId, currEmail): Container(),
-                      ],
+                      trailing: post.email == currEmail ?
+                      showUserOptions(context, post, currId, currEmail): Container(),
                     ),
                   ]
               ),

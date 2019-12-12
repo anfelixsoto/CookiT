@@ -35,7 +35,6 @@ class SavePage extends StatefulWidget {
   SavePage({Key key, this.title}) : super(key: key);
 
   final String title;
-
   @override
   _SavePage createState() => _SavePage();
 }
@@ -63,12 +62,12 @@ class _SavePage extends State<SavePage> {
     //Initializing search delegate with sorted list of recipes
     loadCurrentUser();
     getUserRef();
-    getFavs();
+    getSaved();
 
 
   }
 
-  void getFavs(){
+  void getSaved(){
     print(saved);
   }
   void loadCurrentUser() {
@@ -248,13 +247,9 @@ class _SavePage extends State<SavePage> {
                                                             backgroundImage: NetworkImage(recipe.data['imageURL']),
                                                           ),
                                                           title: Text(recipe.data['name'].toString()),
-
-
-
                                                           subtitle: Text("Prep Time: " + recipe.data['prepTime'].toString() + " | " +
                                                               "Servings: " + recipe.data['servings'].toString()
                                                           ),
-
                                                           trailing: IconButton(
                                                             icon: Icon(Icons.delete_outline, color: Colors.redAccent),
                                                             onPressed: (){

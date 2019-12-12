@@ -67,9 +67,6 @@ class _ViewUser extends State<ViewUser> {
     print(getPosts());
     getUserRef();
     //print(this.us);
-
-
-
   }
 
   Future<void> getUserRef() async {
@@ -429,24 +426,21 @@ class _ViewUser extends State<ViewUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-
-
-        title: Text(getUsername().toString()),
+        title: Text(getUsername().toString(),
+        style: TextStyle(color: Colors.lightGreen),),
         centerTitle: true,
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Colors.white,
+        leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
         actions: <Widget>[
           role == "admin"?
-
          showDelete(context, widget.otherId, role,otherEmail, profilePic)
               :  new IconButton(
             icon: Icon(
               Icons.account_circle,
-              color: Colors.white,
+              color: Colors.grey[400],
               size: 30.0,
             ),
             onPressed: () {
-
             },
 
           ),

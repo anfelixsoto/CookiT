@@ -156,8 +156,9 @@ class _RecipeDetails extends State<RecipeDetails>{
             appBar: AppBar(
               backgroundColor: Colors.white,
               automaticallyImplyLeading: true,
+              centerTitle: true,
               title: Text(
-                  'CookiT',
+                  'Details',
                 style: TextStyle(color: Colors.lightGreen),
               ),
               leading: IconButton(
@@ -212,14 +213,14 @@ class _RecipeDetails extends State<RecipeDetails>{
                                             new Text(
                                                 recipe.name,
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w600,
                                                   fontSize: 20.0,
                                                   color: Colors.black,)
                                             ),
                                             new Text(
                                                 recipe.description,
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w400,
                                                   fontSize: 15.0,
                                                   color: Colors.grey,)
                                             ),
@@ -285,24 +286,41 @@ class _RecipeDetails extends State<RecipeDetails>{
 
 
                                   Container(
+
                                     padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   width:130.0,
                                   child:ListView(
                                     padding: EdgeInsets.symmetric(horizontal: 10),
                                         children: <Widget>[
-                                          new Text(
-                                            recipe.ingredients.length.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                              color: Colors.black,)
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+
+                                              new Icon(
+                                                  Icons.restaurant_menu,
+                                                size: 20.0,
+                                                color: Colors.lightGreen,
+                                              )
+                                              ,
+                                              new SizedBox(
+                                                  width: 5.0
+                                              ),
+                                              new Text(
+                                                  recipe.ingredients.length.toString(),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20.0,
+                                                    color: Colors.lightGreen,)
+                                              ),
+                                            ],
                                           ),
+
                                           new Text(
                                             "Ingredients",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w400,
                                               fontSize: 20.0,
                                               color: Colors.black,)
                                           ),
@@ -312,22 +330,39 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   ),
                                   Container(
                                   width:120.0,
-                                  child:ListView(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
+                                  child:Column(
+                                      //padding: EdgeInsets.symmetric(horizontal: 0),
                                         children: <Widget>[
-                                          new Text(
-                                            recipe.prepTime.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                              color: Colors.black,)
+
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Icon(
+                                                  Icons.timer,
+                                                  size: 20.0,
+                                                  color: Colors.lightGreen,
+
+                                              )
+                                              ,
+                                              SizedBox(
+                                                  width: 5.0
+                                              ),
+                                              new Text(
+
+                                                  recipe.prepTime.toString(),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20.0,
+                                                    color: Colors.lightGreen,)
+                                              ),
+                                            ],
                                           ),
                                           new Text(
                                             "Minutes",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w400,
                                               fontSize: 20.0,
                                               color: Colors.black,)
                                           ),
@@ -339,22 +374,27 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   child:ListView(
                                       padding: EdgeInsets.symmetric(horizontal: 10),
                                         children: <Widget>[
+
                                           new Text(
                                             recipe.numCalories.toString(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 20.0,
-                                              color: Colors.black,)
+                                              color: Colors.lightGreen,)
                                           ),
+
+
                                           new Text(
                                             "Calories",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w400,
                                               fontSize: 20.0,
                                               color: Colors.black,)
                                           ),
+
+
                                         ]
                                       ),
                                 ),
@@ -368,7 +408,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                               child:Material(
                                 elevation: 5.0,
                                 borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.orangeAccent,
+                                color: Colors.lightGreen,
                                 child:MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
@@ -455,6 +495,7 @@ class _RecipeDetails extends State<RecipeDetails>{
         color: Colors.red,
         size: 30),
         onPressed: (){
+          print("pressed");
           setState(() {
             favorite = true;
           });
@@ -464,6 +505,7 @@ class _RecipeDetails extends State<RecipeDetails>{
             RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
 
           }else{
+
             UserOperations.addToFavorites(userId, widget.recid.id.toString());
             RecipeOperations.addToRecipes(widget.recid.id.toString(), recipe);
           }
@@ -482,11 +524,11 @@ class _RecipeDetails extends State<RecipeDetails>{
           setState(() {
             favorite = false;
           });
-    if(widget.recipeId != null) {
-      UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
-    }else{
-      UserOperations.deleteFavorite(userId, widget.recid.id.toString());
-    }
+          if(widget.recipeId != null) {
+            UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
+          }else{
+            UserOperations.deleteFavorite(userId, widget.recid.id.toString());
+          }
 
 
         },

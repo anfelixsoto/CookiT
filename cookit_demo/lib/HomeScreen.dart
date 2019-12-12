@@ -399,7 +399,7 @@ class HomeState extends State<Home> {
         color: Colors.white,),
         onPressed: (){
           Navigator.push(context,
-          MaterialPageRoute(builder: (context) => RecipeSearch()));
+          MaterialPageRoute(builder: (context) => new RecipeSearch()));
         },
       ),
     );

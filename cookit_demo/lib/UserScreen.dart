@@ -196,7 +196,7 @@ class _UserProfile extends State<UserProfile> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RecipeSearch()),
+            MaterialPageRoute(builder: (context) => new RecipeSearch()),
           );
         },
         child: new Text(text),

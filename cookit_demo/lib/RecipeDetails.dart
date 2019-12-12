@@ -344,6 +344,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                   onPressed: (){
+
                                     //print((widget.recipeId.rid.toString()));
 
                                     if(widget.recipeId != null){
@@ -355,7 +356,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                             context,
                                             MaterialPageRoute(builder: (context) =>
                                                 RecipeInstructions(recipe: postRecipe,
-                                                  rId: postRecipe, dbId: widget.recipeId,),)
+                                                  rId: postRecipe, dbId: widget.recipeId),)
                                         );
 
                                       });

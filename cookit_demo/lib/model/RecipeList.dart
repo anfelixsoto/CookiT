@@ -4,6 +4,8 @@ import 'package:cookit_demo/model/recipeId.dart';
 
 import 'package:http/http.dart' as http;
 
+final List<String> apiKeys=['1d17a5fca22d4948a74640a12037b5ed','ae9713972653426aa7db8cdf12f00d85'];
+
 String getUrlString(List<String> ingredients){
     String request='';
     for(int i=0;i<ingredients.length;i++){
@@ -15,6 +17,11 @@ String getUrlString(List<String> ingredients){
       }
     }
     return request;
+  }
+
+  String getKey(){
+    String randomItem = (apiKeys..shuffle()).first;
+    return randomItem;
   }
 
 class RecipeList{
@@ -29,7 +36,7 @@ class RecipeList{
   static Future<RecipeList> fetchRecipes(List<String> ingredients) async {
     String url=getUrlString(ingredients);
     final response =
-      await http.get('https://api.spoonacular.com/recipes/findByIngredients?ingredients='+url+'&ranking=2&number=5&ignorePantry=true&apiKey=1d17a5fca22d4948a74640a12037b5ed');
+      await http.get('https://api.spoonacular.com/recipes/findByIngredients?ingredients='+url+'&ranking=2&number=8&ignorePantry=true&apiKey='+getKey());
 
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON.

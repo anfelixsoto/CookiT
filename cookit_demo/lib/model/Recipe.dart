@@ -9,6 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 
+final List<String> apiKeys=['1d17a5fca22d4948a74640a12037b5ed','ae9713972653426aa7db8cdf12f00d85'];
+
+String getKey(){
+  String randomItem = (apiKeys..shuffle()).first;
+  return randomItem;
+}
+
 class Recipe{
   String id;
   String name;
@@ -53,8 +60,7 @@ class Recipe{
 
   static FutureOr<Recipe> fetchRecipe(int id) async {
     final response =
-        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey=1d17a5fca22d4948a74640a12037b5ed');
-
+        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey='+getKey());
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.
       return Recipe.fromJSON(json.decode(response.body));

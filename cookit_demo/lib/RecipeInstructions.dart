@@ -26,12 +26,21 @@ class RecipeInstructions extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.lightGreen,
+              backgroundColor: Colors.white,
               automaticallyImplyLeading: true,
-              title: Text('Instructions'),
-              leading: IconButton(icon:Icon(Icons.arrow_back),
+              title: Text(
+                  'Instructions',
+                      style: TextStyle(
+                        color: Colors.lightGreen,
+
+                ),
+              ),
+              leading: IconButton(
+                icon:Icon(Icons.arrow_back),
+                color: Colors.lightGreen,
                 onPressed: () => Navigator.pop(context, false),
               ),
+
             ),
             backgroundColor: Colors.white,
             body: Container(

@@ -28,6 +28,7 @@ class RecipeInstructions extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Colors.white,
               automaticallyImplyLeading: true,
+              centerTitle: true,
               title: Text(
                   'Instructions',
                       style: TextStyle(
@@ -135,7 +136,7 @@ class RecipeInstructions extends StatelessWidget {
                                           child: Text(
                                             recipe.name,
                                             style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w600,
                                               fontSize: 20.0,
                                               color: Colors.black,)
                                           ),
@@ -155,19 +156,19 @@ class RecipeInstructions extends StatelessWidget {
                                                       "Prep time: "+recipe.prepTime.toString(),
                                                       style: TextStyle(
                                                         fontSize: 17.0,
-                                                        color: Colors.grey,)
+                                                        color: Colors.blueGrey,)
                                                   ),
                                                   new Text(
                                                       "Calories: "+recipe.numCalories.toString(),
                                                       style: TextStyle(
                                                         fontSize: 17.0,
-                                                        color: Colors.grey,)
+                                                        color: Colors.blueGrey,)
                                                   ),
                                                   new Text(
                                                       "Serving size: "+recipe.servings.toString(),
                                                       style: TextStyle(
                                                         fontSize: 17.0,
-                                                        color: Colors.grey,)
+                                                        color: Colors.blueGrey,)
                                                   ),
                                                 ],
                                               ),
@@ -181,7 +182,7 @@ class RecipeInstructions extends StatelessWidget {
                                                 child:Material(
                                                   elevation: 5.0,
                                                   borderRadius: BorderRadius.circular(10.0),
-                                                  color: Colors.lightBlueAccent,
+                                                  color: Colors.lightGreen,
                                                   child:MaterialButton(
                                                     minWidth: 110,
                                                     padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
@@ -214,6 +215,7 @@ class RecipeInstructions extends StatelessWidget {
                                                         fontSize: 15.0,
                                                         fontWeight: FontWeight.bold,
                                                         color: Colors.white,
+
 
                                                       ),
                                                     ),
@@ -256,7 +258,7 @@ class RecipeInstructions extends StatelessWidget {
                                         "Ingredients",
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w400,
                                           fontSize: 20.0,
                                           color: Colors.black,)
                                     ),
@@ -278,11 +280,55 @@ class RecipeInstructions extends StatelessWidget {
                                   //scrollDirection: Axis.vertical,
                                   itemCount: recipe.ingredients.length,
                                   itemBuilder: (context, index) {
-                                    return new Text(recipe.ingredients[index] + "\n",
-                                      style: TextStyle(
-                                        fontSize: 17.0,
-                                        color: Colors.grey,
-                                      )
+                                    return new Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                        children:<Widget> [
+                                                Padding(
+                                                  padding:EdgeInsets.fromLTRB(00.0, 00.0, 00.0, 30.0),//was 30
+                                                      child:  Row(
+
+                                                        children: <Widget>[
+
+
+
+                                                            Padding(
+                                                              //alignment: Alignment.topRight,
+                                                              padding:EdgeInsets.fromLTRB(00.0, 00.0, 10.0, 00.0),//was 30
+                                                              child:
+                                                              new Icon(
+                                                                Icons.add_circle_outline,
+                                                                size: 17,
+                                                                color: Colors.lightGreen,
+                                                              ),
+                                                            ),
+
+
+
+
+
+                                                          Expanded(
+
+                                                              child: new Text(recipe.ingredients[index],
+                                                                  style: TextStyle(
+                                                                  fontSize: 17.0,
+                                                                  color: Colors.grey,
+                                                                  )
+                                                              ),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                            ),
+                                        ]
+
+
+
+
+
+
+
+
                                     );
                                   }
                                 ),
@@ -298,7 +344,7 @@ class RecipeInstructions extends StatelessWidget {
                                 child:Text(
                                   "Instructions",
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w400,
                                     fontSize: 20.0,
                                     color: Colors.black,)
                                 ),

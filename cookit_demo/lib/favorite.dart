@@ -323,166 +323,234 @@ class _Favorites extends State<Favorites> {
                     );
                   default:
                     List favsList = snapshot.data['favorites'];
-                    return new ListView(
+                    if(!snapshot.hasData){
+                      return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: CircularProgressIndicator(),
+                      );
+                    }else if(snapshot.hasError){
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 1.0),
+                          child: Text(
+                            'No Favorite Recipes!',
+                            style: TextStyle(
+                                color: Colors.lightGreen,
+                                fontSize: 20,
+                            ),
+                          )
+                      );
+                    }
+                    else if(snapshot.data['favorites'].length == null ||snapshot.data['favorites'].length == 0){
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 1.0),
+                          child: Text(
+                            'No Favorite Recipes!',
+                            style: TextStyle(
+                                color: Colors.lightGreen,
+                                fontSize: 20,
+                            ),
+                          )
+                      );
+                    }
+                    else {
+                      return new ListView(
 
 
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
 
 
-                      children: List.generate(snapshot.data['favorites'].length, (index) {
-                        //print(snapshot.data['favorites'][index]);
-                        List temp3 = [];
+                        children: List.generate(
+                            snapshot.data['favorites'].length, (index) {
+                          //print(snapshot.data['favorites'][index]);
+                          List temp3 = [];
 
-                        if(!temp3.contains(snapshot.data['favorites'][index].toString())) {
-                          temp3.add(snapshot.data['favorites'][index]
-                              .toString());
-                        }
-                        print(temp3);
+                          if (temp3 != null && !temp3.contains(
+                              snapshot.data['favorites'][index].toString())) {
+                            temp3.add(snapshot.data['favorites'][index]
+                                .toString());
+                          }
+                          print(temp3);
 
-                        return  StreamBuilder(
-                            stream: Firestore.instance
-                                .collection('recipes')
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              print(snapshot);
-                              switch(snapshot.connectionState){
-                                case ConnectionState.waiting:
-                                  return Center(
-                                      child: CircularProgressIndicator()
-                                  );
-                                default:
-                                // List videosList = snapshot.data;
-                                  return ListView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount: snapshot.data.documents.length,
-                                    itemBuilder: (context, recipeId) {
-                                      DocumentSnapshot recipe = snapshot.data.documents[recipeId];
+                          return StreamBuilder(
+                              stream: Firestore.instance
+                                  .collection('recipes')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                print(snapshot);
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.waiting:
+                                    return Center(
+                                        child: CircularProgressIndicator()
+                                    );
+                                  default:
+                                  // List videosList = snapshot.data;
+                                    return ListView.builder(
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data.documents.length,
+                                      itemBuilder: (context, recipeId) {
+                                        DocumentSnapshot recipe = snapshot.data
+                                            .documents[recipeId];
 
-                                      print("printing");
-                                      print(temp3);
-                                      if(temp3.contains(recipe.documentID) ) {
-                                        return Container(
-                                          height: 250,
+                                        print("printing");
+                                        print(temp3);
+                                        if (temp3.contains(recipe.documentID)) {
+                                          return Container(
+                                            height: 250,
 
-                                          padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                                          child: Card(
+                                            padding: EdgeInsets.only(
+                                                top: 0.0, bottom: 0.0),
+                                            child: Card(
 
-                                            clipBehavior: Clip.antiAlias,
-
-
-                                            child: Padding(
-                                              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-
-                                              child: Column(
-                                                  children: <Widget>[
+                                              clipBehavior: Clip.antiAlias,
 
 
-                                                    Center(
+                                              child: Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0.0, 0.0, 0.0, 0.0),
 
-                                                      child: Padding(
-                                                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                                      child: ClipRect(
-                                                        child: recipe.data['imageURL'].toString() != "" ?
-                                                        Image.network(
-                                                          recipe.data['imageURL'],
-                                                          height: 132,
-                                                          width: MediaQuery
-                                                              .of(context)
-                                                              .size
-                                                              .width,
-                                                          fit: BoxFit.cover,
-                                                        )
-                                                            : Container(
-                                                          padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                                                          margin: const EdgeInsets.only(
-                                                              top: 0, bottom: 0.0),
-                                                          height: 132,
-                                                          width: MediaQuery
-                                                              .of(context)
-                                                              .size
-                                                              .width,
-                                                          color: Colors.blueGrey[100],
-
-                                                        ),
-
-                                                      ),
-                                          ),
-                                                    ),
+                                                child: Column(
+                                                    children: <Widget>[
 
 
+                                                      Center(
 
+                                                        child: Padding(
+                                                          padding: EdgeInsets
+                                                              .fromLTRB(
+                                                              0.0, 0.0, 0.0,
+                                                              0.0),
+                                                          child: ClipRect(
+                                                            child: recipe
+                                                                .data['imageURL']
+                                                                .toString() !=
+                                                                "" ?
+                                                            Image.network(
+                                                              recipe
+                                                                  .data['imageURL'],
+                                                              height: 132,
+                                                              width: MediaQuery
+                                                                  .of(context)
+                                                                  .size
+                                                                  .width,
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                                : Container(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                  top: 0.0,
+                                                                  bottom: 0.0),
+                                                              margin: const EdgeInsets
+                                                                  .only(
+                                                                  top: 0,
+                                                                  bottom: 0.0),
+                                                              height: 132,
+                                                              width: MediaQuery
+                                                                  .of(context)
+                                                                  .size
+                                                                  .width,
+                                                              color: Colors
+                                                                  .blueGrey[100],
 
-                                                    ListTile(
-                                                      leading: Text(
-                                                        recipe.data['name'].toString(),
-                                                      ),
-                                                    ),
-
-                                                    Padding(
-                                                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                                                      child: Row(
-                                                        // align left
-                                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                                        textDirection: TextDirection.rtl,
-
-                                                        children: <Widget>[
-
-                                                          IconButton(
-                                                            icon: Icon(
-                                                              Icons.remove_circle_outline,
-                                                              color: Colors.redAccent[200],
                                                             ),
 
-                                                            onPressed: () {
-                                                              UserOperations.deleteFavorite(userId, recipe.documentID);
-                                                            },
                                                           ),
-
-                                                          FlatButton(
-                                                            //color: Colors.lightBlueAccent,
-                                                            child: const Text('Start'),
-                                                            //shape: new RoundedRectangleBorder(
-                                                            //borderRadius: new BorderRadius.circular(30.0)),
-                                                            textColor: Colors.blue,
-                                                            onPressed: () {
-                                                              Recipe selectRecipe = Recipe.fromDoc(recipe);
-                                                              Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe, rId: selectRecipe,)),
-                                                              );
-
-                                                            },
-                                                          ),
-
-                                                        ],
+                                                        ),
                                                       ),
-                                                    ),
 
 
+                                                      ListTile(
+                                                        leading: Text(
+                                                          recipe.data['name']
+                                                              .toString(),
+                                                        ),
+                                                      ),
+
+                                                      Padding(
+                                                        padding: EdgeInsets
+                                                            .only(top: 0.0,
+                                                            bottom: 0.0),
+                                                        child: Row(
+                                                          // align left
+                                                          crossAxisAlignment: CrossAxisAlignment
+                                                              .end,
+                                                          textDirection: TextDirection
+                                                              .rtl,
+
+                                                          children: <Widget>[
+
+                                                            IconButton(
+                                                              icon: Icon(
+                                                                Icons
+                                                                    .remove_circle_outline,
+                                                                color: Colors
+                                                                    .redAccent[200],
+                                                              ),
+
+                                                              onPressed: () {
+                                                                UserOperations
+                                                                    .deleteFavorite(
+                                                                    userId,
+                                                                    recipe
+                                                                        .documentID);
+                                                              },
+                                                            ),
+
+                                                            FlatButton(
+                                                              //color: Colors.lightBlueAccent,
+                                                              child: const Text(
+                                                                  'Start'),
+                                                              //shape: new RoundedRectangleBorder(
+                                                              //borderRadius: new BorderRadius.circular(30.0)),
+                                                              textColor: Colors
+                                                                  .blue,
+                                                              onPressed: () {
+                                                                Recipe selectRecipe = Recipe
+                                                                    .fromDoc(
+                                                                    recipe);
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (
+                                                                          context) =>
+                                                                          RecipeInstructions(
+                                                                            recipe: selectRecipe,
+                                                                            rId: selectRecipe,)),
+                                                                );
+                                                              },
+                                                            ),
+
+                                                          ],
+                                                        ),
+                                                      ),
 
 
-                                                  ]
+                                                    ]
+                                                ),
                                               ),
-                                            ),
 
 
-
-                                          ),);
-                                      } return Container(
-                                        padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                                      );
-                                    },
-                                  );
+                                            ),);
+                                        }
+                                        return Container(
+                                          padding: EdgeInsets.only(
+                                              top: 0.0, bottom: 0.0),
+                                        );
+                                      },
+                                    );
+                                }
                               }
-                            }
-                        );
-                      }
-                      ),
-                    );
+                          );
+                        }
+                        ),
+                      );
+                    }
                 }
               }
           ),),

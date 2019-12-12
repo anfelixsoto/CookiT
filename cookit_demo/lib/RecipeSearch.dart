@@ -58,7 +58,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
     List<String> ingredients=new List<String>();
     for(int i=0;i<controllerList.length;i++){
       String tinput=controllerList[i].text.toString().trim();
-      if(tinput.isNotEmpty&&RegExp(r"^[a-zA-Z]+$").hasMatch(tinput)){
+      if(tinput.isNotEmpty&&RegExp(r"^[a-zA-Z ]+$").hasMatch(tinput)){
         ingredients.add(controllerList[i].text.toString().trim());
       }
     }

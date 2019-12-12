@@ -10,14 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:cookit_demo/model/globals.dart';
 
-final List<String> apiKeys=['c186ddaba09e4c3993bb9ea0328d2357','fd1047acead643bea4987fc2a48df5a7'];
-
-String getKey(){
-  Globals g=Globals.instance;
-  int c=g.counter;
-  g.incrementCounter();
-  return apiKeys[c];
-}
+//final List<String> apiKeys=['1e3d8937a2294ffd9e5730315989629f'];
 
 class Recipe{
   String id;
@@ -63,7 +56,7 @@ class Recipe{
 
   static FutureOr<Recipe> fetchRecipe(int id) async {
     final response =
-        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey='+getKey());
+        await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey='+Globals.getKey());
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.
       return Recipe.fromJSON(json.decode(response.body));

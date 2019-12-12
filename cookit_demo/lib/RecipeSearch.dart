@@ -42,16 +42,14 @@ class _RecipeSearchState extends State<RecipeSearch> {
   void _add() {
     controllerList.add(new TextEditingController());
     listOfFields = List.from(listOfFields)
-      ..add(TextField(
-        decoration: InputDecoration(hintText: "Enter an ingredient...",border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(24.0))),
-        controller:controllerList[_count],
-        style: TextStyle(
-          fontSize: 15.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      ));
+      ..add(TextFormField(
+        controller: controllerList[_count],
+              obscureText: false,
+              decoration: InputDecoration(
+                hintText: 'Enter an ingredient',
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+            ),);
       setState(() => ++_count);
       print(_count);
   }
@@ -126,17 +124,45 @@ class _RecipeSearchState extends State<RecipeSearch> {
         )
     );
 
+    final searchButton=ClipRRect(
+      borderRadius: new BorderRadius.circular(15.0),
+      child: new MaterialButton(
+        minWidth: 120.0,
+        height: 40.0,
+        color: Colors.lightGreen,
+        textColor: Colors.white,
+        onPressed: () {
+          List<String> ingredients=getIngredients();
+            if(ingredients.isNotEmpty){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RecipeResults(ingredients:ingredients)),
+              );
+            }
+        },
+        child: new Text("Search for recipes",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20.0,
+           // fontWeight: FontWeight.bold,
+            color: Colors.white,
+          )),
+      ),
+    );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightGreen,
           automaticallyImplyLeading: true,
-          title: Text('CookiT'),
-          leading: IconButton(icon:Icon(Icons.arrow_back),
+          title: Text('Search for Recipes'
+          ,style: TextStyle(color: Colors.lightGreen),
+          ),
+        backgroundColor: Colors.white,
+          leading: IconButton(icon:Icon(Icons.arrow_back),color:Colors.lightGreen,
             onPressed: () => Navigator.pop(context),
           ),
-          actions:<Widget>[IconButton(icon: Icon(Icons.add), onPressed: _add)],
+          actions:<Widget>[IconButton(icon: Icon(Icons.add), onPressed: _add,color:Colors.lightGreen)],
         ),
         backgroundColor: Colors.white,
         body: LayoutBuilder(
@@ -150,26 +176,25 @@ class _RecipeSearchState extends State<RecipeSearch> {
                   maxWidth: viewportConstraints.maxWidth,
                 ),
                 child:Padding(
-                padding: const EdgeInsets.all(36.0),
+                padding: const EdgeInsets.fromLTRB(36.0,10.0,36.0,10.0),
                 child: ListView(
                   children: <Widget>[
-                    SizedBox(height: 20.0,),
+                    SizedBox(height: 10.0,),
                      Text(
                         "Enter ingredients",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 35.0,
+                          fontSize: 30.0,
                           color: Colors.lightGreen,),
                       ),
-                    SizedBox(height: 5.0,),
+                    SizedBox(height: 20.0,),
                     Container(
                       height:250.0,
                       child:
                       ListView(children: listOfFields),
                     ),
                     SizedBox(height: 5.0,),
-                    loginButton,
+                    searchButton,
                     SizedBox(height: 5.0,),
                     Visibility(
                       visible:flag,

@@ -8,12 +8,15 @@ import 'package:cookit_demo/model/Instruction.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:cookit_demo/model/globals.dart';
 
-final List<String> apiKeys=['1d17a5fca22d4948a74640a12037b5ed','ae9713972653426aa7db8cdf12f00d85'];
+final List<String> apiKeys=['c186ddaba09e4c3993bb9ea0328d2357','fd1047acead643bea4987fc2a48df5a7'];
 
 String getKey(){
-  String randomItem = (apiKeys..shuffle()).first;
-  return randomItem;
+  Globals g=Globals.instance;
+  int c=g.counter;
+  g.incrementCounter();
+  return apiKeys[c];
 }
 
 class Recipe{
@@ -34,7 +37,7 @@ class Recipe{
   factory Recipe.fromJSON(Map<String,dynamic> json){
     return Recipe(
       name:json['title'],
-      description: json['title'],
+      description: (json['cuisines'].isNotEmpty)?json['cuisines'][0]:' ',
       imageURL:json['image'],
       numCalories:json['nutrition']['nutrients'][0]['amount'],
       prepTime:json['readyInMinutes'],

@@ -55,7 +55,7 @@ class StartPage extends StatelessWidget{
                   MaterialPageRoute(builder: (context) => LetStart()));
             },
             child: Text(
-                ("Let's Get Strated").toUpperCase(),
+                ("Let's Get Started").toUpperCase(),
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,

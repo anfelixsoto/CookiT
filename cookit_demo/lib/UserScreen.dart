@@ -191,7 +191,7 @@ class _UserProfile extends State<UserProfile> {
         minWidth: 120.0,
         height: 40.0,
 
-        color: Colors.lightBlueAccent,
+        color: Colors.lightGreen,
         textColor: textColor,
         onPressed: () {
           Navigator.push(
@@ -214,7 +214,7 @@ class _UserProfile extends State<UserProfile> {
       child: new MaterialButton(
         minWidth: 120.0,
         height: 40.0,
-        color: Colors.lightBlueAccent,
+        color: Colors.lightGreen,
         textColor: textColor,
         onPressed: () {
           Navigator.push(
@@ -284,7 +284,7 @@ class _UserProfile extends State<UserProfile> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.bookmark_border,
-              color: Colors.yellow,
+              color: Colors.lightGreen,
               size: 40.0,),
             onPressed: (){
               Navigator.push(
@@ -555,12 +555,12 @@ class PostDetails extends StatelessWidget {
                     children: <Widget>[
                       FlatButton(
                         child: Text('Cook it'),
-                        textColor: Colors.lightBlueAccent,
+                        textColor: Colors.orangeAccent,
                         onPressed: () { print('pressed'); },
                       ),
                       FlatButton(
                         child: Text('Next time'),
-                        textColor: Colors.orangeAccent,
+                        textColor: Colors.lightBlue,
                         onPressed: () { print('pressed'); },
                       ),
                       // show menu button

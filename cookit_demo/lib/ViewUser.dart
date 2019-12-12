@@ -684,7 +684,7 @@ class PostDetails extends StatelessWidget {
                       ),
                       FlatButton(
                         child: Text('Next time'),
-                        textColor: Colors.orangeAccent,
+                        textColor: Colors.redAccent,
                         onPressed: () { UserOperations.addToSave(currId, post.recipeId.toString()); },
                       ),
                       // show menu button

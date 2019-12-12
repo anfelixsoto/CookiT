@@ -205,7 +205,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         child:Material(
                                           elevation: 5.0,
                                           borderRadius: BorderRadius.circular(10.0),
-                                          color: Colors.orangeAccent,
+                                          color: Colors.pinkAccent,
                                           child:MaterialButton(
 
                                             minWidth: MediaQuery.of(context).size.width,
@@ -339,7 +339,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                               child:Material(
                                 elevation: 5.0,
                                 borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.lightBlueAccent,
+                                color: Colors.orangeAccent,
                                 child:MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
                                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),

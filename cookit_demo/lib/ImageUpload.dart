@@ -305,7 +305,7 @@ class _PostUploadState extends State<PostUpload> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Upload Picture'),
+        title: Text('Upload Picture', style: TextStyle(color:Colors.white)),
         backgroundColor: Colors.lightGreen,
       ),
      body: Container(
@@ -349,7 +349,7 @@ class _PostUploadState extends State<PostUpload> {
                  minWidth: 110.0,
                  height: 40.0,
 
-                 color: Colors.lightBlueAccent,
+                 color: Colors.lightGreen,
                  textColor: Colors.white,
                  onPressed: () {
                    if(loading == false) {

@@ -181,7 +181,7 @@ class HomeState extends State<Home> {
             child: (profilePic == null || profilePic.toString() == "")
                 ?
             Image.network(
-              '//https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
             )
                 : Image.network(
               profilePic,
@@ -304,7 +304,7 @@ class HomeState extends State<Home> {
                   children: <Widget>[
                     FlatButton(
                       child: Text('Cook it'),
-                      textColor: Colors.lightBlueAccent,
+                      textColor: Colors.orange,
                       onPressed: () {
                         print("cooki it:::");
                         print(document['recipeId'].toString());
@@ -321,7 +321,7 @@ class HomeState extends State<Home> {
                     ),
                     FlatButton(
                       child: Text('Next time'),
-                      textColor: Colors.orangeAccent,
+                      textColor: Colors.lightBlue,
                       onPressed: () { UserOperations.addToSave(userId, Post.fromDoc(document).recipeId.toString()); },
                     ),
                     showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),

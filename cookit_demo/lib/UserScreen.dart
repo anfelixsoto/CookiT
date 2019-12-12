@@ -499,78 +499,69 @@ class PostDetails extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: Card(
-          child: Padding(
-            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-            child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: post.profileImage == null ? NetworkImage(
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                      ): NetworkImage(
-                        post.profileImage,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.all(7),
-                    title: GestureDetector(
-                      child:Text(
-                        post.username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+        child: Container(
+          height: 600.0,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: Colors.grey[200],
+            child: Padding(
+              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+              child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: post.profileImage == null ? NetworkImage(
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                        ): NetworkImage(
+                          post.profileImage,
                         ),
                       ),
-                      onTap: () {},
-                    ),
-                    trailing: Text(
-                      post.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 11,
+                      contentPadding: EdgeInsets.all(7),
+                      title: GestureDetector(
+                        child:Text(
+                          post.username,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                      trailing: Text(
+                        post.title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 11,
+                        ),
                       ),
                     ),
-                  ),
-                  Center(
-                    child: ClipRect(
-                      child:Image.network(
-                        post.imageUrl,
-                        height: 300,
-                        width: MediaQuery.of(context).size.width,
-                        fit: BoxFit.cover,
+                    Center(
+                      child: ClipRect(
+                        child:Image.network(
+                          post.imageUrl,
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  Divider(),
-                  ListTile(
-
-                    title: Text(
-                        post.description,
-                        style: TextStyle(fontWeight: FontWeight.w500)
+                    ListTile(
+                      title: Text(
+                          post.description,
+                          style: TextStyle(fontWeight: FontWeight.w500)
+                      ),
                     ),
-
-
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      FlatButton(
-                        child: Text('Cook it'),
-                        textColor: Colors.orangeAccent,
-                        onPressed: () { print('pressed'); },
-                      ),
-                      FlatButton(
-                        child: Text('Next time'),
-                        textColor: Colors.lightBlue,
-                        onPressed: () { print('pressed'); },
-                      ),
-                      // show menu button
-                      post.email == currEmail ?
-                      showUserOptions(context, post, currId, currEmail): Container(),
-                    ],
-                  ),
-
-
-                ]
+                    ButtonBar(
+                      alignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        // show menu button
+                        post.email == currEmail ?
+                        showUserOptions(context, post, currId, currEmail): Container(),
+                      ],
+                    ),
+                  ]
+              ),
             ),
           ),
         ),

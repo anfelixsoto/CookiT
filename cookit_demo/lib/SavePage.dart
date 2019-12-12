@@ -5,6 +5,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/RecipeInstructions.dart';
 import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
@@ -264,7 +265,7 @@ class _SavePage extends State<SavePage> {
                                                             Recipe selectRecipe = Recipe.fromDoc(recipe);
                                                             Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe, )),
+                                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: selectRecipe, recid: selectRecipe, )),
                                                             );
                                                           },
                                                         ),

@@ -31,6 +31,8 @@ class Auth implements BaseAuth {
           'email': email,
           'profileImage': '',
           'role': 'user',
+          'favorites': [],
+          'saved': [],
         });
         signIn(email, password);
         return user.uid;

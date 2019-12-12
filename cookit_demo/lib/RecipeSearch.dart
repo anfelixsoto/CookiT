@@ -6,6 +6,7 @@ import 'package:cookit_demo/delayed_animation.dart';
 
 void main() => runApp(
       new MaterialApp(
+        debugShowCheckedModeBanner: false,
         builder: (context, child) => new SafeArea(child: child),
         home: new RecipeSearch(),
       ),

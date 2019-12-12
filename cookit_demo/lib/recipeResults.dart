@@ -8,6 +8,7 @@ import 'model/recipeId.dart';
 
 void main(){
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'CookiT Recipe Results',
     home: RecipeResults(ingredients:['salt','pepper','salmon','lemon']),
   ));

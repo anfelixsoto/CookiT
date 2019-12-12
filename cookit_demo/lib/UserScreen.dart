@@ -15,6 +15,7 @@ import 'model/PostModel.dart';
 
 void main(){
   runApp(new MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: UserProfile(),
   ));
 }

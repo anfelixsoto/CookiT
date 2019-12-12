@@ -297,9 +297,9 @@ class _UserProfile extends State<UserProfile> {
 //        title: Text(username.toString()),
 //        centerTitle: true,
 //        backgroundColor: Colors.lightGreen,
-        leading: role == "admin" ?
-        new IconButton( icon: new Icon(Icons.settings), tooltip: "Manage", onPressed: () => Navigator.of(context).pop(null), ) :
-        new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
+        //leading: role == "admin" ?
+        //new IconButton( icon: new Icon(Icons.settings), tooltip: "Manage", onPressed: () => Navigator.of(context).pop(null), ) :
+        leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
           onPressed: () => Navigator.of(context).pop(context),),
       ),
       body: ListView(

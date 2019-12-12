@@ -48,6 +48,7 @@ class HomeState extends State<Home> {
   String username;
   String userId;
   String profilePic = " ";
+  bool manage = false;
 
   @override
   void initState(){
@@ -97,17 +98,14 @@ class HomeState extends State<Home> {
 
 
   Widget showDelete(BuildContext context,String postId, String role, String url) {
-      return  Visibility(
-        visible: isAdmin,
-        child: IconButton(
+      return IconButton(
           icon: Icon(
             Icons.remove_circle_outline,
             color: Colors.redAccent,
             size: 30.0,
           ),
           onPressed: () {showAlert(context, postId, role, url);}
-          ),
-      );
+          );
   }
 
   Future<void> showAlert(BuildContext context, postId, role, url) {
@@ -324,7 +322,16 @@ class HomeState extends State<Home> {
                       textColor: Colors.lightBlue,
                       onPressed: () { UserOperations.addToSave(userId, Post.fromDoc(document).recipeId.toString()); },
                     ),
-                    showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
+                    Visibility(
+                      child: showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
+                      visible: manage,
+                    ),
+                    Visibility(
+                      child: SizedBox(
+                        width: 42,
+                      ),
+                      visible: !manage,
+                    ),
                   ],
                 ),
       ]))));
@@ -392,16 +399,24 @@ class HomeState extends State<Home> {
             ),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightGreen,
-        child: Icon(
-          Icons.search,
-        color: Colors.white,),
-        onPressed: (){
-          Navigator.push(context,
-          MaterialPageRoute(builder: (context) => new RecipeSearch()));
-        },
-      ),
+      floatingActionButton: Visibility(
+        child: FloatingActionButton(
+          backgroundColor: Colors.lightGreen,
+          child: Icon(
+            Icons.edit,
+          color: Colors.white,),
+          onPressed: (){
+            setState(() {
+              manage = !manage;
+            });
+
+          },
+        ),
+        visible: isAdmin,
+      )
+
+
+
     );
   }
 

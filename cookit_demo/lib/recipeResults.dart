@@ -42,7 +42,7 @@ class _RecipeResults extends State<RecipeResults>{
         s+=widget.ingredients[i];
       }
       else{
-        s+=(widget.ingredients[i]+",");
+        s+=(widget.ingredients[i]+", ");
       }
     }
     return s;
@@ -64,7 +64,7 @@ class _RecipeResults extends State<RecipeResults>{
           padding: const EdgeInsets.all(36.0),
           child: ListView(
             children: <Widget>[
-              SizedBox(height: 20.0,),
+              /*SizedBox(height: 20.0,),
               Text(
                 "Recipe Results",
                 textAlign: TextAlign.center,
@@ -81,13 +81,13 @@ class _RecipeResults extends State<RecipeResults>{
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                   color: Colors.grey,)
-              ),
+              ),*/
               SizedBox(height:50.0),
               Text(
                 "No recipes found :(",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  //fontWeight: FontWeight.bold,
                   fontSize: 30.0,
                   color: Colors.lightGreen,)
               ),
@@ -101,10 +101,12 @@ class _RecipeResults extends State<RecipeResults>{
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: true,
-          title: Text('Recipe Results'),
-          leading: IconButton(icon:Icon(Icons.arrow_back),
+          title: Text('Recipe Results',
+          style: TextStyle(color: Colors.lightGreen),
+          ),
+          leading: IconButton(icon:Icon(Icons.arrow_back,color: Colors.lightGreen),
             onPressed: () => Navigator.pop(context, false),
           ),
         ),
@@ -147,69 +149,70 @@ class _RecipeResults extends State<RecipeResults>{
                         return Center(
                           child: Container(
                             child: Padding(
-                              padding: const EdgeInsets.all(36.0),
+                              padding: const EdgeInsets.all(20.0),
                               child: ListView(
                                 children: <Widget>[
-                                  SizedBox(height: 20.0,),
+                                  /*SizedBox(height: 10.0,),
                                   Text(
                                     "Recipe Results",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 35.0,
+                                      //fontWeight: FontWeight.bold,
+                                      fontSize: 30.0,
                                       color: Colors.lightGreen,)
-                                  ),
-                                  SizedBox(height: 30.0,),
+                                  ),*/
+                                  SizedBox(height: 10.0,),
                                   Text(
                                     getIngredientString(),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      //fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
                                       color: Colors.grey,)
                                   ),
+                                  SizedBox(height: 10.0,),
                                   new Container(
                                     height: 400.0,
-                                    child: new ListView.builder(
-                                      itemCount: rec.length,
-                                      itemBuilder: (context, index) {
-                                        if(rec.length>0){
-                                        //Recipe rTest=rec[index];
-                                            return new Padding(
-                                            padding:EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
-                                            child:Material(
-                                              elevation: 5.0,
-                                              borderRadius: BorderRadius.circular(30.0),
-                                              color: Colors.lightGreen,
-                                              child:MaterialButton(
-                                                minWidth: MediaQuery.of(context).size.width,
-                                                padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                                onPressed: (){
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => RecipeDetails(recipe:rec[index],recipeId:recipeList[index]))
-                                                  );
-                                                },
-                                                child: Text(rec[index].name,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                    child:new ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          itemCount: rec.length,
+                                          itemBuilder: (context, index) {
+                                            //if(temp3.contains(recipe.documentID) ) {
+                                              return Container(
+                                                height: 100,
+                                                padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                      children: <Widget>[
+                                                        ListTile(
+                                                          leading: CircleAvatar(radius: 30.0,
+                                                            backgroundImage: NetworkImage(rec[index].imageURL),
+                                                          ),
+                                                          title: Text(rec[index].name.toString()),
+
+
+
+                                                          subtitle: Text("Prep Time: " + rec[index].prepTime.toString() + " | " +
+                                                              "Servings: " + rec[index].servings.toString()
+                                                          ),
+                                                          onTap: () {
+                                                            //Recipe selectRecipe = Recipe.fromDoc(recipe);
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: rec[index], recid: rec[index], )),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ]
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        else{
-                                          return SizedBox(height:0.0);
-                                        }
-                                        return SizedBox(height:0.0);
-                                        }),
-                                      //},
-                                    ),
-                                  //),
+                                              );
+                                            } )
+                                          //},
+                                  )
                                 ],
                               ),
                             ),
@@ -219,12 +222,13 @@ class _RecipeResults extends State<RecipeResults>{
                       } 
                       else if(snapshot2.hasError){
                         //return Text("${snapshot2.error}");
+                        print("${snapshot2.error}");
                         return Text(
-                          "Oh no, an error occured:(\nWe apologize for the inconvenience.",
+                          "Oh no,\nan error occured:(\n\nWe apologize for the inconvenience.",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 35.0,
+                            //fontWeight: FontWeight.bold,
+                            fontSize: 30.0,
                             color: Colors.red,),
                         );
                       }  
@@ -233,11 +237,11 @@ class _RecipeResults extends State<RecipeResults>{
               } else if (snapshot.hasError) {
                 //return Text("${snapshot.error}");
                 return Text(
-                      "Oh no, an error occured:(\nWe apologize for the inconvenience.",
+                      "Oh no,\nan error occured:(\n\nWe apologize for the inconvenience.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35.0,
+                        //fontWeight: FontWeight.bold,
+                        fontSize: 30.0,
                         color: Colors.red,),
                     );
               }

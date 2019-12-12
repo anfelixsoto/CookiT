@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cookit_demo/model/recipeId.dart';
+import 'package:cookit_demo/model/globals.dart';
 
 import 'package:http/http.dart' as http;
 
-final List<String> apiKeys=['1d17a5fca22d4948a74640a12037b5ed','ae9713972653426aa7db8cdf12f00d85'];
+final List<String> apiKeys=['c186ddaba09e4c3993bb9ea0328d2357','fd1047acead643bea4987fc2a48df5a7'];
 
 String getUrlString(List<String> ingredients){
     String request='';
@@ -19,10 +20,12 @@ String getUrlString(List<String> ingredients){
     return request;
   }
 
-  String getKey(){
-    String randomItem = (apiKeys..shuffle()).first;
-    return randomItem;
-  }
+String getKey(){
+  Globals g=Globals.instance;
+  int c=g.counter;
+  g.incrementCounter();
+  return apiKeys[c];
+}
 
 class RecipeList{
   final List<RecipeId> recipes;

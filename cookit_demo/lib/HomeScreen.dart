@@ -406,7 +406,7 @@ class HomeState extends State<Home> {
         },
         child: FloatingActionButton(
           backgroundColor: Colors.lightGreen,
-          child: isAdmin ? Icon( Icons.edit, color: Colors.white,) : Icon(Icons.search, color: Colors.white,),
+          child: manage ? Icon( Icons.edit, color: Colors.white,) : Icon(Icons.search, color: Colors.white,),
           onPressed: (){
             Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
           },

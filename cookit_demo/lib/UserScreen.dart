@@ -381,16 +381,6 @@ class _UserProfile extends State<UserProfile> {
             //Divider(height: 10.0),
           ]
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightGreen,
-        child: Icon(
-          Icons.edit,
-          color: Colors.white,
-        ),
-        onPressed: (){
-          print('edit');
-        },
-      )
     );
   }
 }

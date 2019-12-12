@@ -180,8 +180,11 @@ class _PostUploadState extends State<PostUpload> {
       );
     } else {
       return Container(
-        padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 0.0),
-         child: Image.file(_image, width: 300, height: 300),
+        padding: EdgeInsets.only(top: 5.0, left: 0.0, bottom: 0.0),
+         child: Image.file(
+             _image, width: MediaQuery.of(context).size.width,
+           fit: BoxFit.cover, height: 300,
+         ),
       );
     }
   }
@@ -298,15 +301,15 @@ class _PostUploadState extends State<PostUpload> {
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.lightGreen,
               size: 24.0,
 
             ),
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Upload Picture', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.lightGreen,
+        title: Text('Upload Picture', style: TextStyle(color: Colors.lightGreen)),
+        backgroundColor: Colors.white,
         
       ),
      body: Container(

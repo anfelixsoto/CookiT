@@ -154,16 +154,22 @@ class _RecipeDetails extends State<RecipeDetails>{
         },
           home: Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.lightGreen,
+              backgroundColor: Colors.white,
               automaticallyImplyLeading: true,
-              title: Text('CookiT'),
-              leading: IconButton(icon:Icon(Icons.arrow_back),
+              title: Text(
+                  'CookiT',
+                style: TextStyle(color: Colors.lightGreen),
+              ),
+              leading: IconButton(
+                color: Colors.lightGreen,
+                icon:Icon(Icons.arrow_back),
                 onPressed: () => Navigator.pop(context, false),
               ),
               actions: <Widget>[
                 showStar(),
 
               ],
+
             ),
             backgroundColor: Colors.white,
             body: Center(
@@ -228,7 +234,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         child:Material(
                                           elevation: 5.0,
                                           borderRadius: BorderRadius.circular(10.0),
-                                          color: Colors.pinkAccent,
+                                          color: Colors.lightGreen,
                                           child:MaterialButton(
 
                                             minWidth: MediaQuery.of(context).size.width,

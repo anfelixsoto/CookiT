@@ -34,7 +34,7 @@ class Recipe{
   factory Recipe.fromJSON(Map<String,dynamic> json){
     return Recipe(
       name:json['title'],
-      description: json['title'],
+      description: json['cuisine'],
       imageURL:json['image'],
       numCalories:json['nutrition']['nutrients'][0]['amount'],
       prepTime:json['readyInMinutes'],

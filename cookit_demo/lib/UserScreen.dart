@@ -267,10 +267,6 @@ class _UserProfile extends State<UserProfile> {
     }
   }
 
-  void showAdminUI(){
-
-  }
-
 
 
   @override
@@ -385,27 +381,7 @@ class _UserProfile extends State<UserProfile> {
           ]
 
       ),
-      bottomNavigationBar: BottomNavigationBar( // footer
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text('Profile'),
-          ),
-          /* BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),*/
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
-            title: Text('New Post'),
 
-          ),
-
-        ],
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
 
     );
   }

@@ -352,14 +352,14 @@ class HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home",
+        title: Text("CookiT",
         style: TextStyle(color: Colors.lightGreen),
         ),
         //centerTitle: true,
         backgroundColor: Colors.white,
         centerTitle: true,
         leading: new IconButton(
-          icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic)):
+          icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic), backgroundColor: Colors.grey[300],):
           Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
           onPressed: () {
             Navigator.push(

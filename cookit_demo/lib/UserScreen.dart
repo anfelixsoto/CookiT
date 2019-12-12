@@ -296,7 +296,9 @@ class _UserProfile extends State<UserProfile> {
         //leading: role == "admin" ?
         //new IconButton( icon: new Icon(Icons.settings), tooltip: "Manage", onPressed: () => Navigator.of(context).pop(null), ) :
         leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
-          onPressed: () => Navigator.of(context).pop(context),),
+          onPressed: () {
+            Navigator.of(context).pop(context);
+          },),
       ),
       body: ListView(
           children: <Widget>[
@@ -377,26 +379,28 @@ class _UserProfile extends State<UserProfile> {
               ),
             ),
             //Divider(height: 10.0),
-
           ]
-
       ),
-
-
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightGreen,
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        onPressed: (){
+          print('edit');
+        },
+      )
     );
   }
 }
 
 Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
-
-
-
   return InkWell(
     //  onTap: () => print("Post " + post.id +" pressed"),
     onTap:() {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail,),
-
       ),
       );
     },
@@ -548,9 +552,7 @@ class PostDetails extends StatelessWidget {
 
 
 Widget showUserOptions(BuildContext context, Post post, String userId, String email) {
-
   return  Visibility(
-
     child: IconButton(
         icon: Icon(
           Icons.more_vert,
@@ -558,15 +560,12 @@ Widget showUserOptions(BuildContext context, Post post, String userId, String em
           size: 30.0,
         ),
         onPressed: () {
-
           showAlert(context, userId, email, post.id, post.email, post.imageUrl);
-
         }
     ),
-
   );
-
 }
+
 Future<void> showAlert(BuildContext context, String userId, email, String postId, String postEmail, url) {
   return showDialog(context: context,builder: (BuildContext context) {
     return AlertDialog(

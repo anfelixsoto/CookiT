@@ -24,8 +24,6 @@ import 'model/PostModel.dart';
 
 
 class ViewUser extends StatefulWidget {
-
-
  // ViewUser({Key key,  this.userId,  this.otherUserId });
   final String userId;
   final String otherId;
@@ -79,20 +77,15 @@ class _ViewUser extends State<ViewUser> {
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
-
-
       otherUserRef = _firestore.collection('users').document(widget.otherId.toString());
-      userId= user.uid;
-
+      userId = user.uid;
       userRef.get().then((data) {
         if (data.exists) {
           role = data.data['role'].toString();
           pic =  data.data['profileImage'].toString();
-
           print('Role: ' + role);
           if (role == 'admin') {
             isAdmin = true;
-
           }
 
         }
@@ -143,7 +136,6 @@ class _ViewUser extends State<ViewUser> {
 
   Future<void> removeImage(String url) async{
     //Future<StorageReference> photoReference =
-
     try {
       //String path;
       print (url);
@@ -169,7 +161,6 @@ class _ViewUser extends State<ViewUser> {
 
 
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
-
     return snapshot.data.documents.map<Widget>((document){
       if(widget.otherId.toString() == document['userId'].toString()) {
         return Padding(
@@ -437,16 +428,10 @@ class _ViewUser extends State<ViewUser> {
           role == "admin"?
          showDelete(context, widget.otherId, role,otherEmail, profilePic)
               :  new IconButton(
-            icon: Icon(
-              Icons.account_circle,
-              color: Colors.grey[400],
-              size: 30.0,
-            ),
-            onPressed: () {
-            },
-
+            icon: pic != " " ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)):
+            Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
+            onPressed: () {},
           ),
-        
         ],
       ),
       body: ListView (
@@ -584,7 +569,6 @@ class _ViewUser extends State<ViewUser> {
 
 class PostDetails extends StatelessWidget {
 
-
   final Post post;
   String currId;
   String currEmail;
@@ -600,104 +584,110 @@ class PostDetails extends StatelessWidget {
     // Use the Post to create the UI.
     return Scaffold(
       appBar: AppBar(
-        title: Text(post.title),
+        title: Text(post.title,
+        style: TextStyle(color: Colors.lightGreen),),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          color: Colors.grey[200],
-          child: Padding(
-            padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-            child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: IconButton(
-                      icon:  post.profileImage != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(post.profileImage)):
-                      CircleAvatar(
-                        radius: 15.0,
-                        backgroundImage: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+        child: Container(
+          height: 530,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: Colors.grey[200],
+            child: Padding(
+              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+              child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: IconButton(
+                        icon:  post.profileImage != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(post.profileImage)):
+                        CircleAvatar(
+                          radius: 15.0,
+                          backgroundImage: NetworkImage(
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                          ),
                         ),
                       ),
-                  ),
 
-                    contentPadding: EdgeInsets.all(7),
+                      contentPadding: EdgeInsets.all(7),
 
-                    title: GestureDetector(
-                      child:Text(
-                        post.username,
+                      title: GestureDetector(
+                        child:Text(
+                          post.username,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+
+
+                        },
+
+                      ),
+
+
+                      trailing: Text(
+                        post.title,
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 11,
                         ),
                       ),
-                      onTap: () {
-
-
-                      },
 
                     ),
+                    Center(
 
+                      child: ClipRect(
+                        child:Image.network(
+                          post.imageUrl,
 
-                    trailing: Text(
-                      post.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 11,
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+
+                        ),
                       ),
                     ),
-
-                  ),
-                  Center(
-
-                    child: ClipRect(
-                      child:Image.network(
-                        post.imageUrl,
-
-                        height: 300,
-                        width: MediaQuery.of(context).size.width,
-                        fit: BoxFit.cover,
-
+                    ListTile(
+                      title: Text(
+                          post.description,
+                          style: TextStyle(fontWeight: FontWeight.w500)
                       ),
                     ),
-                  ),
-                  ListTile(
-                    title: Text(
-                        post.description,
-                        style: TextStyle(fontWeight: FontWeight.w500)
-                    ),
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      FlatButton(
-                        child: Text('Cook it'),
-                        textColor: Colors.lightBlueAccent,
-                        onPressed: () {
-                          Firestore.instance.collection('recipes').document(post.recipeId).get().then((data) {
-                            //print(data.documentID);
-                            Recipe postRecipe =  Recipe.fromDoc(data);
-                            print(postRecipe.id);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe,),)
-                            );
-                          });
+                    ButtonBar(
+                      alignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('Cook it'),
+                          textColor: Colors.lightBlueAccent,
+                          onPressed: () {
+                            Firestore.instance.collection('recipes').document(post.recipeId).get().then((data) {
+                              //print(data.documentID);
+                              Recipe postRecipe =  Recipe.fromDoc(data);
+                              print(postRecipe.id);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe,),)
+                              );
+                            });
                           },
-                      ),
-                      FlatButton(
-                        child: Text('Next time'),
-                        textColor: Colors.redAccent,
-                        onPressed: () { UserOperations.addToSave(currId, post.recipeId.toString()); },
-                      ),
-                      // show menu button
-                     // post.email == currEmail ?
-                    ],
-                  ),
-                ]
+                        ),
+                        FlatButton(
+                          child: Text('Next time'),
+                          textColor: Colors.redAccent,
+                          onPressed: () { UserOperations.addToSave(currId, post.recipeId.toString()); },
+                        ),
+                        // show menu button
+                        // post.email == currEmail ?
+                      ],
+                    ),
+                  ]
+              ),
             ),
           ),
         ),

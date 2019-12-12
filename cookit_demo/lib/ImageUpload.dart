@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 
 void main(){
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Image Upload',
     home: PostUpload(),
   ));

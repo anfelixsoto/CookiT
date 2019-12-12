@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+import 'HomeScreen.dart';
 import 'model/PostModel.dart';
 
 void main(){
@@ -297,7 +298,7 @@ class _UserProfile extends State<UserProfile> {
         //new IconButton( icon: new Icon(Icons.settings), tooltip: "Manage", onPressed: () => Navigator.of(context).pop(null), ) :
         leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
           onPressed: () {
-            Navigator.of(context).pop(context);
+            Navigator.pop(context,true);
           },),
       ),
       body: ListView(

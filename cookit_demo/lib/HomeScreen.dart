@@ -398,26 +398,20 @@ class HomeState extends State<Home> {
                 },
             ),
       ),
-
-      floatingActionButton: Visibility(
+      floatingActionButton: InkWell(
+        splashColor: Colors.lightBlueAccent,
+        onLongPress: (){
+          Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
+        },
         child: FloatingActionButton(
           backgroundColor: Colors.lightGreen,
-          child: Icon(
-            Icons.edit,
-          color: Colors.white,),
+          child: isAdmin ? Icon( Icons.edit, color: Colors.white,) : Icon(Icons.search, color: Colors.white,),
           onPressed: (){
-            setState(() {
-              manage = !manage;
-            });
-
+            isAdmin ? setState(() {manage = !manage;}):
+            Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
           },
         ),
-        visible: isAdmin,
-      )
-
-
-
-    );
+    ));
   }
 
   Widget getUserId(){

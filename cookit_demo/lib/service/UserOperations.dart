@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:cookit_demo/model/User.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -26,40 +27,94 @@ class UserOperations {
       }
     });
     return url;
+  }
 
-
+  static Future<void> addToFavorites(String userId, String recipeId) async {
+    //DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
+    //DocumentSnapshot snapshot = await favoritesReference.get();
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+          if (data.exists) {
+            if(!data.data["favorites"].contains(recipeId)) {
+              data.reference.updateData({
+                'favorites': FieldValue.arrayUnion([recipeId]),
+              });
+            }
+      } else{
+            data.reference.setData({
+              'favorites': [recipeId],
+            });
+          }
+    });
 
   }
 
-  Future<bool> addToFavorites(String userId, String recipeId) {
-    DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
-
-    return Firestore.instance.runTransaction((Transaction favoritesOperations) async {
-      DocumentSnapshot postSnapshot = await favoritesOperations.get(favoritesReference);
-      if (postSnapshot.exists) {
-        // Extend 'favorites' if the list does not contain the recipe ID:
-        if (!postSnapshot.data['favorites'].contains(recipeId)) {
-          await favoritesOperations.update(favoritesReference, <String, dynamic>{
-            'favorites': FieldValue.arrayUnion([recipeId])
-          });
-          // Delete the recipe ID from 'favorites':
-        } else {
-          await favoritesOperations.update(favoritesReference, <String, dynamic>{
-            'favorites': FieldValue.arrayRemove([recipeId])
+  static Future<void> removeFromFavorites(String userId, String recipeId) async {
+    //DocumentReference favoritesReference = Firestore.instance.collection('users').document(userId);
+    //DocumentSnapshot snapshot = await favoritesReference.get();
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
+        if(data.data["favorites"].contains(recipeId)) {
+          data.reference.updateData({
+            'favorites': FieldValue.arrayRemove([recipeId]),
           });
         }
-      } else {
-        // Create a document for the current user in collection 'users'
-        // and add a new array 'favorites' to the document:
-        await favoritesOperations.set(favoritesReference, {
-          'favorites': [recipeId]
-        });
       }
-    }).then((result) {
-      return true;
-    }).catchError((error) {
-      print('Error: $error');
-      return false;
+    });
+
+  }
+
+  static Future<DocumentSnapshot> getRecipeFromDB(String recipeId) {
+    return Firestore.instance.collection('recipes')
+        .document(recipeId)
+        .get();
+
+    //return data;
+  }
+  static  Future<void> deleteFavorite(String userId, String recipeId){
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data){
+          if(data.exists){
+            data.reference.updateData({
+              'favorites' : FieldValue.arrayRemove([recipeId]),
+
+
+            });
+          }
+    });
+    print("Removed Favorited Recipe");
+  }
+
+  static Future<void> delete(String type, String userId, String recipeId){
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data){
+          if(data.exists){
+            data.reference.updateData({
+              type : FieldValue.arrayRemove([recipeId]),
+            });
+          }
     });
   }
+
+  static Future<void> addToSave(String userId, String recipeId) async{
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data){
+      if(data.exists){
+        data.reference.updateData({
+          'saved' : FieldValue.arrayUnion([recipeId]),
+        });
+      } else{
+        data.reference.setData({
+          'saved': [recipeId],
+        });
+      }
+    });
+  }
+
 }

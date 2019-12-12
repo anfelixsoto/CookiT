@@ -26,9 +26,62 @@ class AdminOperations {
         }
       });
     return url;
+  }
 
+  static void grantAdmin(String userId) {
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
 
+        if(data.data["role"] == "user") {
+          data.reference.updateData({
+            'role': 'admin',
+          });
+          }
+      }
+    });
 
   }
+
+
+  static void deleteUser(String userId) {
+    Firestore.instance
+        .collection('posts')
+        .where("userId", isEqualTo: userId)
+        .getDocuments().then((data) {
+
+      for (var doc in data.documents) {
+        print(doc.documentID.toString());
+        deletePost(doc.documentID.toString());
+        //print(doc['user_name']);
+      }
+
+    });
+
+
+
+
+
+
+
+
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
+
+
+
+          //adminRemovePic(data['profileImage']);
+          data.reference.delete();
+          print(data.data["user_name"].toString());
+
+      }
+    });
+
+  }
+
+
 
 }

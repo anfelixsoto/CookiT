@@ -187,7 +187,7 @@ class _RecipeResults extends State<RecipeResults>{
                                                 onPressed: (){
                                                   Navigator.push(
                                                       context,
-                                                      MaterialPageRoute(builder: (context) => RecipeDetails(recipe:rec[index]))
+                                                      MaterialPageRoute(builder: (context) => RecipeDetails(recipe:rec[index],recipeId:recipeList[index]))
                                                   );
                                                 },
                                                 child: Text(rec[index].name,

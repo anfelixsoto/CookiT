@@ -105,6 +105,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+
           onPressed: (){
             List<String> ingredients=getIngredients();
             if(ingredients.isNotEmpty){
@@ -133,7 +134,7 @@ class _RecipeSearchState extends State<RecipeSearch> {
           automaticallyImplyLeading: true,
           title: Text('CookiT'),
           leading: IconButton(icon:Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(context),
           ),
           actions:<Widget>[IconButton(icon: Icon(Icons.add), onPressed: _add)],
         ),

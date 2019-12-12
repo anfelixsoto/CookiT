@@ -216,10 +216,28 @@ class _editProfile extends State<editProfile> {
 
   void setProfilePic(String imgURL) {
 
+    List<String> posts = [];
     Firestore.instance.collection('users').document(currentUser.uid).updateData({
       'profileImage': imgURL,
       }
     );
+
+    Firestore.instance
+        .collection('posts')
+        .where("userId", isEqualTo: currentUser.uid)
+        .getDocuments().then((data){
+
+          for (var doc in data.documents) {
+            posts.add(doc.documentID);
+          }
+    });
+  // update user profile pics in posts
+    for (var postId in posts) {
+      Firestore.instance.collection('posts').document(postId).updateData({
+        'profileImage': imgURL,
+      }
+      );
+    }
 
   }
 

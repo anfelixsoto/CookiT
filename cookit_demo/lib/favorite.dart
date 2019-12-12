@@ -2,12 +2,17 @@
 //favorite.dart
 //This file allows people to search through their favorite.
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/RecipeInstructions.dart';
+import 'package:cookit_demo/model/Recipe.dart';
+import 'package:cookit_demo/service/UserOperations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 //Global Variable for List.
-List<String> food = ["baked fish", "fruit tart", "pb&j burger"];
 
 void main() => runApp(MyApp());
 
@@ -16,11 +21,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SeachAppBarRecipe',
+      title: 'SearchAppBarRecipe',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Favorites(title: 'SeachAppBarRecipe'),
+      home: Favorites(title: 'SearchAppBarRecipe'),
     );
   }
 }
@@ -35,7 +40,6 @@ class Favorites extends StatefulWidget {
 }
 
 class _Favorites extends State<Favorites> {
-  final List<String> yum = food;
   _SearchAppBarDelegate _searchDelegate;
   FirebaseUser currentUser;
 
@@ -43,6 +47,15 @@ class _Favorites extends State<Favorites> {
   DocumentReference userRef;
   String profileImage;
   String userId;
+  List<String> favorites;
+  List<Recipe> recipes = [];
+  List<String> favNames;
+  List<String> favs = [];
+
+  List<String> filterRecipes;
+  TextEditingController editingController = TextEditingController();
+  var items = List<String>();
+  TextEditingController filterController = new TextEditingController();
 
   @override
   void initState() {
@@ -50,9 +63,14 @@ class _Favorites extends State<Favorites> {
     //Initializing search delegate with sorted list of recipes
     loadCurrentUser();
     getUserRef();
-    _searchDelegate = _SearchAppBarDelegate(food);
+    getFavs();
+
+
   }
 
+  void getFavs(){
+    print(favs);
+  }
   void loadCurrentUser() {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
@@ -67,14 +85,21 @@ class _Favorites extends State<Favorites> {
     final Firestore _firestore = Firestore.instance;
 
     FirebaseUser user = await _auth.currentUser();
-    List<String> favorites = await getFavorites();
+
+    //_searchDelegate = _SearchAppBarDelegate(favorites);
 
     setState((){
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
+      List<String> temp = [];
       userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
+          temp = List.from(data.data['favorites']);
+          for(var i = 0; i < temp.length; i++){
+            favs.add(temp[i]);
+            //print(temp[i].toString());
+          }
 
 
 
@@ -82,29 +107,174 @@ class _Favorites extends State<Favorites> {
       });
 
 
+
+
+
+
       //print(user.displayName.toString());
+    });
+
+    filterController.addListener(() {
+      setState(() {
+        //filterRecipes = filterController.text;
+      });
     });
   }
 
-  Future<List<String>> getFavorites() async {
-    DocumentSnapshot querySnapshot = await Firestore.instance
+  @override
+  void dispose() {
+    filterController.dispose();
+    super.dispose();
+  }
+
+
+  Future<List<Recipe>> getRecipeDetails(List<String> temp) async{
+    List<Recipe> recipeDetails = [];
+    Recipe recipe;
+    String rec_id, rec_name, rec_description, rec_imageURL;
+    double rec_numCal;
+    int rec_prepTime, rec_servings;
+    List<String> rec_ingredients;
+    List<String> rec_instructions;
+
+
+    for(var i in temp){
+      DocumentSnapshot snapshot = await Firestore.instance
+          .collection('recipes')
+          .document(i)
+          .get();
+      if(snapshot.exists){
+        rec_id = snapshot.data['id'].toString();
+        rec_name = snapshot.data['name'].toString();
+        rec_description = snapshot.data['description'].toString();
+        rec_imageURL = snapshot.data['imageURL'].toString();
+        rec_numCal = snapshot.data['numCalories'];
+        rec_prepTime = snapshot.data['prepTime'];
+        rec_servings = snapshot.data['servings'];
+        rec_ingredients = List<String>.from(snapshot.data['ingredients']);
+        rec_instructions = List<String>.from(snapshot.data['instructions']);
+        recipe = new Recipe(id: rec_id,name: rec_name,description: rec_description,imageURL: rec_imageURL ,numCalories: rec_numCal
+            ,prepTime: rec_prepTime,servings: rec_servings, ingredients: rec_ingredients,instructions: rec_instructions);
+        recipeDetails.add(recipe);
+
+      }
+    }
+
+    return recipeDetails;
+  }
+
+
+  Future<List<Recipe>> getFavorites() async {
+    List<Recipe> temp = [];
+    List<Recipe> results = [];
+    List<String> names = [];
+    var snap= await Firestore.instance
         .collection('users')
         .document(userId)
         .get();
-    if (querySnapshot.exists &&
-        querySnapshot.data.containsKey('favorites') &&
-        querySnapshot.data['favorites'] is List) {
-      // Create a new List<String> from List<dynamic>
-      return List<String>.from(querySnapshot.data['favorites']);
+
+    temp = List.from(snap.data['favorites']);
+
+    for(var i in temp){
+      DocumentSnapshot snapItem = await Firestore.instance
+          .collection('recipes')
+          .document(i.toString())
+          .get();
+      results.add(Recipe.fromDoc(snapItem));
+
     }
-    return [];
+    return results;
   }
 
-  
+
+
+
+
+
+  List<Widget> displayFavorites(AsyncSnapshot snapshot) {
+    return snapshot.data.documents.map<Widget>((document){
+      if(document['name'].toString() != "") {
+        return Padding(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
+            child: Container(
+              width: 500,
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                // shape: shape,
+
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+
+                  child: Column(
+                      children: <Widget>[
+
+
+                        Center(
+
+                          child: ClipRect(
+                            child: document['imageURL'].toString() != "" ?
+                            Image.network(
+                              document['imageURL'],
+                              height: 200,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              fit: BoxFit.cover,
+                            )
+                                : Container(
+                              padding: EdgeInsets.only(top: 20.0, bottom: 0.0),
+                              margin: const EdgeInsets.only(
+                                  top: 0, bottom: 0.0),
+                              height: 200,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              color: Colors.blueGrey[100],
+
+                            ),
+
+                          ),
+                        ),
+
+                        Divider(),
+
+                        Divider(),
+                        ListTile(
+                          leading: Text(
+                            document['name'].toString(),
+                          ),
+                        ),
+
+
+                      ]
+                  ),
+                ),
+
+              ),
+            )
+        );
+      }else{
+        return new Container();
+      }
+    }).toList();
+  }
+
+  void filterSearchResults(String query) {
+
+
+  }
+
+
+
+
 
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -125,37 +295,210 @@ class _Favorites extends State<Favorites> {
             icon: const Icon(Icons.search),
             //Don't block the main thread
             onPressed: () {
-              showSearchPage(context, _searchDelegate);
+
             },
           ),
         ],
       ),
-      body: Scrollbar(
-        //Displaying all recipes in list in app's main page
-        child: ListView.builder(
-          itemCount: food.length,
-          itemBuilder: (context, idx) =>
-              ListTile(
-                //title: Text(kWords[idx]),
-                title: Text(food[idx]),
-                onTap: () {
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text("Click the Search action"),
-                          action: SnackBarAction(
-                            label: 'Search',
-                            onPressed: (){
-                              showSearchPage(context, _searchDelegate);
-                            },
-                          )
-                      )
-                  );
-                },
-              ),
-        ),
-      ),
-    );
-  }
+      body:Column(
+
+        children: <Widget>[
+
+            TextField(
+                decoration: new InputDecoration(
+                    contentPadding: EdgeInsets.all(10.0),
+                  hintText: 'Search by name',
+                ),
+               onChanged: (string) {
+                  setState(() {
+
+                  });
+
+               },
+            ),
+
+
+          Expanded(
+          child: StreamBuilder(
+              stream: Firestore.instance
+                  .collection('users')
+                  .document(userId)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                print(snapshot);
+                switch(snapshot.connectionState){
+                  case ConnectionState.waiting:
+                    return Center(
+                        child: CircularProgressIndicator()
+                    );
+                  default:
+                    List favsList = snapshot.data['favorites'];
+                    return new ListView(
+
+
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+
+
+                      children: List.generate(snapshot.data['favorites'].length, (index) {
+                        //print(snapshot.data['favorites'][index]);
+                        List temp3 = [];
+
+                        if(!temp3.contains(snapshot.data['favorites'][index].toString())) {
+                          temp3.add(snapshot.data['favorites'][index]
+                              .toString());
+                        }
+                        print(temp3);
+
+                        return  StreamBuilder(
+                            stream: Firestore.instance
+                                .collection('recipes')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              print(snapshot);
+                              switch(snapshot.connectionState){
+                                case ConnectionState.waiting:
+                                  return Center(
+                                      child: CircularProgressIndicator()
+                                  );
+                                default:
+                                // List videosList = snapshot.data;
+                                  return ListView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data.documents.length,
+                                    itemBuilder: (context, recipeId) {
+                                      DocumentSnapshot recipe = snapshot.data.documents[recipeId];
+
+                                      print("printing");
+                                      print(temp3);
+                                      if(temp3.contains(recipe.documentID) ) {
+                                        return Container(
+                                          height: 250,
+                                          padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                          child: Card(
+
+                                            clipBehavior: Clip.antiAlias,
+
+
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+
+                                              child: Column(
+                                                  children: <Widget>[
+
+
+                                                    Center(
+
+                                                      child: ClipRect(
+                                                        child: recipe.data['imageURL'].toString() != "" ?
+                                                        Image.network(
+                                                          recipe.data['imageURL'],
+                                                          height: 132,
+                                                          width: MediaQuery
+                                                              .of(context)
+                                                              .size
+                                                              .width,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                            : Container(
+                                                          padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                          margin: const EdgeInsets.only(
+                                                              top: 0, bottom: 0.0),
+                                                          height: 132,
+                                                          width: MediaQuery
+                                                              .of(context)
+                                                              .size
+                                                              .width,
+                                                          color: Colors.blueGrey[100],
+
+                                                        ),
+
+                                                      ),
+                                                    ),
+
+
+
+
+                                                    ListTile(
+                                                      leading: Text(
+                                                        recipe.data['name'].toString(),
+                                                      ),
+                                                    ),
+
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                      child: Row(
+                                                        // align left
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                        textDirection: TextDirection.rtl,
+
+                                                        children: <Widget>[
+
+                                                          IconButton(
+                                                            icon: Icon(
+                                                              Icons.remove_circle_outline,
+                                                              color: Colors.redAccent[200],
+                                                            ),
+
+                                                            onPressed: () {
+                                                              UserOperations.deleteFavorite(userId, recipe.documentID);
+                                                            },
+                                                          ),
+
+                                                          FlatButton(
+                                                            //color: Colors.lightBlueAccent,
+                                                            child: const Text('Start'),
+                                                            //shape: new RoundedRectangleBorder(
+                                                            //borderRadius: new BorderRadius.circular(30.0)),
+                                                            textColor: Colors.blue,
+                                                            onPressed: () {
+                                                              Recipe selectRecipe = Recipe.fromDoc(recipe);
+                                                              Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => RecipeInstructions(recipe: selectRecipe,)),
+                                                              );
+
+                                                            },
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                    ),
+
+
+
+
+                                                  ]
+                                              ),
+                                            ),
+
+
+
+                                          ),);
+                                      } return Container(
+                                        padding: EdgeInsets.only(top: 0.0, bottom: 5.0),
+                                      );
+                                    },
+                                  );
+                              }
+                            }
+                        );
+                      }
+                      ),
+                    );
+                }
+              }
+          ),),
+
+        ]
+
+                                  ),
+                            );
+                        }
+
 
   //Shows Search result
   void showSearchPage(BuildContext context,

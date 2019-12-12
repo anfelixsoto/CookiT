@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/Name.dart';
 import 'package:cookit_demo/model/Instruction.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ String getKey(){
 }
 
 class Recipe{
+  String id;
   String name;
   String description;
   String imageURL;
@@ -27,7 +29,7 @@ class Recipe{
   @JsonKey(defaultValue: [''])
   List<String> instructions;
   
-  Recipe({this.name,this.description,this.imageURL,this.numCalories,this.prepTime,this.servings,this.ingredients,this.instructions});
+  Recipe({this.id, this.name,this.description,this.imageURL,this.numCalories,this.prepTime,this.servings,this.ingredients,this.instructions});
 
   factory Recipe.fromJSON(Map<String,dynamic> json){
     return Recipe(
@@ -42,10 +44,23 @@ class Recipe{
       );
   }
 
+  factory Recipe.fromDoc(DocumentSnapshot doc) {
+    return Recipe (
+      id: doc.documentID,
+      name: doc['name'],
+      description: doc['description'],
+      imageURL: doc['imageURL'] ,
+      numCalories: doc['numCalories'],
+      prepTime: doc['prepTime'],
+      servings: doc['servings'],
+      ingredients: doc['ingredients'].cast<String>(),
+      instructions: doc['instructions'].cast<String>(),
+    );
+  }
+
   static FutureOr<Recipe> fetchRecipe(int id) async {
     final response =
         await http.get('https://api.spoonacular.com/recipes/'+id.toString()+'/information?includeNutrition=true&apiKey='+getKey());
-
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.
       return Recipe.fromJSON(json.decode(response.body));

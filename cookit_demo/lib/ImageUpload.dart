@@ -1,5 +1,6 @@
 import 'package:cookit_demo/UserScreen.dart';
 import 'package:cookit_demo/model/PostModel.dart';
+import 'package:cookit_demo/model/Recipe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,7 +21,10 @@ void main(){
 
 class PostUpload extends StatefulWidget {
 
-
+  final String rid;
+  final Recipe recipe;
+  PostUpload({Key key, @required this.recipe, @required this.rid,})
+      : super(key: key);
 
   @override
   _PostUploadState createState() => _PostUploadState();
@@ -38,6 +42,8 @@ class _PostUploadState extends State<PostUpload> {
   DocumentReference userRef;
   String profileImage;
   String userId;
+  String username;
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +72,7 @@ class _PostUploadState extends State<PostUpload> {
       userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
+          username = data.data['user_name'].toString();
 
 
 
@@ -180,6 +187,8 @@ class _PostUploadState extends State<PostUpload> {
   }
 
   void createPost(Post post) {
+
+    String id;
     Firestore.instance.collection('posts').add({
       'imageUrl': post.imageUrl,
       'title': post.title,
@@ -187,7 +196,18 @@ class _PostUploadState extends State<PostUpload> {
       'email': post.email,
       'profileImage': profileImage,
       'userId': userId,
+      'user_name': username,
+      'recipeId': widget.rid.toString(),
+    }).then((doc){
+      id = doc.documentID;
     });
+
+    // update the id field
+    Firestore.instance.collection('posts').document(id).updateData({
+      'id': id,
+    });
+
+
   }
 
 
@@ -209,6 +229,7 @@ class _PostUploadState extends State<PostUpload> {
       description: caption,
       email: showEmail(),
       profileImage: profileImage,
+
 
     );
 
@@ -284,8 +305,9 @@ class _PostUploadState extends State<PostUpload> {
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Upload Picture'),
+        title: Text('Upload Picture', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.lightGreen,
+        
       ),
      body: Container(
        margin: EdgeInsets.all(20.0),
@@ -328,7 +350,7 @@ class _PostUploadState extends State<PostUpload> {
                  minWidth: 110.0,
                  height: 40.0,
 
-                 color: Colors.lightBlueAccent,
+                 color: Colors.lightGreen,
                  textColor: Colors.white,
                  onPressed: () {
                    if(loading == false) {

@@ -1,7 +1,15 @@
+
+import 'dart:io';
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/ImageUpload.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/service/Authentication.dart';
-
+import 'package:image_picker/image_picker.dart';
 import 'main.dart';
+import 'model/User.dart';
+import 'package:path/path.dart';
 
 class LoginSignupPage extends StatefulWidget{
   LoginSignupPage({this.auth,this.loginCallback});
@@ -16,14 +24,24 @@ class LoginSignupPage extends StatefulWidget{
 class _LoginSignupState extends State<LoginSignupPage>{
   final _formKey = new GlobalKey<FormState>();
 
-  String _email, _password, _errorMessage;
-  bool _isLoginForm, _isLoading;
+  File _profileUrl;
+  String _username, _email, _password, _repeatPassword, _errorMessage, profileIm;
+  bool _isLoginForm = true;
+  bool _isLoading;
   bool isEmpty = true;
+  bool emptyForm = true;
 
   bool validateAndSave(){
     final form = _formKey.currentState;
     if(form.validate()){
       form.save();
+      return true;
+    }
+    return false;
+  }
+
+  bool passwordsMatch(){
+    if(_password == _repeatPassword) {
       return true;
     }
     return false;
@@ -40,15 +58,15 @@ class _LoginSignupState extends State<LoginSignupPage>{
         if(_isLoginForm){
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
-        }else{
-          userId = await widget.auth.signUp(_email, _password);
+        }else if(!_isLoginForm && passwordsMatch()){
+          userId = await widget.auth.signUp(_username, _email, _password);
           print('Signed up user: $userId');
         }
         setState(() {
           _isLoading = false;
         });
 
-        if(userId.length > 0 && userId != null && _isLoginForm){
+        if(userId.length > 0 && userId != null && _isLoginForm && !_isLoginForm){
           widget.loginCallback();
         }
       }catch(e){
@@ -59,6 +77,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
           _formKey.currentState.reset();
         });
       }
+    }
+    if(!passwordsMatch()){
+      _errorMessage = "Passwords don't match";
     }
   }
 
@@ -85,45 +106,113 @@ class _LoginSignupState extends State<LoginSignupPage>{
   @override
   Widget build(BuildContext context){
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('CookiT',
-        style: TextStyle(color: Colors.lightGreen,),),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: IconButton(icon:Icon(Icons.arrow_back, color: Colors.lightGreen,),
-        onPressed: () {
-          Navigator.push(context,
-          MaterialPageRoute(builder: (context) => StartPage()));
-        },),
-      ),
-      body: Stack(
-        children: <Widget>[
-          showForm(),
-        ],
-      )
+        appBar: new AppBar(
+          title: new Text(_isLoginForm ? "Login" : "Create Account",
+            style: TextStyle(color: Colors.lightGreen,),),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          leading: IconButton(icon:Icon(Icons.arrow_back, color: Colors.lightGreen,),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => StartPage()));
+            },),
+        ),
+        body: Stack(
+          children: <Widget>[
+            _isLoginForm ? showLoginForm() : showSignUpForm(context),
+          ],
+        )
+    );
+  }
+  Widget showLoginForm(){
+    return new Container(
+        padding: EdgeInsets.all(16.0),
+        child: new Form(
+          key: _formKey,
+          child: new ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              SizedBox(height: 50),
+              showCookitLogo(),
+              SizedBox(height: 50),
+              showWelcomeText(),
+              showEmailInput(),
+              showPasswordInput(),
+              showPrimaryButton(),
+              showSecondaryButton(),
+              showErrorMessage(),
+              showCircularProgress(),
+            ],
+          ),
+        )
     );
   }
 
-  Widget showLogo() {
+  Widget showSignUpForm(BuildContext context){
+    return new Container(
+        padding: EdgeInsets.all(16.0),
+        child: new Form(
+          key: _formKey,
+          child: new ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              showWelcomeText(),
+              showAvatar(),
+              showUserNameInput(),
+              showEmailInput(),
+              showPasswordInput(),
+              showRepeatPasswordInput(),
+              showErrorMessage(),
+              showPrimaryButton(),
+              showSecondaryButton(),
+              showCircularProgress(),
+            ],
+          ),
+        )
+    );
+  }
+
+  Widget showCookitLogo(){
     return new Hero(
-      tag: 'hero',
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-        child: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          radius: 48.0,
-          child: Image.asset('assets/images/user_login.png'),
+      tag:'hero',
+      child: CircleAvatar(
+        backgroundColor: Colors.lightGreen,
+        radius: 48.0,
+        child: AvatarGlow(
+            endRadius: 90,
+            duration: Duration(seconds: 2),
+            glowColor: Colors.lightGreen,
+            repeat: true,
+            repeatPauseDuration: Duration(seconds: 2),
+            startDelay: Duration(seconds: 1),
+            child: Material(
+                elevation: 8.0,
+                shape: CircleBorder(),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey[100],
+                  child: Text(
+                    "CookiT",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.lightGreen,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  radius: 50.0,
+                ))
         ),
       ),
     );
   }
 
-  Widget showWelcomText(){
+  Widget showWelcomeText(){
     return Material(
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 0.0),
         child: Text(
-          ("Please login or create an account to start cooking!").toUpperCase(),
+          (_isLoginForm ? ("Login to get started!").toUpperCase() :
+          ("Fill out the form to get started").toUpperCase()),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.lightGreen,
@@ -135,28 +224,37 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showForm(){
-    return new Container(
-      padding: EdgeInsets.all(16.0),
-      child: new Form(
-        key: _formKey,
-        child: new ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            showLogo(),
-            showWelcomText(),
-            showEmailInput(),
-            showPasswordInput(),
-            showPrimaryButton(),
-            showSecondaryButton(),
-            showErrorMessage(),
-            showCircularProgress(),
-          ],
-        ),
-      )
+  Widget showUserNameInput(){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      child: Row(
+        children: <Widget>[
+          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+            child: Icon(
+              Icons.person_outline,
+              color: Colors.grey,
+            ),
+          ),
+          Container(
+            height: 30.0,
+            width: 1.0,
+            color: Colors.grey.withOpacity(0.5),
+            margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+          ),
+          new Expanded(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: 'Enter username',
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+              validator: (value) => value.isEmpty ? 'Username can\'t be empty' : null,
+              onSaved: (value) => _username = value.trim(),
+            ),
+          )
+        ],
+      ),
     );
   }
-
 
   Widget showEmailInput(){
     return Padding(
@@ -164,10 +262,10 @@ class _LoginSignupState extends State<LoginSignupPage>{
       child: Row(
         children: <Widget>[
           new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-          child: Icon(
-            Icons.person_outline,
-            color: Colors.grey,
-          ),
+            child: Icon(
+              Icons.mail_outline,
+              color: Colors.grey,
+            ),
           ),
           Container(
             height: 30.0,
@@ -223,6 +321,39 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
+  Widget showRepeatPasswordInput(){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      child: Row(
+        children: <Widget>[
+          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+            child: Icon(
+              Icons.lock_open,
+              color: Colors.grey,
+            ),
+          ),
+          Container(
+            height: 30.0,
+            width: 1.0,
+            color: Colors.grey.withOpacity(0.5),
+            margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+          ),
+          new Expanded(
+            child: TextFormField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Confirm Password',
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+              validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+              onSaved: (value) => _repeatPassword = value.trim(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget showSecondaryButton() {
     return new FlatButton(
         child: new Text(
@@ -255,18 +386,18 @@ class _LoginSignupState extends State<LoginSignupPage>{
                         child: Container()),
                     new Transform.translate(offset: Offset(15.0,0.0),
                       child: new Container(
-                        padding: const EdgeInsets.all(5.0),
-                        child: FlatButton(
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(28.0)
-                          ),
-                          splashColor: Colors.white,
-                          color: Colors.white,
-                          child: Icon(Icons.arrow_forward,
-                          color: Colors.lightGreen,
-                          ),
-                          onPressed: () => {},
-                        )
+                          padding: const EdgeInsets.all(5.0),
+                          child: FlatButton(
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(28.0)
+                            ),
+                            splashColor: Colors.white,
+                            color: Colors.white,
+                            child: Icon(Icons.arrow_forward,
+                              color: Colors.lightGreen,
+                            ),
+                            onPressed: () => {},
+                          )
                       ),
                     )
                   ],
@@ -283,11 +414,12 @@ class _LoginSignupState extends State<LoginSignupPage>{
       isEmpty =true;
       return new Text(
         _errorMessage,
+        textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 13.0,
-          color: Colors.red,
-          height: 1.0,
-          fontWeight: FontWeight.w300),
+            fontSize: 13.0,
+            color: Colors.red,
+            height: 1.0,
+            fontWeight: FontWeight.w300),
       );
     }else{
       isEmpty = false;
@@ -296,15 +428,84 @@ class _LoginSignupState extends State<LoginSignupPage>{
       );
     }}
 
-    Widget showCircularProgress(){
-      if(_isLoading){
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-      return Container(
-        height: 0.0,
-        width: 0.0,
+  Widget showCircularProgress(){
+    if(_isLoading){
+      return Center(
+        child: CircularProgressIndicator(),
       );
     }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
+  }
+
+  Future<String> uploadProfileImage(BuildContext context) async{
+    String fileName = basename(_profileUrl.path);
+    StorageReference firebaseStorageRef  = FirebaseStorage.instance.ref().child("UserProfileImage/" + fileName);
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_profileUrl);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    String downloadUrl = await firebaseStorageRef.getDownloadURL();
+    return downloadUrl;
+  }
+
+  openGallery(BuildContext context) async{
+    var profileImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    this.setState((){
+      _profileUrl = profileImage;
+    });
+    //profileIm = await uploadProfileImage(context);
+    Navigator.of(context).pop();
+  }
+
+  openCamera(BuildContext context) async{
+    var profileImage = await ImagePicker.pickImage(source: ImageSource.camera);
+    this.setState((){
+      _profileUrl = profileImage;
+    });
+    //profileIm = await uploadProfileImage(context);
+    Navigator.of(context).pop();
+  }
+
+  Future<void> showOptions(BuildContext context) {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Select From: '),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              GestureDetector(
+                child: Text('Gallery'),
+                onTap: (){openGallery(context);},),
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text('Camera'),
+                onTap: () {openCamera(context);},),
+              Padding(padding: EdgeInsets.all(8.0)),
+              GestureDetector(
+                child: Text('Cancel',
+                    style: TextStyle(color: Colors.redAccent,)),
+                onTap: () {Navigator.pop(context);},)
+            ],
+          ),
+        ),);
+    });
+  }
+
+  Widget showAvatar(){
+      return Container(
+          padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 50.0),
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                  child: Icon(
+                      Icons.account_circle,
+                      color: Colors.grey[300],
+                      size: 100.0,
+                    ),
+              )
+            ],
+          )
+      );
+  }
 }

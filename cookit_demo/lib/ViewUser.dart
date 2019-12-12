@@ -218,7 +218,6 @@ class _ViewUser extends State<ViewUser> {
                           ),
 
                         ),
-                        Divider(),
                         Center(
 
                           child: ClipRect(
@@ -426,12 +425,9 @@ class _ViewUser extends State<ViewUser> {
         leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
         actions: <Widget>[
           role == "admin"?
-         showDelete(context, widget.otherId, role,otherEmail, profilePic)
-              :  new IconButton(
-            icon: pic != " " ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)):
-            Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
-            onPressed: () {},
-          ),
+         showDelete(context, widget.otherId, role,otherEmail, profilePic):
+          new IconButton(icon: pic != " " || pic != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)):
+          Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0), onPressed: () {}, ),
         ],
       ),
       body: ListView (
@@ -476,7 +472,6 @@ class _ViewUser extends State<ViewUser> {
             ],
           ),
         ),
-        Divider(),
         Divider(height: 0.0),
         Container (
           child: FutureBuilder<List<Post>>(
@@ -525,14 +520,11 @@ class _ViewUser extends State<ViewUser> {
   }
 
   Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
-
-
-
     return InkWell(
       //  onTap: () => print("Post " + post.id +" pressed"),
       onTap:() {
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, currRole: role,),
+          builder: (context) => PostDetails(post: post, currId: userId, currEmail: currEmail, currRole: role, loginProfilePic: pic,),
         ),);
       },
       child: Container (
@@ -573,11 +565,10 @@ class PostDetails extends StatelessWidget {
   String currId;
   String currEmail;
   String currRole;
-
+  String loginProfilePic;
 
   // In the constructor, require a Post.
-  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail,  @required this.currRole}) : super(key: key);
-
+  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail,  @required this.currRole, @required this.loginProfilePic}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -589,6 +580,13 @@ class PostDetails extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
+        actions: <Widget>[
+        IconButton(
+          icon: loginProfilePic != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(loginProfilePic)):
+          Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
+          onPressed: () {}
+        ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),

@@ -281,7 +281,6 @@ class HomeState extends State<Home> {
                   ),
                 ),
                 ),
-                Divider(),
                    Center(
                    child: ClipRect(
                    child:Image.network(
@@ -291,7 +290,6 @@ class HomeState extends State<Home> {
                       fit: BoxFit.cover),
                    ),
                    ),
-                Divider(),
                 ListTile(
                   title: Text(
                       document['description'],

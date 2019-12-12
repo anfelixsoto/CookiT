@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:cookit_demo/delayed_animation.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'package:cookit_demo/service/Authentication.dart';
+import 'package:cookit_demo/model/globals.dart';
 
 import 'service/RootPage.dart';
 

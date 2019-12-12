@@ -69,8 +69,6 @@ class _editProfile extends State<editProfile> {
           profilePic = data.data['profileImage'].toString();
           //print(profilePic);
           tempPic = profilePic;
-
-
         }
       });
 
@@ -172,41 +170,31 @@ class _editProfile extends State<editProfile> {
       return Container (
           padding: EdgeInsets.only(top: 5.0, bottom: 30.0),
           margin: const EdgeInsets.only(bottom: 10.0),
-          height: 300,
+          height: 200,
           width: 300,
-          color: Colors.blueGrey[100],
-
-          child: Center (
-
-            child: MaterialButton(
-              minWidth: 10.0,
-              height: 50.0,
-              color: Colors.white,
-              onPressed: () {
-                showOptions(context);
-              },
-              child: new Text('Pick Image'),
-            ),
-
-
-          )
+        child: CircleAvatar(
+          backgroundColor: Colors.grey[200],
+            child: Center (
+              child: MaterialButton(
+                minWidth: 10.0,
+                height: 50.0,
+                color: Colors.white,
+                onPressed: () {
+                  showOptions(context);
+                },
+                child: new Text('Pick Image'),
+              ),
+            )
+        ),
       );
     } else {
-      return new Container(
-        width: 300.0,
-        height: 300.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white30),
-        ),
-        margin: const EdgeInsets.only(top: 16.0, left: 16.0),
-        padding: const EdgeInsets.all(3.0),
-        child: ClipOval(
-          child: Image.file(
-            _image, width: 50, height: 50,
-          ),
-        ),);
-
+      return Material(
+        elevation: 4.0,
+        shape: CircleBorder(),
+        clipBehavior: Clip.hardEdge,
+        color: Colors.transparent,
+        child: Image.file(_image, fit: BoxFit.fitHeight, width: 200.0, height: 200.0,),
+      );
       //return Container(
         //padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 30.0),
 
@@ -356,14 +344,16 @@ class _editProfile extends State<editProfile> {
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.lightGreen,
               size: 24.0,
             ),
             onPressed: () {
               Navigator.pop(context);
             }),
-        title: Text('Upload Picture'),
-        backgroundColor: Colors.lightGreen,
+        title: Text('Edit Profile',
+        style: TextStyle(color: Colors.lightGreen),),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: Container(
         margin: EdgeInsets.all(20.0),
@@ -378,7 +368,7 @@ class _editProfile extends State<editProfile> {
 
                // in case the image is null
                 //Image.file(_image, width: 300, height: 300 ),
-
+                Divider( color: Colors.white,),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30.0),
                   child: MaterialButton(

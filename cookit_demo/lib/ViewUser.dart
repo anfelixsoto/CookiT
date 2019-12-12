@@ -24,13 +24,13 @@ import 'model/PostModel.dart';
 
 
 class ViewUser extends StatefulWidget {
- // ViewUser({Key key,  this.userId,  this.otherUserId });
+  // ViewUser({Key key,  this.userId,  this.otherUserId });
   final String userId;
   final String otherId;
   ViewUser({Key key, this.userId, this.otherId,})
       : super(key: key);
 
- // final BaseAuth auth;
+  // final BaseAuth auth;
   //final VoidCallback logoutCallback;
 
 
@@ -419,101 +419,101 @@ class _ViewUser extends State<ViewUser> {
     return Scaffold(
       appBar: AppBar(
         title: Text(getUsername().toString(),
-        style: TextStyle(color: Colors.lightGreen),),
+          style: TextStyle(color: Colors.lightGreen),),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
         actions: <Widget>[
-          role == "admin"?
-         showDelete(context, widget.otherId, role,otherEmail, profilePic):
-          new IconButton(icon: pic != " " || pic != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)):
-          Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0), onPressed: () {}, ),
+          role == "admin"? showDelete(context, widget.otherId, role,otherEmail, profilePic) :
+          new IconButton(icon: pic == " " || pic == null ? Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0):
+          CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)),
+            onPressed: () {}, ),
         ],
       ),
       body: ListView (
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              Center(
-                child: _buildAvatar(),
-              ),
-              Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 children: <Widget>[
+                  Center(
+                    child: _buildAvatar(),
+                  ),
+                  Row(
+                    children: <Widget>[
 
 
 
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly,
+                      Expanded(
+                        flex: 1,
+                        child: Column(
                           children: <Widget>[
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
 
+                              ],
+                            ),
+                            Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+
+                                ]),
                           ],
                         ),
-                        Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
+                      )
+                    ],
+                  ),
 
-                            ]),
-                      ],
-                    ),
-                  )
+
                 ],
               ),
+            ),
+            Divider(height: 0.0),
+            Container (
+              child: FutureBuilder<List<Post>>(
+                future: getPosts(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: CircularProgressIndicator());
+                  else if(snapshot.data.length == 0){
+                    return Container(
+                        alignment: FractionalOffset.center,
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text('No Posts')
+                    );
+                  }
+                  else {
+                    // build the grid
+                    return GridView.count(
+
+                        crossAxisCount: 3,
+                        childAspectRatio: 1.0,
+                        //                    padding: const EdgeInsets.all(0.5),
+                        mainAxisSpacing: 1.5,
+
+                        crossAxisSpacing: 1.5,
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: snapshot.data.map((Post post) {
+                          return GridTile(
+                            child: showPosts(context, post, post.imageUrl, post.userId, post.email),
+                          );
+                        }).toList());
 
 
-            ],
-          ),
-        ),
-        Divider(height: 0.0),
-        Container (
-          child: FutureBuilder<List<Post>>(
-            future: getPosts(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Container(
-                    alignment: FractionalOffset.center,
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: CircularProgressIndicator());
-              else if(snapshot.data.length == 0){
-                return Container(
-                    alignment: FractionalOffset.center,
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Text('No Posts')
-                );
-              }
-              else {
-                // build the grid
-                return GridView.count(
+                  }
+                },
 
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.0,
-                    //                    padding: const EdgeInsets.all(0.5),
-                    mainAxisSpacing: 1.5,
-
-                    crossAxisSpacing: 1.5,
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: snapshot.data.map((Post post) {
-                      return GridTile(
-                        child: showPosts(context, post, post.imageUrl, post.userId, post.email),
-                      );
-                    }).toList());
-
-
-              }
-            },
-
-          ),
-        ),
-      ]
+              ),
+            ),
+          ]
       ),
 
     );
@@ -568,42 +568,49 @@ class PostDetails extends StatelessWidget {
   String loginProfilePic;
 
   // In the constructor, require a Post.
-  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail,  @required this.currRole, @required this.loginProfilePic}) : super(key: key);
+  PostDetails(
+      {Key key, @required this.post, @required this.currId, @required this.currEmail, @required this.currRole, @required this.loginProfilePic})
+      : super( key: key );
 
   @override
   Widget build(BuildContext context) {
     // Use the Post to create the UI.
     return Scaffold(
       appBar: AppBar(
-        title: Text(post.title,
-        style: TextStyle(color: Colors.lightGreen),),
+        title: Text( post.title,
+          style: TextStyle( color: Colors.lightGreen ), ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
+        leading: new IconButton(
+            icon: new Icon( Icons.arrow_back, color: Colors.lightGreen ),
+            onPressed: () => Navigator.of( context ).pop( context ) ),
         actions: <Widget>[
-        IconButton(
-          icon: loginProfilePic != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(loginProfilePic)):
-          Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
-          onPressed: () {}
-        ),
+          IconButton(
+              icon: loginProfilePic != null ? CircleAvatar( radius: 15.0,
+                  backgroundImage: NetworkImage( loginProfilePic ) ) :
+              Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
+              onPressed: () {}
+          ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all( 10 ),
         child: Container(
           height: 530,
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
+              borderRadius: BorderRadius.circular( 15.0 ),
             ),
             color: Colors.grey[200],
             child: Padding(
-              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+              padding: EdgeInsets.fromLTRB( 0.0, 10.0, 0.0, 0.0 ),
               child: Column(
                   children: <Widget>[
                     ListTile(
                       leading: IconButton(
-                        icon:  post.profileImage != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(post.profileImage)):
+                        icon: post.profileImage != "" ? CircleAvatar(
+                            radius: 15.0, backgroundImage: NetworkImage( post
+                            .profileImage ) ) :
                         CircleAvatar(
                           radius: 15.0,
                           backgroundImage: NetworkImage(
@@ -612,10 +619,10 @@ class PostDetails extends StatelessWidget {
                         ),
                       ),
 
-                      contentPadding: EdgeInsets.all(7),
+                      contentPadding: EdgeInsets.all( 7 ),
 
                       title: GestureDetector(
-                        child:Text(
+                        child: Text(
                           post.username,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -641,11 +648,14 @@ class PostDetails extends StatelessWidget {
                     Center(
 
                       child: ClipRect(
-                        child:Image.network(
+                        child: Image.network(
                           post.imageUrl,
 
                           height: 300,
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of( context )
+                              .size
+                              .width,
                           fit: BoxFit.cover,
 
                         ),
@@ -654,31 +664,37 @@ class PostDetails extends StatelessWidget {
                     ListTile(
                       title: Text(
                           post.description,
-                          style: TextStyle(fontWeight: FontWeight.w500)
+                          style: TextStyle( fontWeight: FontWeight.w500 )
                       ),
                     ),
                     ButtonBar(
                       alignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         FlatButton(
-                          child: Text('Cook it'),
+                          child: Text( 'Cook it' ),
                           textColor: Colors.lightBlueAccent,
                           onPressed: () {
-                            Firestore.instance.collection('recipes').document(post.recipeId).get().then((data) {
+                            Firestore.instance.collection( 'recipes' ).document(
+                                post.recipeId ).get( ).then( (data) {
                               //print(data.documentID);
-                              Recipe postRecipe =  Recipe.fromDoc(data);
-                              print(postRecipe.id);
+                              Recipe postRecipe = Recipe.fromDoc( data );
+                              print( postRecipe.id );
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe,),)
+                                  MaterialPageRoute( builder: (context) =>
+                                      RecipeDetails( recipe: postRecipe,
+                                        recid: postRecipe, ), )
                               );
-                            });
+                            } );
                           },
                         ),
                         FlatButton(
-                          child: Text('Next time'),
+                          child: Text( 'Next time' ),
                           textColor: Colors.redAccent,
-                          onPressed: () { UserOperations.addToSave(currId, post.recipeId.toString()); },
+                          onPressed: () {
+                            UserOperations.addToSave( currId,
+                                post.recipeId.toString( ) );
+                          },
                         ),
                         // show menu button
                         // post.email == currEmail ?

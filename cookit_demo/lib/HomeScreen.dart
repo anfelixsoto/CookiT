@@ -282,6 +282,7 @@ class HomeState extends State<Home> {
                   ),
                 ),
                 ),
+                   Divider(color: Colors.grey[200]),
                    Center(
                    child: ClipRect(
                    child:Image.network(

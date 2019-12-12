@@ -610,14 +610,14 @@ class PostDetails extends StatelessWidget {
         padding: EdgeInsets.all(10),
 
         child: Card(
-
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          color: Colors.grey[200],
           child: Padding(
             padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
             child: Column(
                 children: <Widget>[
-
-
-
                   ListTile(
                     leading: IconButton(
                       icon:  post.profileImage != "" ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(post.profileImage)):
@@ -655,7 +655,6 @@ class PostDetails extends StatelessWidget {
                     ),
 
                   ),
-                  Divider(),
                   Center(
 
                     child: ClipRect(
@@ -669,25 +668,13 @@ class PostDetails extends StatelessWidget {
                       ),
                     ),
                   ),
-
-
-                  Divider(),
-                  Divider(),
                   ListTile(
-
                     title: Text(
                         post.description,
                         style: TextStyle(fontWeight: FontWeight.w500)
                     ),
-
-
                   ),
-                  Divider(),
-                  Divider(),
-                  Divider(),
-                  Divider(),
                   ButtonBar(
-
                     alignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       FlatButton(
@@ -698,20 +685,12 @@ class PostDetails extends StatelessWidget {
                       FlatButton(
                         child: Text('Next time'),
                         textColor: Colors.orangeAccent,
-                        onPressed: () { print('pressed'); },
+                        onPressed: () { UserOperations.addToSave(currId, post.recipeId.toString()); },
                       ),
                       // show menu button
                      // post.email == currEmail ?
-
-
-
-
-
-
                     ],
                   ),
-
-
                 ]
             ),
           ),

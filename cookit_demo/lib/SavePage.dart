@@ -190,43 +190,56 @@ class _SavePage extends State<SavePage> {
                             child: CircularProgressIndicator()
                         );
                       default:
-                        List savedList = snapshot.data['saved'];
-                        return new ListView(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: List.generate(snapshot.data['saved'].length, (index) {
-                            //print(snapshot.data['favorites'][index]);
-                            List temp3 = [];
-                            if(!temp3.contains(snapshot.data['saved'][index].toString())) {
-                              temp3.add(snapshot.data['saved'][index].toString());
-                            }
-                            return  StreamBuilder(
-                                stream: Firestore.instance
-                                    .collection('recipes')
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  print(snapshot);
-                                  switch(snapshot.connectionState){
-                                    case ConnectionState.waiting:
-                                      return Center(
-                                          child: CircularProgressIndicator()
-                                      );
-                                    default:
-                                    // List videosList = snapshot.data;
-                                      return ListView.builder(
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        itemCount: snapshot.data.documents.length,
-                                        itemBuilder: (context, recipeId) {
-                                          DocumentSnapshot recipe = snapshot.data.documents[recipeId];
-                                          if(temp3.contains(recipe.documentID) ) {
-                                            return Container(
-                                              height: 100,
-                                              padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                                              child: Card(
-                                                clipBehavior: Clip.antiAlias,
+                        if(!snapshot.hasData){
+                          return Container(
+                            alignment: FractionalOffset.center,
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: CircularProgressIndicator(),
+                          );
+                        }else if(snapshot.hasError){
+                          return Container(
+                            alignment: FractionalOffset.center,
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Text('No Bookmarked Recipes!',
+                            style: TextStyle(color: Colors.lightGreen),)
+                          );
+                        }else{
+                          return new ListView(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: List.generate(snapshot.data['saved'].length, (index) {
+                              //print(snapshot.data['favorites'][index]);
+                              List temp3 = [];
+                              if(!temp3.contains(snapshot.data['saved'][index].toString())) {
+                                temp3.add(snapshot.data['saved'][index].toString());
+                              }
+                              return  StreamBuilder(
+                                  stream: Firestore.instance
+                                      .collection('recipes')
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    print(snapshot);
+                                    switch(snapshot.connectionState){
+                                      case ConnectionState.waiting:
+                                        return Center(
+                                            child: CircularProgressIndicator()
+                                        );
+                                      default:
+                                      // List videosList = snapshot.data;
+                                        return ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          itemCount: snapshot.data.documents.length,
+                                          itemBuilder: (context, recipeId) {
+                                            DocumentSnapshot recipe = snapshot.data.documents[recipeId];
+                                            if(temp3.contains(recipe.documentID) ) {
+                                              return Container(
+                                                height: 100,
+                                                padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
                                                   child: Column(
                                                       children: <Widget>[
                                                         ListTile(
@@ -235,7 +248,7 @@ class _SavePage extends State<SavePage> {
                                                           ),
                                                           title: Text(recipe.data['name'].toString()),
 
-                                                          
+
 
                                                           subtitle: Text("Prep Time: " + recipe.data['prepTime'].toString() + " | " +
                                                               "Servings: " + recipe.data['servings'].toString()
@@ -259,16 +272,17 @@ class _SavePage extends State<SavePage> {
                                                   ),
                                                 ),
                                               );
-                                          } return Container(
-                                          );
-                                        },
-                                      );
+                                            } return Container(
+                                            );
+                                          },
+                                        );
+                                    }
                                   }
-                                }
-                            );
-                          }
-                          ),
-                        );
+                              );
+                            }
+                            ),
+                          );
+                        }
                     }
                   }
               ),),

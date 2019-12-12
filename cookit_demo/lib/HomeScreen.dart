@@ -316,20 +316,13 @@ class HomeState extends State<Home> {
                              context,
                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: postRecipe , recid: postRecipe,),)
                          );
-
                        });
-
-
-
-
-
-
                       },
                     ),
                     FlatButton(
                       child: Text('Next time'),
                       textColor: Colors.orangeAccent,
-                      onPressed: () { print('pressed'); },
+                      onPressed: () { UserOperations.addToSave(userId, Post.fromDoc(document).recipeId.toString()); },
                     ),
                     showDelete(context, Post.fromDoc(document).id.toString(), role.toString(), Post.fromDoc(document).imageUrl),
                   ],

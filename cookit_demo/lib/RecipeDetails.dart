@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 void main(){
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'CookiT Recipe Results',
     //home: RecipeDetails(recipe:632660),
     home:RecipeDetails(recipe:null),

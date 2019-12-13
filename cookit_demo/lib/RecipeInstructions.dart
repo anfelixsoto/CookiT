@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 void main(){
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'CookiT Recipe Results',
     home: RecipeInstructions(recipe:Recipe.fetchRecipe(508108)),
   ));

@@ -11,6 +11,7 @@ import 'service/RootPage.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Home Page',
     home: MyApp(),
   ));

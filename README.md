@@ -2,7 +2,7 @@
 
 This is the final project for CST 438: Software Engineering.
 
-Developers:Julia Werner (jwerner@csumb.edu), Mireya Leon (mleon@csumb.edu), Antonio Felix (anfelix@csumb.edu), Daichi Kanasugi (dkanasugi@csumb.edu)
+Developers: Julia Werner (jwerner@csumb.edu), Mireya Leon (mleon@csumb.edu), Antonio Felix (anfelix@csumb.edu), Daichi Kanasugi (dkanasugi@csumb.edu)
 
 ## Description 
 

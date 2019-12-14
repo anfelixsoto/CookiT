@@ -76,5 +76,4 @@ Admin Page - Recipes       |  Recipes Alert
 :-------------------------:|:-------------------------:
 <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124950.jpg" alt="alt text" width="100" height="200">  |  <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124955.jpg" alt="alt text" width="100" height="200">
 
-## Any Questions
 If you have any questions, please do not hesitate. Our emails are posted on top! 

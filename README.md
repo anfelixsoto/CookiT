@@ -22,13 +22,22 @@ Splash Screen              |  Welcome
 :-------------------------:|:-------------------------:
 <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124354.jpg" alt="alt text" width="100" height="200">|<img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124407.jpg" alt="alt text" width="100" height="200">
 
+Login/Sign Up Page
+>>Pretty straight forward, a user is able to sign in or create an account. If a user decides to create an account, the user automatically signed in and presented with the home page of the app.
+
 Login Page                 | Login Page Error          | Sign Up Page              |  Sign Up Page Error
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124429.jpg" alt="alt text" width="100" height="200">|<img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-125434.jpg" alt="alt text" width="100" height="200">|<img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-130145.jpg" alt="alt text" width="100" height="200"> | <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-125440.jpg" alt="alt text" width="100" height="200">
 
+Home and User
+>Home screen displays user's post, there are two button 'Cook it' and 'Next Time'. The 'Cook it', takes the user directly to the recipes details page. While 'Next Time', stores the recipe within the current user's bookmarked page.
+
 Home Screen                |  User Screen              | Favorites                 |  Bookmarks
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124611.jpg" alt="alt text" width="100" height="200">  |  <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-125628.jpg" alt="alt text" width="100" height="200">|<img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124657.jpg" alt="alt text" width="100" height="200">|<img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124705.jpg" alt="alt text" width="100" height="200">
+
+Recipe
+>Here the user is able to enter ingredients and calling the api, results will display. The user then has the ability to make a post, so other users can and try that same recipe.
 
 Search                     |  Results                  | Details                   | Instructions 
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:

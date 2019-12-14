@@ -342,9 +342,9 @@ class _ViewUser extends State<ViewUser> {
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
-                child: Text('Grant admin role'),
+                child: Text( otherRole != 'admin' ? 'Grant admin role' : 'Remove admin role'),
                 onTap: () {
-                  AdminOperations.grantAdmin(userId);
+                  otherRole != 'admin' ? AdminOperations.grantAdmin(userId) : AdminOperations.unGrantAdmin(userId);
                   Navigator.pop(context);
                 },
               ),

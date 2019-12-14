@@ -157,7 +157,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
             shrinkWrap: true,
             children: <Widget>[
               showCookitLogo(),
-              SizedBox(height: 100),
+              SizedBox(height: 50),
               showWelcomeText(),
               showUserNameInput(),
               showEmailInput(),

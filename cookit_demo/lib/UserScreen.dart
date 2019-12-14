@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+import 'AdminPage.dart';
 import 'HomeScreen.dart';
 import 'model/PostModel.dart';
 
@@ -47,7 +48,7 @@ class _UserProfile extends State<UserProfile> {
   String currEmail;
   String currId;
   String role;
-
+  bool isAdmin = false;
   String profilePic;
 
 
@@ -107,8 +108,10 @@ class _UserProfile extends State<UserProfile> {
           log(username);
           role = data.data['role'].toString();
           username = data.data['user_name'].toString();
-
           print(profilePic);
+          if(role == 'admin'){
+            isAdmin = true;
+          }
         }
       });
 
@@ -289,11 +292,6 @@ class _UserProfile extends State<UserProfile> {
             },
           )
         ],
-//        title: Text(username.toString()),
-//        centerTitle: true,
-//        backgroundColor: Colors.lightGreen,
-        //leading: role == "admin" ?
-        //new IconButton( icon: new Icon(Icons.settings), tooltip: "Manage", onPressed: () => Navigator.of(context).pop(null), ) :
         leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
           onPressed: () {
             Navigator.pop(context,true);
@@ -378,6 +376,19 @@ class _UserProfile extends State<UserProfile> {
             ),
             //Divider(height: 10.0),
           ]
+      ),
+
+      floatingActionButton: Visibility(
+        child: FloatingActionButton(
+          backgroundColor: Colors.lightGreen,
+          child: Icon(
+            Icons.portrait, color: Colors.white,
+          ),
+          onPressed: (){
+            Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage()));
+          },
+        ),
+        visible: isAdmin,
       ),
     );
   }

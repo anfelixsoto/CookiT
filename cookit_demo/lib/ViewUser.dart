@@ -298,7 +298,7 @@ class _ViewUser extends State<ViewUser> {
     return new GestureDetector(
         child: Container(
           width: (MediaQuery.of(context).size.width/3),
-          height: 180.0,
+          height: (MediaQuery.of(context).size.width/3),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white30),

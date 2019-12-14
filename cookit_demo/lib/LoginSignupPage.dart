@@ -156,8 +156,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
+              showCookitLogo(),
+              SizedBox(height: 50),
               showWelcomeText(),
-              showAvatar(),
               showUserNameInput(),
               showEmailInput(),
               showPasswordInput(),

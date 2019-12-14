@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/PostModel.dart';
 import 'package:cookit_demo/model/User.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AdminOperations {
@@ -41,7 +42,20 @@ class AdminOperations {
           }
       }
     });
+  }
 
+  static void unGrantAdmin(String userId){
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
+        if(data.data["role"] == "admin") {
+          data.reference.updateData({
+            'role': 'user',
+          });
+        }
+      }
+    });
   }
 
 
@@ -50,7 +64,6 @@ class AdminOperations {
         .collection('posts')
         .where("userId", isEqualTo: userId)
         .getDocuments().then((data) {
-
       for (var doc in data.documents) {
         print(doc.documentID.toString());
         deletePost(doc.documentID.toString());

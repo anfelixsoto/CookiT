@@ -355,6 +355,7 @@ class HomeState extends State<Home> {
         title: Text("CookiT",
         style: TextStyle(color: Colors.lightGreen),
         ),
+
         //centerTitle: true,
         backgroundColor: Colors.white,
         centerTitle: true,

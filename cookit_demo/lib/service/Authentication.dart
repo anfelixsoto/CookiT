@@ -29,7 +29,7 @@ class Auth implements BaseAuth {
         Firestore.instance.collection('/users').document(user.uid).setData({
           'user_name': username,
           'email': email,
-          'profileImage': '',
+          'profileImage': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
           'role': 'user',
           'favorites': [],
           'saved': [],

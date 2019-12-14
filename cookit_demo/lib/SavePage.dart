@@ -51,6 +51,7 @@ class _SavePage extends State<SavePage> {
   List<Recipe> recipes = [];
   List<String> favNames;
   List<String> saved = [];
+  bool isAdmin = false;
 
   List<String> filterRecipes;
   TextEditingController editingController = TextEditingController();
@@ -98,6 +99,9 @@ class _SavePage extends State<SavePage> {
           temp = List.from(data.data['saved']);
           for(var i = 0; i < temp.length; i++){
             saved.add(temp[i]);
+            if(data.data['role'].toString() == 'admin'){
+              isAdmin = true;
+            }
           }
         }
       });
@@ -197,12 +201,17 @@ class _SavePage extends State<SavePage> {
                             padding: const EdgeInsets.only(top: 10.0),
                             child: CircularProgressIndicator(),
                           );
-                        }else if(snapshot.hasError){
+                         }else if(snapshot.data['saved'].length == null ||snapshot.data['saved'].length == 0){
                           return Container(
-                            alignment: FractionalOffset.center,
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text('No Bookmarked Recipes!',
-                            style: TextStyle(color: Colors.lightGreen),)
+                              alignment: FractionalOffset.center,
+                              padding: const EdgeInsets.only(top: 1.0),
+                              child: Text(
+                                'No Bookmarked Recipes!',
+                                style: TextStyle(
+                                  color: Colors.lightGreen,
+                                  fontSize: 20,
+                                ),
+                              )
                           );
                         }else{
                           return new ListView(
@@ -283,9 +292,7 @@ class _SavePage extends State<SavePage> {
                     }
                   }
               ),),
-
           ]
-
       ),
     );
   }

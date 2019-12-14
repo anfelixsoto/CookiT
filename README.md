@@ -2,11 +2,7 @@
 
 This is the final project for CST 438: Software Engineering.
 
-Developers:
-Julia Werner,
-Mireya Leon,
-Antonio Felix,
-Daichi Kanasugi
+Developers:Julia Werner (jwerner@csumb.edu), Mireya Leon (mleon@csumb.edu), Antonio Felix (anfelix@csumb.edu), Daichi Kanasugi (dkanasugi@csumb.edu)
 
 ## Description 
 
@@ -71,15 +67,5 @@ Admin Page - Recipes       |  Recipes Alert
 :-------------------------:|:-------------------------:
 <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124950.jpg" alt="alt text" width="100" height="200">  |  <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124955.jpg" alt="alt text" width="100" height="200">
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Any Questions
+If you have any questions, please do not hesitate. Our emails are posted on top! 

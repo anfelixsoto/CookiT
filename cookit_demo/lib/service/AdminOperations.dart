@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/model/PostModel.dart';
 import 'package:cookit_demo/model/User.dart';
+import 'package:cookit_demo/service/Authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart';
 
 class AdminOperations {
   static String deletePost(String PostId) {
@@ -58,8 +60,21 @@ class AdminOperations {
     });
   }
 
+  static bool checkUser(String userId) {
+    bool exists = true;
+    Firestore.instance.collection('users')
+        .document(userId)
+        .get().then((data) {
+      if (data.exists) {
+        exists = false;
+      }
+    });
+    return exists;
+  }
+
 
   static void deleteUser(String userId) {
+
     Firestore.instance
         .collection('posts')
         .where("userId", isEqualTo: userId)
@@ -92,6 +107,8 @@ class AdminOperations {
 
       }
     });
+
+
 
   }
 

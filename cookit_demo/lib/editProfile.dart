@@ -370,22 +370,26 @@ class _editProfile extends State<editProfile> {
                // in case the image is null
                 //Image.file(_image, width: 300, height: 300 ),
                 Divider( color: Colors.white,),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30.0),
-                  child: MaterialButton(
-                    minWidth: 10.0,
-                    height: 50.0,
+                Container(
+                  width: 100,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30.0),
+                    child: MaterialButton(
+                      minWidth: 10.0,
+                      height: 50.0,
 
-                    color: Colors.lightBlueAccent,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      if(loading == false) {
-                        submitPic(context);
-                      }
-                    },
-                    child: new Text('Upload'),
+                      color: Colors.lightBlueAccent,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        if(loading == false) {
+                          submitPic(context);
+                        }
+                      },
+                      child: new Text('Upload'),
+                    ),
                   ),
                 ),
+
 
 
 

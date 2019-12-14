@@ -23,7 +23,7 @@ Splash Screen              |  Welcome
 <img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124354.jpg" alt="alt text" width="100" height="200">|<img src="https://github.com/antoniofelix118/CookiT/blob/master/Cookit_Screenshots/Screenshot_20191214-124407.jpg" alt="alt text" width="100" height="200">
 
 Login/Sign Up Page
->>Pretty straight forward, a user is able to sign in or create an account. If a user decides to create an account, the user automatically signed in and presented with the home page of the app.
+>Pretty straight forward, a user is able to sign in or create an account. If a user decides to create an account, the user automatically signed in and presented with the home page of the app.
 
 Login Page                 | Login Page Error          | Sign Up Page              |  Sign Up Page Error
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:

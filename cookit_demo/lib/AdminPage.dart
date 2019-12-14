@@ -294,7 +294,7 @@ class _AdminPage extends State<AdminPage>{
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
-                child: Text(role == 'admin' ? 'Ungrant Admin Role' : 'Grant Admin Roloe'),
+                child: Text(role == 'admin' ? 'Ungrant Admin Role' : 'Grant Admin Role'),
                 onTap: () {
                   role == 'admin' ? AdminOperations.unGrantAdmin(userId):
                   AdminOperations.grantAdmin(userId);

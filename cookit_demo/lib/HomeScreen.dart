@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/AdminPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -409,6 +410,7 @@ class HomeState extends State<Home> {
           backgroundColor: Colors.lightGreen,
           child: manage ? Icon( Icons.edit, color: Colors.white,) : Icon(Icons.search, color: Colors.white,),
           onPressed: (){
+            manage ? Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage())) :
             Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
           },
         ),

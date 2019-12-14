@@ -19,15 +19,15 @@ void main(){
 }
 
 Widget buildError(BuildContext context, FlutterErrorDetails error) {
-   return Scaffold(
-     body: Center(
-       child: Text(
-         "Error appeared.",
-         style: Theme.of(context).textTheme.title,
-       ),
-     )
-   );
- }
+  return Scaffold(
+      body: Center(
+        child: Text(
+          "Error appeared.",
+          style: Theme.of(context).textTheme.title,
+        ),
+      )
+  );
+}
 
 class RecipeDetails extends StatefulWidget {
   final Recipe recipe;
@@ -131,9 +131,6 @@ class _RecipeDetails extends State<RecipeDetails>{
       /*userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
-
-
-
         }
       });*/
 
@@ -145,312 +142,310 @@ class _RecipeDetails extends State<RecipeDetails>{
 
   @override
   Widget build(BuildContext context){
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          builder: (BuildContext context, Widget widget) {
-          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-            return buildError(context, errorDetails);
-          };
-          return widget;
-        },
-          home: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              automaticallyImplyLeading: true,
-              centerTitle: true,
-              title: Text(
-                  'Details',
-                style: TextStyle(color: Colors.lightGreen),
-              ),
-              leading: IconButton(
-                color: Colors.lightGreen,
-                icon:Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pop(context, false),
-              ),
-              actions: <Widget>[
-                showStar(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      builder: (BuildContext context, Widget widget) {
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+          return buildError(context, errorDetails);
+        };
+        return widget;
+      },
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: true,
+          centerTitle: true,
+          title: Text(
+            'Details',
+            style: TextStyle(color: Colors.lightGreen),
+          ),
+          leading: IconButton(
+            color: Colors.lightGreen,
+            icon:Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+          actions: <Widget>[
+            showStar(),
 
-              ],
+          ],
 
-            ),
-            backgroundColor: Colors.white,
-            body: Center(
-              child: /*FutureBuilder<Recipe>(
+        ),
+        backgroundColor: Colors.white,
+        body: Center(
+          child: /*FutureBuilder<Recipe>(
               future: recipe,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return */
-                   Container(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      child: ListView(
-                        children: <Widget>[
-                          SizedBox(height: 5.0,),
-                          new Container(
-                              height:250.0,
-                              width: MediaQuery.of(context).size.width,
-                              child:Image.network(
-                                recipe.imageURL,
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.cover,
-                                //fit: BoxFit.fill,
-                              )
-                          ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              child: ListView(
+                children: <Widget>[
+                  SizedBox(height: 5.0,),
+                  new Container(
+                      height:250.0,
+                      width: MediaQuery.of(context).size.width,
+                      child:Image.network(
+                        recipe.imageURL,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                        //fit: BoxFit.fill,
+                      )
+                  ),
 
 
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                            child: Container(
-                              height: 120.0,
-                              width: MediaQuery.of(context).size.width,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
+                    child: Container(
+                      height: 120.0,
+                      width: MediaQuery.of(context).size.width,
+                      child:ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: <Widget>[
+                            Container(
+
+                              width:(MediaQuery.of(context).size.width/2),
                               child:ListView(
-                                  scrollDirection: Axis.horizontal,
                                   children: <Widget>[
-                                    Container(
-
-                                      width:(MediaQuery.of(context).size.width/2),
-                                      child:ListView(
-                                          children: <Widget>[
-                                            new Text(
-                                                recipe.name,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 20.0,
-                                                  color: Colors.black,)
-                                            ),
-                                            new Text(
-                                                recipe.description,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15.0,
-                                                  color: Colors.grey,)
-                                            ),
-                                          ]
-                                      ),
+                                    new Text(
+                                        recipe.name,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 20.0,
+                                          color: Colors.black,)
                                     ),
-
-                                    Container(
-                                      width:(MediaQuery.of(context).size.width/2),
-                                      child:Padding(
-                                        padding:EdgeInsets.fromLTRB(20.0, 40, 40.0, 45.0),
-                                        child:Material(
-                                          elevation: 5.0,
-                                          borderRadius: BorderRadius.circular(10.0),
-                                          color: Colors.lightGreen,
-                                          child:MaterialButton(
-
-                                            minWidth: MediaQuery.of(context).size.width,
-                                            onPressed: (){
-                                              if(widget.recipeId  != null) {
-                                                UserOperations.addToSave(userId,
-                                                    widget.recipeId.rid
-                                                        .toString());
-                                                //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
-                                                RecipeOperations.addToRecipes(
-                                                    widget.recipeId.rid
-                                                        .toString(), recipe);
-                                              }else{
-                                                UserOperations.addToSave(userId,
-                                                    widget.recid.id
-                                                        .toString());
-                                                //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
-                                                RecipeOperations.addToRecipes(
-                                                    widget.recid.id
-                                                        .toString(), recipe);
-                                              }
-                                            },
-                                            child: Text("Save",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 15.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                    new Text(
+                                        recipe.description,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 15.0,
+                                          color: Colors.grey,)
                                     ),
                                   ]
                               ),
                             ),
-                          ),
 
+                            Container(
+                              width:(MediaQuery.of(context).size.width/2),
+                              child:Padding(
+                                padding:EdgeInsets.fromLTRB(20.0, 40, 40.0, 45.0),
+                                child:Material(
+                                  elevation: 5.0,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Colors.lightGreen,
+                                  child:MaterialButton(
 
-                          new Container(
-                            height: 100.0,
-                            child:ListView(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 25),
-
-                              children: <Widget>[
-
-
-                                  Container(
-
-                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  width:(MediaQuery.of(context).size.width/3),
-                                  child:ListView(
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-
-                                              new Icon(
-                                                  Icons.restaurant_menu,
-                                                size: 20.0,
-                                                color: Colors.lightGreen,
-                                              )
-                                              ,
-                                              new SizedBox(
-                                                  width: 5.0
-                                              ),
-                                              new Text(
-                                                  recipe.ingredients.length.toString(),
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0,
-                                                    color: Colors.lightGreen,)
-                                              ),
-                                            ],
-                                          ),
-
-                                          new Text(
-                                            "Ingredients",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 20.0,
-                                              color: Colors.black,)
-                                          ),
-                                        
-                                        ]
+                                    minWidth: MediaQuery.of(context).size.width,
+                                    onPressed: (){
+                                      if(widget.recipeId  != null) {
+                                        UserOperations.addToSave(userId,
+                                            widget.recipeId.rid
+                                                .toString());
+                                        //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+                                        RecipeOperations.addToRecipes(
+                                            widget.recipeId.rid
+                                                .toString(), recipe);
+                                      }else{
+                                        UserOperations.addToSave(userId,
+                                            widget.recid.id
+                                                .toString());
+                                        //UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+                                        RecipeOperations.addToRecipes(
+                                            widget.recid.id
+                                                .toString(), recipe);
+                                      }
+                                    },
+                                    child: Text("Save",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
+                                    ),
                                   ),
-                                  Container(
-                                  width:(MediaQuery.of(context).size.width/3),
-                                  child:Column(
-                                      //padding: EdgeInsets.symmetric(horizontal: 0),
-                                        children: <Widget>[
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Icon(
-                                                  Icons.timer,
-                                                  size: 20.0,
-                                                  color: Colors.lightGreen,
-
-                                              )
-                                              ,
-                                              SizedBox(
-                                                  width: 5.0
-                                              ),
-                                              new Text(
-
-                                                  recipe.prepTime.toString(),
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0,
-                                                    color: Colors.lightGreen,)
-                                              ),
-                                            ],
-                                          ),
-                                          new Text(
-                                            "Minutes",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 20.0,
-                                              color: Colors.black,)
-                                          ),
-                                        ]
-                                      ),
-                                  ),
-                                  Container(
-                                  width:(MediaQuery.of(context).size.width/3),
-                                  child:ListView(
-                                      padding: EdgeInsets.symmetric(horizontal: 10),
-                                        children: <Widget>[
-
-                                          new Text(
-                                            recipe.numCalories.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                              color: Colors.lightGreen,)
-                                          ),
-
-
-                                          new Text(
-                                            "Calories",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 20.0,
-                                              color: Colors.black,)
-                                          ),
-
-
-                                        ]
-                                      ),
                                 ),
-                              ]
+                              ),
+                            ),
+                          ]
+                      ),
+                    ),
+                  ),
+
+
+                  new Container(
+                    height: 100.0,
+                    child:ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.symmetric(horizontal: 25),
+
+                        children: <Widget>[
+
+
+                          Container(
+
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            width:(MediaQuery.of(context).size.width/3),
+                            child:ListView(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+
+                                      new Icon(
+                                        Icons.restaurant_menu,
+                                        size: 20.0,
+                                        color: Colors.lightGreen,
+                                      )
+                                      ,
+                                      new SizedBox(
+                                          width: 5.0
+                                      ),
+                                      new Text(
+                                          recipe.ingredients.length.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.0,
+                                            color: Colors.lightGreen,)
+                                      ),
+                                    ],
+                                  ),
+
+                                  new Text(
+                                      "Ingredients",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 20.0,
+                                        color: Colors.black,)
+                                  ),
+
+                                ]
                             ),
                           ),
-                          new Container(
-                            height: 40.0,
-                            child:Padding(
-                              padding:EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                              child:Material(
-                                elevation: 5.0,
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.lightGreen,
-                                child:MaterialButton(
-                                  minWidth: MediaQuery.of(context).size.width,
-                                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                                  onPressed: (){
+                          Container(
+                            width:(MediaQuery.of(context).size.width/3),
+                            child:Column(
+                              //padding: EdgeInsets.symmetric(horizontal: 0),
+                                children: <Widget>[
 
-                                    //print((widget.recipeId.rid.toString()));
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.timer,
+                                        size: 20.0,
+                                        color: Colors.lightGreen,
 
-                                    if(widget.recipeId != null){
-                                      Firestore.instance.collection('recipes').document(widget.recipeId.rid.toString()).get().then((data) {
-                                        //print(data.documentID);
-                                        Recipe postRecipe = Recipe.fromDoc(data);
-                                        print(postRecipe.id);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) =>
-                                                RecipeInstructions(recipe: postRecipe,
-                                                  rId: postRecipe, dbId: widget.recipeId),)
-                                        );
+                                      )
+                                      ,
+                                      SizedBox(
+                                          width: 5.0
+                                      ),
+                                      new Text(
 
-                                      });
-                                    }else{
+                                          recipe.prepTime.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.0,
+                                            color: Colors.lightGreen,)
+                                      ),
+                                    ],
+                                  ),
+                                  new Text(
+                                      "Minutes",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 20.0,
+                                        color: Colors.black,)
+                                  ),
+                                ]
+                            ),
+                          ),
+                          Container(
+                            width:(MediaQuery.of(context).size.width/3),
+                            child:ListView(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                children: <Widget>[
 
-                                      Firestore.instance.collection('recipes').document(widget.recid.id.toString()).get().then((data) {
-                                        //print(data.documentID);
-                                        Recipe postRecipe = Recipe.fromDoc(data);
-                                        print(postRecipe.id);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) =>
-                                                RecipeInstructions(recipe: postRecipe,
-                                                  rId: widget.recid),)
-                                        );
+                                  new Text(
+                                      recipe.numCalories.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0,
+                                        color: Colors.lightGreen,)
+                                  ),
 
-                                      });
 
-                                    }
+                                  new Text(
+                                      "Calories",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 20.0,
+                                        color: Colors.black,)
+                                  ),
 
-                                /*
+
+                                ]
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                  new Container(
+                    height: 40.0,
+                    child:Padding(
+                      padding:EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                      child:Material(
+                        elevation: 5.0,
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.lightGreen,
+                        child:MaterialButton(
+                          minWidth: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                          onPressed: (){
+
+                            //print((widget.recipeId.rid.toString()));
+
+                            if(widget.recipeId != null){
+                              Firestore.instance.collection('recipes').document(widget.recipeId.rid.toString()).get().then((data) {
+                                //print(data.documentID);
+                                Recipe postRecipe = Recipe.fromDoc(data);
+                                print(postRecipe.id);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        RecipeInstructions(recipe: postRecipe,
+                                            rId: postRecipe, dbId: widget.recipeId),)
+                                );
+
+                              });
+                            }else{
+
+                              Firestore.instance.collection('recipes').document(widget.recid.id.toString()).get().then((data) {
+                                //print(data.documentID);
+                                Recipe postRecipe = Recipe.fromDoc(data);
+                                print(postRecipe.id);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        RecipeInstructions(recipe: postRecipe,
+                                            rId: widget.recid),)
+                                );
+
+                              });
+
+                            }
+
+                            /*
                                     widget.recipeId != null ?
-
-
                                    Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe, rId: widget.recipeId.rid.toString()))
@@ -460,41 +455,41 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         MaterialPageRoute(builder: (context) => RecipeInstructions(recipe:recipe, rId: widget.recid.toString()))
                                     );*/
 
-                                  },
-                                  child: Text("Start Recipe",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                          },
+                          child: Text("Start Recipe",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-               /* } else if (snapshot.hasError) {
+                ],
+              ),
+            ),
+          ),
+          /* } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
                 // By default, show a loading spinner.
                 return CircularProgressIndicator();
               },
               ),*/
-            ),
-            ),
-          );
+        ),
+      ),
+    );
   }
 
   Widget showStar(){
     if(favorite == false){
       return IconButton(
         icon: Icon(Icons.favorite_border,
-        color: Colors.red,
-        size: 30),
+            color: Colors.red,
+            size: 30),
         onPressed: (){
           print("pressed");
           setState(() {

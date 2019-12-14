@@ -157,7 +157,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
             shrinkWrap: true,
             children: <Widget>[
               showCookitLogo(),
-              SizedBox(height: 50),
+              SizedBox(height: 100),
               showWelcomeText(),
               showUserNameInput(),
               showEmailInput(),
@@ -412,7 +412,8 @@ class _LoginSignupState extends State<LoginSignupPage>{
 
   Widget showErrorMessage(){
     if(_errorMessage.length > 0 && _errorMessage != null){
-      isEmpty =true;
+      isEmpty = true;
+      _isLoading = false;
       return new Text(
         _errorMessage,
         textAlign: TextAlign.center,

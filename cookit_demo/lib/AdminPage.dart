@@ -58,16 +58,11 @@ class _AdminPage extends State<AdminPage>{
 
     if(index == 0){
       collection = 'users';
-    }
-
-    if(index == 1){
+    }else if(index == 1){
       collection = 'posts';
-    }
-
-    if(index == 2){
+    }else if(index == 2){
       collection = 'recipes';
     }
-    print(collection);
   }
 
   Future<void> getUserRef() async {
@@ -108,13 +103,26 @@ class _AdminPage extends State<AdminPage>{
                   leading: CircleAvatar(
                     backgroundImage: doc['profileImage'] == " " || doc['profileImage'] == null ? NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',):
                     NetworkImage(doc['profileImage'])),
-                  title: Text(doc['user_name'] + " | (" + doc['role'] + ")" ),
+                  title: Text(doc['user_name']),
                   subtitle: Text(doc['email']),
-                  trailing: IconButton(
-                    icon: Icon(Icons.more_vert, color:Colors.lightGreen),
-                    onPressed: (){
-                      showUserAlert(context, User.fromDoc(doc).user_id.toString(), doc['email'], doc['profileImage'], doc['role']);
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      IconButton(
+                        icon: doc['role'] == 'admin' ? Icon(Icons.star,color: Colors.yellow,) :
+                        Icon(Icons.star_border, color: Colors.yellow,),
+                        onPressed: (){
+                          doc['role'] == 'admin' ? AdminOperations.unGrantAdmin(User.fromDoc(doc).user_id.toString()):
+                          AdminOperations.grantAdmin(User.fromDoc(doc).user_id.toString());
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_forever, color:Colors.redAccent),
+                        onPressed: (){
+                          showUserAlert(context, User.fromDoc(doc).user_id.toString(), doc['email'], doc['profileImage'], doc['role']);
+                        },
+                      ),
+                    ],
                   ),
                   onTap: (){
                     Navigator.push(context,
@@ -153,7 +161,7 @@ class _AdminPage extends State<AdminPage>{
                           icon: CircleAvatar(radius: 30.0, backgroundImage: NetworkImage(doc['profileImage']),),
                         ),
                         IconButton(
-                          icon: Icon(Icons.more_vert, color:Colors.lightGreen),
+                          icon: Icon(Icons.delete_forever, color:Colors.redAccent),
                           onPressed: (){
                             showPostAlert(context, Post.fromDoc(doc).id, role, doc['imageURL']);
                           },
@@ -210,15 +218,12 @@ class _AdminPage extends State<AdminPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Page',
-          style: TextStyle(color: Colors.lightGreen),
-        ),
+        title: Text('Admin Page', style: TextStyle(color: Colors.lightGreen), ),
         actions: <Widget>[
           IconButton(
               icon: profilePic != null ? CircleAvatar( radius: 15.0,
                   backgroundImage: NetworkImage( profilePic ) ) :
               Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
-              onPressed: () {}
           ),
         ],
         backgroundColor: Colors.white,
@@ -245,16 +250,25 @@ class _AdminPage extends State<AdminPage>{
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
                   children:
-                    collection == 'users' ? displayUsers(snapshot):
-                        collection == 'posts' ? displayPosts(snapshot):
-                            displayRecipes(snapshot)
+                    collection == 'posts' ? displayPosts(snapshot):
+                        collection == 'recipes' ? displayRecipes(snapshot):
+                            displayUsers(snapshot)
                 );
             }
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightGreen,
+        child: Icon(Icons.info_outline, color: Colors.white, size: 45.0,),
+        onPressed: (){
+          collection == 'posts' ? showAdminPostAlert() :
+          collection == 'recipes' ? showAdminRecipeAlert() :
+          showAdminUserAlert();
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar( //
-        backgroundColor: Colors.grey[300],// footer
+        backgroundColor: Colors.grey[100],// footer
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -280,46 +294,103 @@ class _AdminPage extends State<AdminPage>{
     return showDialog(context: context,builder: (BuildContext context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        title: Text('Seclect an option: '),
+        title: Text('Are you want to delete ' + email + "?",),
         content: SingleChildScrollView(
-          child: ListBody(
+          child: Row(
             children: <Widget>[
               GestureDetector(
-                child: Text('Delete user: ' + email.toString()),
+                child: Text('Yes'),
                 onTap: (){
                   adminRemovePic(url);
                   AdminOperations.deleteUser(userId);
-                  Navigator.pop(context);
-                },
+                  Navigator.pop(context);},
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
-                child: Text(role == 'admin' ? 'Ungrant Admin Role' : 'Grant Admin Role'),
-                onTap: () {
-                  role == 'admin' ? AdminOperations.unGrantAdmin(userId):
-                  AdminOperations.grantAdmin(userId);
-                  Navigator.pop(context);
-                },
+                child: Text( 'Cancel',style: TextStyle(color: Colors.redAccent) ),
+                onTap: () { Navigator.pop(context);},
               ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    )
-                ),
-
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
             ],
           ),
         ),
       );
     });
   }
+
+  Future<void> showAdminUserAlert() {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        title: Text('Admin Key - Users'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Wrap(
+                children: <Widget>[
+                  Row(children: <Widget>[Icon(Icons.star, color: Colors.yellow,), Text('  That user an admin'),], ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  Row(children: <Widget>[Icon(Icons.star_border, color: Colors.yellow,), Text('  That user is not an admin'),], ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  Row(children: <Widget>[Text("Stars are clickable to turn on and \noff admin privillages"),],),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  Row(children: <Widget>[Text("Admin is able to view and delete \nusers\n"),],),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);},
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> showAdminPostAlert() {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        title: Text('Admin Key - Posts'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Wrap(
+                children: <Widget>[
+                  Text("Here the admin is able to view and delete user's post\n"),
+                  GestureDetector(
+                    child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);},
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> showAdminRecipeAlert() {
+    return showDialog(context: context,builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        title: Text('Admin Key - Recipes'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Wrap(
+                children: <Widget>[
+                  Text("Here the admin is able to view all the recipes that are stored in the database\nThese recipes orginally came from the api, but where stored in our database to lower api calls.\n"),
+                  GestureDetector(child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);}, )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
 
   Future<void> showPostAlert(BuildContext context, String postId, String role, String url) {
     return showDialog(context: context,builder: (BuildContext context) {
@@ -346,15 +417,8 @@ class _AdminPage extends State<AdminPage>{
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               GestureDetector(
-                child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    )
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                child: Text('Cancel',style: TextStyle(color: Colors.redAccent)),
+                onTap: () {Navigator.pop(context);},
               )
             ],
           ),

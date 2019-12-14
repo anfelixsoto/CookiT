@@ -1,4 +1,4 @@
-# CookiT
+# CookiT - Version 1.0
 
 This is the final project for CST 438: Software Engineering.
 

@@ -146,8 +146,8 @@ class _UserProfile extends State<UserProfile> {
   Widget _buildAvatar() {
     return new GestureDetector(
         child: Container(
-          width: 180.0,
-          height: 180.0,
+          width: (MediaQuery.of(context).size.width/3),
+          height: (MediaQuery.of(context).size.width/3),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white30),
@@ -187,7 +187,7 @@ class _UserProfile extends State<UserProfile> {
     return new ClipRRect(
       borderRadius: new BorderRadius.circular(15.0),
       child: new MaterialButton(
-        minWidth: 120.0,
+        minWidth: (MediaQuery.of(context).size.width/3),
         height: 40.0,
 
         color: Colors.lightGreen,
@@ -211,7 +211,7 @@ class _UserProfile extends State<UserProfile> {
     return new ClipRRect(
       borderRadius: new BorderRadius.circular(15.0),
       child: new MaterialButton(
-        minWidth: 120.0,
+        minWidth: (MediaQuery.of(context).size.width/3),
         height: 40.0,
         color: Colors.lightGreen,
         textColor: textColor,

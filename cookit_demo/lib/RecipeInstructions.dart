@@ -58,8 +58,6 @@ class RecipeInstructions extends StatelessWidget {
           constraints: BoxConstraints(
             maxHeight: viewportConstraints.maxHeight*5,
             minHeight: viewportConstraints.maxHeight,
-            //maxHeight:double.infinity,
-            //minWidth: viewportConstraints.maxWidth,
             maxWidth: viewportConstraints.maxWidth,
           ),
 
@@ -74,10 +72,10 @@ class RecipeInstructions extends StatelessWidget {
                     child: Container(
                       height:300.0,
 
-                      width: 800,
+                      width: MediaQuery.of(context).size.width,
                       alignment:Alignment.center,
                       child:Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: Container(
                           //scrollDirection: Axis.horizontal,
 
@@ -104,7 +102,8 @@ class RecipeInstructions extends StatelessWidget {
         ),
 
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
                         height: 160,
                         child:
                       Row(
@@ -126,6 +125,7 @@ class RecipeInstructions extends StatelessWidget {
 
 
                               padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                              width: MediaQuery.of(context).size.width,
                               //mainAxisSize: MainAxisSize.max,
                               //children:<Widget>[
                                     child:Column(
@@ -133,7 +133,7 @@ class RecipeInstructions extends StatelessWidget {
                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         new Container(
-                                          width: 380,
+                                          width: MediaQuery.of(context).size.width,
                                           child: Text(
                                             recipe.name,
                                             style: TextStyle(
@@ -173,7 +173,7 @@ class RecipeInstructions extends StatelessWidget {
                                                   ),
                                                 ],
                                               ),
-                                              new SizedBox(width: 128), // add some space
+                                              new SizedBox(width: (MediaQuery.of(context).size.width/6)), // add some space
 
                                               // the save button
 
@@ -185,7 +185,7 @@ class RecipeInstructions extends StatelessWidget {
                                                   borderRadius: BorderRadius.circular(10.0),
                                                   color: Colors.lightGreen,
                                                   child:MaterialButton(
-                                                    minWidth: 110,
+                                                    minWidth: (MediaQuery.of(context).size.width/3),
                                                     padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                                                     onPressed: (){
                                                       print("Rec Instsructions");
@@ -252,9 +252,7 @@ class RecipeInstructions extends StatelessWidget {
 
                               Container(
                                 padding:EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),//was 30
-                                //fit:FlexFit.loose,
-                                    //width:300.0,
-                                    //height:25.0,
+                                
                                     child: new Text(
                                         "Ingredients",
                                         textAlign: TextAlign.left,
@@ -273,7 +271,7 @@ class RecipeInstructions extends StatelessWidget {
                             //children:<Widget>[
                               Container(
                                 padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),//was 30
-                               // width:300.0,
+                               
                                 child: ListView.builder(
                                   physics:NeverScrollableScrollPhysics(),
                                   primary:false,
@@ -286,7 +284,7 @@ class RecipeInstructions extends StatelessWidget {
 
                                         children:<Widget> [
                                                 Padding(
-                                                  padding:EdgeInsets.fromLTRB(00.0, 00.0, 00.0, 30.0),//was 30
+                                                  padding:EdgeInsets.fromLTRB(00.0, 00.0, 00.0, 00.0),//was 30
                                                       child:  Row(
 
                                                         children: <Widget>[
@@ -356,7 +354,7 @@ class RecipeInstructions extends StatelessWidget {
                             children:<Widget>[*/
                             Flexible(
                               child:Container(
-                                padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 50.0),//was 30
+                                padding:EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),//was 30
 
                                 child:
                                 ListView.builder(

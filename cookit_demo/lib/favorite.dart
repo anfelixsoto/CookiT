@@ -198,7 +198,7 @@ class _Favorites extends State<Favorites> {
         return Padding(
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 1),
             child: Container(
-              width: 500,
+              width: MediaQuery.of(context).size.width,
               child: Card(
                 clipBehavior: Clip.antiAlias,
                 // shape: shape,

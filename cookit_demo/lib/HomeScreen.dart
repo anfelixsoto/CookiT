@@ -168,7 +168,7 @@ class HomeState extends State<Home> {
   Widget buildPostsAvatar(String profilePic) {
     return new GestureDetector(
         child: Container(
-          width: 180.0,
+          width: (MediaQuery.of(context).size.width/3),
           height: 180.0,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -200,7 +200,7 @@ class HomeState extends State<Home> {
       return Padding(
         padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
       child:Container(
-        width: 500,
+        width: MediaQuery.of(context).size.width,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),

@@ -147,9 +147,9 @@ class _editProfile extends State<editProfile> {
     });
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(BuildContext context) {
     return new Container(
-      width: 180.0,
+      width: (MediaQuery.of(context).size.width/3),
       height: 180.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -172,7 +172,7 @@ class _editProfile extends State<editProfile> {
           padding: EdgeInsets.only(top: 5.0, bottom: 30.0),
           margin: const EdgeInsets.only(bottom: 10.0),
           height: 200,
-          width: 300,
+          width: MediaQuery.of(context).size.width,
         child: CircleAvatar(
           backgroundColor: Colors.grey[200],
             child: Center (
@@ -194,7 +194,7 @@ class _editProfile extends State<editProfile> {
         shape: CircleBorder(),
         clipBehavior: Clip.hardEdge,
         color: Colors.transparent,
-        child: Image.file(_image, fit: BoxFit.fitHeight, width: 200.0, height: 200.0,),
+        child: Image.file(_image, fit: BoxFit.fitHeight, width: (MediaQuery.of(context).size.width*(2/3)), height: 200.0,),
       );
       //return Container(
         //padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 30.0),
@@ -314,9 +314,9 @@ class _editProfile extends State<editProfile> {
     }
   }
 
-  showLoading() {
+  showLoading(BuildContext context) {
     return Container (
-      width: 300.0,
+      width: MediaQuery.of(context).size.width,
       height: 300.0,
 
       margin: const EdgeInsets.only(top: 16.0, left: 16.0),
@@ -365,7 +365,7 @@ class _editProfile extends State<editProfile> {
               //mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 loading == true ?
-                  showLoading(): handleNullImage(context),
+                  showLoading(context): handleNullImage(context),
 
                // in case the image is null
                 //Image.file(_image, width: 300, height: 300 ),

@@ -130,7 +130,7 @@ class StartPage extends StatelessWidget{
                     DelayedAnimation(
                         child: Text("Cook Book",
                             style: TextStyle(fontSize: 20.0, color: Colors.white))),
-                    SizedBox(height: 50.0, width: 270,),
+                    SizedBox(height: 50.0),
                     primaryButton,
                   ],
                 ))));

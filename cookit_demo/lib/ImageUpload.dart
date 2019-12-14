@@ -161,7 +161,7 @@ class _PostUploadState extends State<PostUpload> {
           padding: EdgeInsets.only(top: 5.0, bottom: 0.0),
           margin: const EdgeInsets.only(bottom: 0.0),
           height: 300,
-          width: 300,
+          width: MediaQuery.of(context).size.width,
           color: Colors.blueGrey[100],
 
         child: Center (
@@ -273,9 +273,9 @@ class _PostUploadState extends State<PostUpload> {
   }
 
 
-  showLoading() {
+  showLoading(BuildContext context) {
     return Container (
-      width: 300.0,
+      width: MediaQuery.of(context).size.width,
       height: 300.0,
 
       margin: const EdgeInsets.only(top: 16.0, left: 16.0),
@@ -321,7 +321,7 @@ class _PostUploadState extends State<PostUpload> {
          child: ListView(
            //mainAxisAlignment: MainAxisAlignment.spaceAround,
            children: <Widget>[
-             loading == true ? showLoading(): handleNullImage(context), // in case the image is null
+             loading == true ? showLoading(context): handleNullImage(context), // in case the image is null
              //Image.file(_image, width: 300, height: 300 ),
 
 
@@ -351,7 +351,7 @@ class _PostUploadState extends State<PostUpload> {
              FlatButton(
                //borderRadius: BorderRadius.circular(30.0),
                child: MaterialButton(
-                 minWidth: 110.0,
+                 minWidth: (MediaQuery.of(context).size.width/3.5),
                  height: 40.0,
 
                  color: Colors.lightGreen,

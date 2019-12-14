@@ -202,13 +202,13 @@ class _RecipeDetails extends State<RecipeDetails>{
                               padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
                             child: Container(
                               height: 120.0,
-                              width: 300,
+                              width: MediaQuery.of(context).size.width,
                               child:ListView(
                                   scrollDirection: Axis.horizontal,
                                   children: <Widget>[
                                     Container(
 
-                                      width:200.0,
+                                      width:(MediaQuery.of(context).size.width/2),
                                       child:ListView(
                                           children: <Widget>[
                                             new Text(
@@ -230,7 +230,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                     ),
 
                                     Container(
-                                      width:200.0,
+                                      width:(MediaQuery.of(context).size.width/2),
                                       child:Padding(
                                         padding:EdgeInsets.fromLTRB(20.0, 40, 40.0, 45.0),
                                         child:Material(
@@ -289,7 +289,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                   Container(
 
                                     padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  width:130.0,
+                                  width:(MediaQuery.of(context).size.width/3),
                                   child:ListView(
                                     padding: EdgeInsets.symmetric(horizontal: 10),
                                         children: <Widget>[
@@ -330,7 +330,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                       ),
                                   ),
                                   Container(
-                                  width:120.0,
+                                  width:(MediaQuery.of(context).size.width/3),
                                   child:Column(
                                       //padding: EdgeInsets.symmetric(horizontal: 0),
                                         children: <Widget>[
@@ -371,7 +371,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                       ),
                                   ),
                                   Container(
-                                  width:100.0,
+                                  width:(MediaQuery.of(context).size.width/3),
                                   child:ListView(
                                       padding: EdgeInsets.symmetric(horizontal: 10),
                                         children: <Widget>[

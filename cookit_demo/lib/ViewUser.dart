@@ -166,7 +166,7 @@ class _ViewUser extends State<ViewUser> {
         return Padding(
             padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
             child:Container(
-              width: 500,
+              width: MediaQuery.of(context).size.width,
               child: Card(
                 clipBehavior: Clip.antiAlias,
                 // shape: shape,
@@ -297,7 +297,7 @@ class _ViewUser extends State<ViewUser> {
   Widget _buildAvatar() {
     return new GestureDetector(
         child: Container(
-          width: 180.0,
+          width: (MediaQuery.of(context).size.width/3),
           height: 180.0,
           decoration: BoxDecoration(
             shape: BoxShape.circle,

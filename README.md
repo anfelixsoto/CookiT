@@ -3,9 +3,9 @@
 This is the final project for CST 438: Software Engineering.
 
 Developers:
-Julia Werner
-Mireya Leon
-Antonio Felix
+Julia Werner,
+Mireya Leon,
+Antonio Felix,
 Daichi Kanasugi
 
 ## Description 

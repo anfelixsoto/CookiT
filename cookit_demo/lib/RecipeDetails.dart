@@ -144,6 +144,13 @@ class _RecipeDetails extends State<RecipeDetails>{
   Widget build(BuildContext context){
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       builder: (BuildContext context, Widget widget) {
         ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
           return buildError(context, errorDetails);
@@ -152,7 +159,7 @@ class _RecipeDetails extends State<RecipeDetails>{
       },
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.white,
           automaticallyImplyLeading: true,
           centerTitle: true,
           title: Text(
@@ -170,7 +177,7 @@ class _RecipeDetails extends State<RecipeDetails>{
           ],
 
         ),
-        backgroundColor: Colors.white,
+        //backgroundColor: Colors.white,
         body: Center(
           child: /*FutureBuilder<Recipe>(
               future: recipe,
@@ -212,8 +219,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                         recipe.name,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
-                                          fontSize: 20.0,
-                                          color: Colors.black,)
+                                          fontSize: 20.0,)
                                     ),
                                     new Text(
                                         recipe.description,
@@ -320,7 +326,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 20.0,
-                                        color: Colors.black,)
+                                        )
                                   ),
 
                                 ]
@@ -361,8 +367,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
-                                        fontSize: 20.0,
-                                        color: Colors.black,)
+                                        fontSize: 20.0,)
                                   ),
                                 ]
                             ),
@@ -388,8 +393,7 @@ class _RecipeDetails extends State<RecipeDetails>{
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
-                                        fontSize: 20.0,
-                                        color: Colors.black,)
+                                        fontSize: 20.0,)
                                   ),
 
 

@@ -416,106 +416,115 @@ class _ViewUser extends State<ViewUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(getUsername().toString(),
-          style: TextStyle(color: Colors.lightGreen),),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
-        actions: <Widget>[
-          role == "admin"? showDelete(context, widget.otherId, role,otherEmail, profilePic) :
-          new IconButton(icon: pic == " " || pic == null ? Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0):
-          CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)),
-            onPressed: () {}, ),
-        ],
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-      body: ListView (
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  Center(
-                    child: _buildAvatar(),
-                  ),
-                  Row(
-                    children: <Widget>[
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(getUsername().toString(),
+            style: TextStyle(color: Colors.lightGreen),),
+          centerTitle: true,
+          leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
+          actions: <Widget>[
+            role == "admin"? showDelete(context, widget.otherId, role,otherEmail, profilePic) :
+            new IconButton(icon: pic == " " || pic == null ? Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0):
+            CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)),
+              onPressed: () {}, ),
+          ],
+        ),
+        body: ListView (
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: _buildAvatar(),
+                    ),
+                    Row(
+                      children: <Widget>[
 
 
 
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-
-                              ],
-                            ),
-                            Row(
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
 
-                                ]),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                                ],
+                              ),
+                              Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+
+                                  ]),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
 
 
-                ],
+                  ],
+                ),
               ),
-            ),
-            Divider(height: 0.0),
-            Container (
-              child: FutureBuilder<List<Post>>(
-                future: getPosts(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Container(
-                        alignment: FractionalOffset.center,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: CircularProgressIndicator());
-                  else if(snapshot.data.length == 0){
-                    return Container(
-                        alignment: FractionalOffset.center,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Text('No Posts')
-                    );
-                  }
-                  else {
-                    // build the grid
-                    return GridView.count(
+              Divider(height: 0.0),
+              Container (
+                child: FutureBuilder<List<Post>>(
+                  future: getPosts(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CircularProgressIndicator());
+                    else if(snapshot.data.length == 0){
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Text('No Posts')
+                      );
+                    }
+                    else {
+                      // build the grid
+                      return GridView.count(
 
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.0,
-                        //                    padding: const EdgeInsets.all(0.5),
-                        mainAxisSpacing: 1.5,
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.0,
+                          //                    padding: const EdgeInsets.all(0.5),
+                          mainAxisSpacing: 1.5,
 
-                        crossAxisSpacing: 1.5,
-                        shrinkWrap: true,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        children: snapshot.data.map((Post post) {
-                          return GridTile(
-                            child: showPosts(context, post, post.imageUrl, post.userId, post.email),
-                          );
-                        }).toList());
+                          crossAxisSpacing: 1.5,
+                          shrinkWrap: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: snapshot.data.map((Post post) {
+                            return GridTile(
+                              child: showPosts(context, post, post.imageUrl, post.userId, post.email),
+                            );
+                          }).toList());
 
 
-                  }
-                },
+                    }
+                  },
 
+                ),
               ),
-            ),
-          ]
+            ]
+        ),
+
       ),
-
     );
   }
 
@@ -575,132 +584,140 @@ class PostDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Use the Post to create the UI.
-    return Scaffold(
-      appBar: AppBar(
-        title: Text( post.title,
-          style: TextStyle( color: Colors.lightGreen ), ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: new IconButton(
-            icon: new Icon( Icons.arrow_back, color: Colors.lightGreen ),
-            onPressed: () => Navigator.of( context ).pop( context ) ),
-        actions: <Widget>[
-          IconButton(
-              icon: loginProfilePic != null ? CircleAvatar( radius: 15.0,
-                  backgroundImage: NetworkImage( loginProfilePic ) ) :
-              Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
-              onPressed: () {}
-          ),
-        ],
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-      body: Padding(
-        padding: EdgeInsets.all( 10 ),
-        child: Container(
-          height: 530,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular( 15.0 ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text( post.title,
+            style: TextStyle( color: Colors.lightGreen ), ),
+          centerTitle: true,
+          leading: new IconButton(
+              icon: new Icon( Icons.arrow_back, color: Colors.lightGreen ),
+              onPressed: () => Navigator.of( context ).pop( context ) ),
+          actions: <Widget>[
+            IconButton(
+                icon: loginProfilePic != null ? CircleAvatar( radius: 15.0,
+                    backgroundImage: NetworkImage( loginProfilePic ) ) :
+                Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
+                onPressed: () {}
             ),
-            color: Colors.grey[200],
-            child: Padding(
-              padding: EdgeInsets.fromLTRB( 0.0, 10.0, 0.0, 0.0 ),
-              child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      leading: IconButton(
-                        icon: post.profileImage != "" ? CircleAvatar(
-                            radius: 15.0, backgroundImage: NetworkImage( post
-                            .profileImage ) ) :
-                        CircleAvatar(
-                          radius: 15.0,
-                          backgroundImage: NetworkImage(
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+          ],
+        ),
+        body: Padding(
+          padding: EdgeInsets.all( 10 ),
+          child: Container(
+            height: 530,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular( 15.0 ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB( 0.0, 10.0, 0.0, 0.0 ),
+                child: Column(
+                    children: <Widget>[
+                      ListTile(
+                        leading: IconButton(
+                          icon: post.profileImage != "" ? CircleAvatar(
+                              radius: 15.0, backgroundImage: NetworkImage( post
+                              .profileImage ) ) :
+                          CircleAvatar(
+                            radius: 15.0,
+                            backgroundImage: NetworkImage(
+                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                            ),
                           ),
                         ),
-                      ),
 
-                      contentPadding: EdgeInsets.all( 7 ),
+                        contentPadding: EdgeInsets.all( 7 ),
 
-                      title: GestureDetector(
-                        child: Text(
-                          post.username,
+                        title: GestureDetector(
+                          child: Text(
+                            post.username,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap: () {
+
+
+                          },
+
+                        ),
+
+
+                        trailing: Text(
+                          post.title,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 11,
                           ),
                         ),
-                        onTap: () {
-
-
-                        },
 
                       ),
+                      Center(
 
+                        child: ClipRect(
+                          child: Image.network(
+                            post.imageUrl,
 
-                      trailing: Text(
-                        post.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 11,
+                            height: 300,
+                            width: MediaQuery
+                                .of( context )
+                                .size
+                                .width,
+                            fit: BoxFit.cover,
+
+                          ),
                         ),
                       ),
-
-                    ),
-                    Center(
-
-                      child: ClipRect(
-                        child: Image.network(
-                          post.imageUrl,
-
-                          height: 300,
-                          width: MediaQuery
-                              .of( context )
-                              .size
-                              .width,
-                          fit: BoxFit.cover,
-
+                      ListTile(
+                        title: Text(
+                            post.description,
+                            style: TextStyle( fontWeight: FontWeight.w500 )
                         ),
                       ),
-                    ),
-                    ListTile(
-                      title: Text(
-                          post.description,
-                          style: TextStyle( fontWeight: FontWeight.w500 )
+                      ButtonBar(
+                        alignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text( 'Cook it' ),
+                            textColor: Colors.lightBlueAccent,
+                            onPressed: () {
+                              Firestore.instance.collection( 'recipes' ).document(
+                                  post.recipeId ).get( ).then( (data) {
+                                //print(data.documentID);
+                                Recipe postRecipe = Recipe.fromDoc( data );
+                                print( postRecipe.id );
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute( builder: (context) =>
+                                        RecipeDetails( recipe: postRecipe,
+                                          recid: postRecipe, ), )
+                                );
+                              } );
+                            },
+                          ),
+                          FlatButton(
+                            child: Text( 'Next time' ),
+                            textColor: Colors.redAccent,
+                            onPressed: () {
+                              UserOperations.addToSave( currId,
+                                  post.recipeId.toString( ) );
+                            },
+                          ),
+                          // show menu button
+                          // post.email == currEmail ?
+                        ],
                       ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        FlatButton(
-                          child: Text( 'Cook it' ),
-                          textColor: Colors.lightBlueAccent,
-                          onPressed: () {
-                            Firestore.instance.collection( 'recipes' ).document(
-                                post.recipeId ).get( ).then( (data) {
-                              //print(data.documentID);
-                              Recipe postRecipe = Recipe.fromDoc( data );
-                              print( postRecipe.id );
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute( builder: (context) =>
-                                      RecipeDetails( recipe: postRecipe,
-                                        recid: postRecipe, ), )
-                              );
-                            } );
-                          },
-                        ),
-                        FlatButton(
-                          child: Text( 'Next time' ),
-                          textColor: Colors.redAccent,
-                          onPressed: () {
-                            UserOperations.addToSave( currId,
-                                post.recipeId.toString( ) );
-                          },
-                        ),
-                        // show menu button
-                        // post.email == currEmail ?
-                      ],
-                    ),
-                  ]
+                    ]
+                ),
               ),
             ),
           ),

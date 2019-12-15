@@ -206,7 +206,7 @@ class HomeState extends State<Home> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          color: Colors.grey[200],
+          //color: Colors.grey[200],
           clipBehavior: Clip.antiAlias,
           child: Column(
               children: <Widget>[
@@ -216,9 +216,9 @@ class HomeState extends State<Home> {
                   leading: SizedBox(
                     child: IconButton(
                       iconSize: 50,
-                      icon:  document['profileImage'] != "" ? CircleAvatar(radius: 50.0, backgroundImage: NetworkImage(document['profileImage'])):
+                      icon:  document['profileImage'] != "" ? CircleAvatar(radius: 20.0, backgroundImage: NetworkImage(document['profileImage'])):
                       CircleAvatar(
-                        radius: 50.0,
+                        radius: 20.0,
                         backgroundImage: NetworkImage(
                           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
                         ),
@@ -283,7 +283,7 @@ class HomeState extends State<Home> {
                   ),
                 ),
                 ),
-                   Divider(color: Colors.grey[200]),
+                   Divider(),
                    Center(
                    child: ClipRect(
                    child:Image.network(
@@ -351,70 +351,78 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("CookiT",
-        style: TextStyle(color: Colors.lightGreen),
-        ),
-
-        //centerTitle: true,
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        leading: new IconButton(
-          icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic), backgroundColor: Colors.grey[300],):
-          Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
-                auth: widget.auth,)),
-            );
-          },
-        ),
-        actions: <Widget>[
-          new FlatButton(onPressed: signOut,
-              child: new Text('Logout',
-              style: new TextStyle(
-                fontSize: 17.0,
-                color: Colors.lightGreen,
-              ))),
-        ],
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-      body: Container(
-       child: StreamBuilder(
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+          appBar: AppBar(
+            title: Text("CookiT",
+              style: TextStyle(color: Colors.lightGreen),
+            ),
+            centerTitle: true,
+            leading: new IconButton(
+              icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic), backgroundColor: Colors.grey[300],):
+              Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
+                    auth: widget.auth,)),
+                );
+              },
+            ),
+            actions: <Widget>[
+              new FlatButton(onPressed: signOut,
+                  child: new Text('Logout',
+                      style: new TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.lightGreen,
+                      ))),
+            ],
+          ),
+          body: Container(
+            child: StreamBuilder(
               stream: Firestore.instance.collection('posts').snapshots(),
               builder: (context, snapshot) {
-              switch(snapshot.connectionState){
-                case ConnectionState.waiting:
-                  return Center(
-                      child: CircularProgressIndicator()
-                  );
-                default:
-                  return ListView (
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                    children:
-                    displayPosts(snapshot),
-                   );
-                  }
-                },
+                switch(snapshot.connectionState){
+                  case ConnectionState.waiting:
+                    return Center(
+                        child: CircularProgressIndicator()
+                    );
+                  default:
+                    return ListView (
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      children:
+                      displayPosts(snapshot),
+                    );
+                }
+              },
             ),
+          ),
+          floatingActionButton: InkWell(
+            splashColor: Colors.lightBlueAccent,
+            onLongPress: (){
+              isAdmin ? setState(() {manage = !manage;}):
+              Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
+            },
+            child: FloatingActionButton(
+              backgroundColor: Colors.lightGreen,
+              child: manage ? Icon( Icons.edit, color: Colors.white,) : Icon(Icons.search, color: Colors.white,),
+              onPressed: (){
+                manage ? Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage())) :
+                Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
+              },
+            ),
+          )
       ),
-      floatingActionButton: InkWell(
-        splashColor: Colors.lightBlueAccent,
-        onLongPress: (){
-          isAdmin ? setState(() {manage = !manage;}):
-          Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
-        },
-        child: FloatingActionButton(
-          backgroundColor: Colors.lightGreen,
-          child: manage ? Icon( Icons.edit, color: Colors.white,) : Icon(Icons.search, color: Colors.white,),
-          onPressed: (){
-            manage ? Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage())) :
-            Navigator.push(context ,MaterialPageRoute(builder: (context) => new RecipeSearch()));
-          },
-        ),
-    ));
+    );
   }
 
   Widget getUserId(){

@@ -153,7 +153,7 @@ class _editProfile extends State<editProfile> {
       height: 180.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white30),
+        border: Border.all(),
       ),
       margin: const EdgeInsets.only(top: 32.0, left: 16.0),
       padding: const EdgeInsets.all(3.0),
@@ -174,12 +174,10 @@ class _editProfile extends State<editProfile> {
           height: 200,
           width: MediaQuery.of(context).size.width,
         child: CircleAvatar(
-          backgroundColor: Colors.grey[200],
             child: Center (
               child: MaterialButton(
                 minWidth: 10.0,
                 height: 50.0,
-                color: Colors.white,
                 onPressed: () {
                   showOptions(context);
                 },
@@ -340,68 +338,77 @@ class _editProfile extends State<editProfile> {
 
 
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.lightGreen,
-              size: 24.0,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        title: Text('Edit Profile',
-        style: TextStyle(color: Colors.lightGreen),),
-        centerTitle: true,
-        backgroundColor: Colors.white,
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-      body: Container(
-        margin: EdgeInsets.all(20.0),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.lightGreen,
+                size: 24.0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          title: Text('Edit Profile',
+            style: TextStyle(color: Colors.lightGreen),),
+          centerTitle: true,
+        ),
+        body: Container(
+          margin: EdgeInsets.all(20.0),
 
 
-        child: Center(
-            child: ListView(
-              //mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                loading == true ?
+          child: Center(
+              child: ListView(
+                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  loading == true ?
                   showLoading(context): handleNullImage(context),
 
-               // in case the image is null
-                //Image.file(_image, width: 300, height: 300 ),
-                Divider( color: Colors.white,),
-                Container(
-                  width: 100,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: MaterialButton(
-                      minWidth: 10.0,
-                      height: 50.0,
+                  // in case the image is null
+                  //Image.file(_image, width: 300, height: 300 ),
+                  Divider(),
+                  Container(
+                    width: 100,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30.0),
+                      child: MaterialButton(
+                        minWidth: 10.0,
+                        height: 50.0,
 
-                      color: Colors.lightBlueAccent,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        if(loading == false) {
-                          submitPic(context);
-                        }
-                      },
-                      child: new Text('Upload'),
+                        color: Colors.lightBlueAccent,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          if(loading == false) {
+                            submitPic(context);
+                          }
+                        },
+                        child: new Text('Upload'),
+                      ),
                     ),
                   ),
-                ),
 
 
 
 
 
 
-              ],
+                ],
 
-            )
+              )
 
+          ),
         ),
-      ),
 
+      ),
     );
   }
 }

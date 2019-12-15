@@ -23,10 +23,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'SearchAppBarRecipe',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: SavePage(title: 'SearchAppBarRecipe'),
     );
   }
@@ -105,12 +101,6 @@ class _SavePage extends State<SavePage> {
           }
         }
       });
-
-
-
-
-
-
       //print(user.displayName.toString());
     });
 
@@ -136,7 +126,6 @@ class _SavePage extends State<SavePage> {
     int rec_prepTime, rec_servings;
     List<String> rec_ingredients;
     List<String> rec_instructions;
-
 
     for(var i in temp){
       DocumentSnapshot snapshot = await Firestore.instance
@@ -165,134 +154,143 @@ class _SavePage extends State<SavePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: new Text('Bookmarks',
-        style: TextStyle(color: Colors.lightGreen)),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.lightGreen,
-          ),
-          onPressed: (){Navigator.pop(context);},
-        ),
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-      body:Column(
-          children: <Widget>[
-            Expanded(
-              child: StreamBuilder(
-                  stream: Firestore.instance
-                      .collection('users')
-                      .document(userId)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    print(snapshot);
-                    switch(snapshot.connectionState){
-                      case ConnectionState.waiting:
-                        return Center(
-                            child: CircularProgressIndicator()
-                        );
-                      default:
-                        if(!snapshot.hasData){
-                          return Container(
-                            alignment: FractionalOffset.center,
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: CircularProgressIndicator(),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: new Text('Bookmarks',
+              style: TextStyle(color: Colors.lightGreen)),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.lightGreen,
+            ),
+            onPressed: (){Navigator.pop(context);},
+          ),
+        ),
+        body:Column(
+            children: <Widget>[
+              Expanded(
+                child: StreamBuilder(
+                    stream: Firestore.instance
+                        .collection('users')
+                        .document(userId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      print(snapshot);
+                      switch(snapshot.connectionState){
+                        case ConnectionState.waiting:
+                          return Center(
+                              child: CircularProgressIndicator()
                           );
-                         }else if(snapshot.data['saved'].length == null ||snapshot.data['saved'].length == 0){
-                          return Container(
+                        default:
+                          if(!snapshot.hasData){
+                            return Container(
                               alignment: FractionalOffset.center,
-                              padding: const EdgeInsets.only(top: 1.0),
-                              child: Text(
-                                'No Bookmarked Recipes!',
-                                style: TextStyle(
-                                  color: Colors.lightGreen,
-                                  fontSize: 20,
-                                ),
-                              )
-                          );
-                        }else{
-                          return new ListView(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            children: List.generate(snapshot.data['saved'].length, (index) {
-                              //print(snapshot.data['favorites'][index]);
-                              List temp3 = [];
-                              if(!temp3.contains(snapshot.data['saved'][index].toString())) {
-                                temp3.add(snapshot.data['saved'][index].toString());
-                              }
-                              return  StreamBuilder(
-                                  stream: Firestore.instance
-                                      .collection('recipes')
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    print(snapshot);
-                                    switch(snapshot.connectionState){
-                                      case ConnectionState.waiting:
-                                        return Center(
-                                            child: CircularProgressIndicator()
-                                        );
-                                      default:
-                                      // List videosList = snapshot.data;
-                                        return ListView.builder(
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          shrinkWrap: true,
-                                          itemCount: snapshot.data.documents.length,
-                                          itemBuilder: (context, recipeId) {
-                                            DocumentSnapshot recipe = snapshot.data.documents[recipeId];
-                                            if(temp3.contains(recipe.documentID) ) {
-                                              return Container(
-                                                height: 100,
-                                                padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                      children: <Widget>[
-                                                        ListTile(
-                                                          leading: CircleAvatar(radius: 30.0,
-                                                            backgroundImage: NetworkImage(recipe.data['imageURL']),
-                                                          ),
-                                                          title: Text(recipe.data['name'].toString()),
-                                                          subtitle: Text("Prep Time: " + recipe.data['prepTime'].toString() + " | " +
-                                                              "Servings: " + recipe.data['servings'].toString()
-                                                          ),
-                                                          trailing: IconButton(
-                                                            icon: Icon(Icons.delete_outline, color: Colors.redAccent),
-                                                            onPressed: (){
-                                                              UserOperations.delete('saved', userId, recipe.documentID);
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: CircularProgressIndicator(),
+                            );
+                          }else if(snapshot.data['saved'].length == null ||snapshot.data['saved'].length == 0){
+                            return Container(
+                                alignment: FractionalOffset.center,
+                                padding: const EdgeInsets.only(top: 1.0),
+                                child: Text(
+                                  'No Bookmarked Recipes!',
+                                  style: TextStyle(
+                                    color: Colors.lightGreen,
+                                    fontSize: 20,
+                                  ),
+                                )
+                            );
+                          }else{
+                            return new ListView(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              children: List.generate(snapshot.data['saved'].length, (index) {
+                                //print(snapshot.data['favorites'][index]);
+                                List temp3 = [];
+                                if(!temp3.contains(snapshot.data['saved'][index].toString())) {
+                                  temp3.add(snapshot.data['saved'][index].toString());
+                                }
+                                return  StreamBuilder(
+                                    stream: Firestore.instance
+                                        .collection('recipes')
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      print(snapshot);
+                                      switch(snapshot.connectionState){
+                                        case ConnectionState.waiting:
+                                          return Center(
+                                              child: CircularProgressIndicator()
+                                          );
+                                        default:
+                                        // List videosList = snapshot.data;
+                                          return ListView.builder(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: snapshot.data.documents.length,
+                                            itemBuilder: (context, recipeId) {
+                                              DocumentSnapshot recipe = snapshot.data.documents[recipeId];
+                                              if(temp3.contains(recipe.documentID) ) {
+                                                return Container(
+                                                  height: 100,
+                                                  padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                  child: Card(
+                                                    clipBehavior: Clip.antiAlias,
+                                                    child: Column(
+                                                        children: <Widget>[
+                                                          ListTile(
+                                                            leading: CircleAvatar(radius: 30.0,
+                                                              backgroundImage: NetworkImage(recipe.data['imageURL']),
+                                                            ),
+                                                            title: Text(recipe.data['name'].toString()),
+                                                            subtitle: Text("Prep Time: " + recipe.data['prepTime'].toString() + " | " +
+                                                                "Servings: " + recipe.data['servings'].toString()
+                                                            ),
+                                                            trailing: IconButton(
+                                                              icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                                                              onPressed: (){
+                                                                UserOperations.delete('saved', userId, recipe.documentID);
+                                                              },
+                                                            ),
+                                                            onTap: () {
+                                                              Recipe selectRecipe = Recipe.fromDoc(recipe);
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => RecipeDetails(recipe: selectRecipe, recid: selectRecipe, )),
+                                                              );
                                                             },
                                                           ),
-                                                          onTap: () {
-                                                            Recipe selectRecipe = Recipe.fromDoc(recipe);
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: selectRecipe, recid: selectRecipe, )),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ]
+                                                        ]
+                                                    ),
                                                   ),
-                                                ),
+                                                );
+                                              } return Container(
                                               );
-                                            } return Container(
-                                            );
-                                          },
-                                        );
+                                            },
+                                          );
+                                      }
                                     }
-                                  }
-                              );
-                            }
-                            ),
-                          );
-                        }
+                                );
+                              }
+                              ),
+                            );
+                          }
+                      }
                     }
-                  }
-              ),),
-          ]
+                ),),
+            ]
+        ),
       ),
     );
   }

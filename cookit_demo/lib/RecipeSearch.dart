@@ -153,19 +153,24 @@ class _RecipeSearchState extends State<RecipeSearch> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       home: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
           title: Text('Search for Recipes'
           ,style: TextStyle(color: Colors.lightGreen),
           ),
-        backgroundColor: Colors.white,
           leading: IconButton(icon:Icon(Icons.arrow_back),color:Colors.lightGreen,
             onPressed: () => Navigator.pop(context),
           ),
           actions:<Widget>[IconButton(icon: Icon(Icons.add), onPressed: _add,color:Colors.lightGreen)],
         ),
-        backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
             return SingleChildScrollView(

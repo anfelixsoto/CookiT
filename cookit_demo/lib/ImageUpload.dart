@@ -169,7 +169,6 @@ class _PostUploadState extends State<PostUpload> {
             child: MaterialButton(
               minWidth: 10.0,
               height: 50.0,
-              color: Colors.white,
               onPressed: () {
                 showOptions(context);
               },
@@ -293,87 +292,92 @@ class _PostUploadState extends State<PostUpload> {
 
     @override
     Widget build(BuildContext context) {
-
-
-
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.lightGreen,
-              size: 24.0,
-
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        title: Text('Upload Picture', style: TextStyle(color: Colors.lightGreen)),
-        backgroundColor: Colors.white,
-        
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-     body: Container(
-       margin: EdgeInsets.all(20.0),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.lightGreen,
+                size: 24.0,
+
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          title: Text('Upload Picture', style: TextStyle(color: Colors.lightGreen)),
+
+        ),
+        body: Container(
+          margin: EdgeInsets.all(20.0),
 
 
-       child: Center(
-         child: ListView(
-           //mainAxisAlignment: MainAxisAlignment.spaceAround,
-           children: <Widget>[
-             loading == true ? showLoading(context): handleNullImage(context), // in case the image is null
-             //Image.file(_image, width: 300, height: 300 ),
+          child: Center(
+              child: ListView(
+                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  loading == true ? showLoading(context): handleNullImage(context), // in case the image is null
+                  //Image.file(_image, width: 300, height: 300 ),
 
 
-             Padding(
-               padding: EdgeInsets.symmetric(horizontal: 30.0),
-               child: TextField(
-                 controller: titleController,
-                 style: TextStyle(fontSize: 18.0),
-                 decoration: InputDecoration(
-                   labelText: 'Title',
-                 ),
-                 onChanged: (input) => title = input,
-               ),
-             ),
-           Padding(
-             padding: EdgeInsets.only(top: 5.0, left: 30.0, right:30, bottom: 35.0),
-             child: TextField(
-               controller: captionController,
-               style: TextStyle(fontSize: 18.0),
-               decoration: InputDecoration(
-                 labelText: 'Description',
-               ),
-               onChanged: (input) => caption = input,
-             ),
-           ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30.0),
+                    child: TextField(
+                      controller: titleController,
+                      style: TextStyle(fontSize: 18.0),
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                      ),
+                      onChanged: (input) => title = input,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0, left: 30.0, right:30, bottom: 35.0),
+                    child: TextField(
+                      controller: captionController,
+                      style: TextStyle(fontSize: 18.0),
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                      ),
+                      onChanged: (input) => caption = input,
+                    ),
+                  ),
 
-             FlatButton(
-               //borderRadius: BorderRadius.circular(30.0),
-               child: MaterialButton(
-                 minWidth: (MediaQuery.of(context).size.width/3.5),
-                 height: 40.0,
+                  FlatButton(
+                    //borderRadius: BorderRadius.circular(30.0),
+                    child: MaterialButton(
+                      minWidth: (MediaQuery.of(context).size.width/3.5),
+                      height: 40.0,
 
-                 color: Colors.lightGreen,
-                 textColor: Colors.white,
-                 onPressed: () {
-                   if(loading == false) {
-                     submitPost(context);
-                   }
-                 },
-                 child: new Text('Upload'),
-               ),
-             ),
+                      color: Colors.lightGreen,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        if(loading == false) {
+                          submitPost(context);
+                        }
+                      },
+                      child: new Text('Upload'),
+                    ),
+                  ),
 
 
 
-           ],
+                ],
 
-         )
+              )
 
-       ),
-     ),
+          ),
+        ),
 
+      ),
     );
   }
 }

@@ -105,23 +105,32 @@ class _LoginSignupState extends State<LoginSignupPage>{
 
   @override
   Widget build(BuildContext context){
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text(_isLoginForm ? "Login" : "Create Account",
-            style: TextStyle(color: Colors.lightGreen,),),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          leading: IconButton(icon:Icon(Icons.arrow_back, color: Colors.lightGreen,),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => StartPage()));
-            },),
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+        home: Scaffold(
+            appBar: new AppBar(
+              title: new Text(_isLoginForm ? "Login" : "Create Account",
+                style: TextStyle(color: Colors.lightGreen,),),
+              centerTitle: true,
+              leading: IconButton(icon:Icon(Icons.arrow_back, color: Colors.lightGreen,),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => StartPage()));
+                },),
+            ),
+            body: Stack(
+              children: <Widget>[
+                _isLoginForm ? showLoginForm() : showSignUpForm(context),
+              ],
+            )
         ),
-        body: Stack(
-          children: <Widget>[
-            _isLoginForm ? showLoginForm() : showSignUpForm(context),
-          ],
-        )
     );
   }
   Widget showLoginForm(){

@@ -17,6 +17,13 @@ import 'model/PostModel.dart';
 
 void main(){
   runApp(new MaterialApp(
+    theme: ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Colors.white,
+    ),
+    darkTheme: ThemeData(
+      brightness: Brightness.dark,
+    ),
     debugShowCheckedModeBanner: false,
     home: UserProfile(),
   ));
@@ -273,122 +280,131 @@ class _UserProfile extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(username.toString(),
-        style: TextStyle(color: Colors.lightGreen),),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.bookmark_border,
-              color: Colors.lightGreen,
-              size: 40.0,),
-            onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SavePage()),
-              );
-            },
-          )
-        ],
-        leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
-          onPressed: () {
-            Navigator.pop(context,true);
-          },),
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
-      body: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  Center(
-                    child: _buildAvatar(),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                findRecipes('What to Cook'),
-                                showFavorites('Favorites'),
-                              ],
-                            ),
-                            Row(
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(username.toString(),
+            style: TextStyle(color: Colors.lightGreen),),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.bookmark_border,
+                color: Colors.lightGreen,
+                size: 40.0,),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavePage()),
+                );
+              },
+            )
+          ],
+          leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
+            onPressed: () {
+              Navigator.pop(context,true);
+            },),
+        ),
+        body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: _buildAvatar(),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                ]),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                                  findRecipes('What to Cook'),
+                                  showFavorites('Favorites'),
+                                ],
+                              ),
+                              Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                  ]),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
 
 
-                ],
+                  ],
+                ),
               ),
-            ),
-            //buildImageViewButtonBar(),
-            Divider(height: 0.0),
-            Container (
-              child: FutureBuilder<List<Post>>(
-                future: getPosts(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Container(
-                        alignment: FractionalOffset.center,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: CircularProgressIndicator());
-                  else if(snapshot.data.length == 0){
-                    return Container(
-                        alignment: FractionalOffset.center,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Text('No Posts')
-                    );
-                  }
-                  else {
-                    // build the grid
-                    return GridView.count(
+              //buildImageViewButtonBar(),
+              Divider(height: 0.0),
+              Container (
+                child: FutureBuilder<List<Post>>(
+                  future: getPosts(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CircularProgressIndicator());
+                    else if(snapshot.data.length == 0){
+                      return Container(
+                          alignment: FractionalOffset.center,
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Text('No Posts')
+                      );
+                    }
+                    else {
+                      // build the grid
+                      return GridView.count(
 
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.0,
-                        mainAxisSpacing: 1.5,
-                        crossAxisSpacing: 1.5,
-                        shrinkWrap: true,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        children: snapshot.data.map((Post post) {
-                          return GridTile(
-                            child: showPosts(context, post, post.imageUrl, currId, currEmail, profilePic),
-                          );
-                        }).toList());
-                  }
-                },
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.0,
+                          mainAxisSpacing: 1.5,
+                          crossAxisSpacing: 1.5,
+                          shrinkWrap: true,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: snapshot.data.map((Post post) {
+                            return GridTile(
+                              child: showPosts(context, post, post.imageUrl, currId, currEmail, profilePic),
+                            );
+                          }).toList());
+                    }
+                  },
 
+                ),
               ),
-            ),
-            //Divider(height: 10.0),
-          ]
-      ),
-
-      floatingActionButton: Visibility(
-        child: FloatingActionButton(
-          backgroundColor: Colors.lightGreen,
-          child: Icon(
-            Icons.portrait, color: Colors.white,
-          ),
-          onPressed: (){
-            Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage()));
-          },
+              //Divider(height: 10.0),
+            ]
         ),
-        visible: isAdmin,
+
+        floatingActionButton: Visibility(
+          child: FloatingActionButton(
+            backgroundColor: Colors.lightGreen,
+            child: Icon(
+              Icons.portrait, color: Colors.white,
+            ),
+            onPressed: (){
+              Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage()));
+            },
+          ),
+          visible: isAdmin,
+        ),
       ),
     );
   }
@@ -454,13 +470,10 @@ Future<void> removeImage(String url) async{
 
 
 class PostDetails extends StatelessWidget {
-
-
   final Post post;
   String currId;
   String currEmail;
   String profileImage;
-
 
   // In the constructor, require a Post.
   PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail, @required this.profileImage}) : super(key: key);
@@ -475,7 +488,11 @@ class PostDetails extends StatelessWidget {
         style: TextStyle(color: Colors.lightGreen),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.lightGreen,),
+          onPressed: (){Navigator.pop(context);},
+        ),
+        //backgroundColor: Colors.white,
         actions: <Widget>[
           IconButton(
               icon: profileImage != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(profileImage)):
@@ -492,7 +509,7 @@ class PostDetails extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
-            color: Colors.grey[200],
+            //color: Colors.grey[200],
             child: Padding(
               padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
               child: Column(

@@ -25,9 +25,15 @@ class RecipeInstructions extends StatelessWidget {
   Widget build(BuildContext context){
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
           automaticallyImplyLeading: true,
           centerTitle: true,
           title: Text(
@@ -44,7 +50,6 @@ class RecipeInstructions extends StatelessWidget {
           ),
 
         ),
-        backgroundColor: Colors.white,
         body: Container(
           child: /*FutureBuilder<Recipe>(
               future: recipe,
@@ -138,8 +143,7 @@ class RecipeInstructions extends StatelessWidget {
                                                             recipe.name,
                                                             style: TextStyle(
                                                               fontWeight: FontWeight.w600,
-                                                              fontSize: 20.0,
-                                                              color: Colors.black,)
+                                                              fontSize: 20.0,)
                                                         ),
                                                       ),
 
@@ -258,8 +262,7 @@ class RecipeInstructions extends StatelessWidget {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 20.0,
-                                      color: Colors.black,)
+                                      fontSize: 20.0,)
                                 ),
 
                               ),
@@ -344,8 +347,7 @@ class RecipeInstructions extends StatelessWidget {
                                     "Instructions",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 20.0,
-                                      color: Colors.black,)
+                                      fontSize: 20.0,)
                                 ),
                                 //]
                               ),

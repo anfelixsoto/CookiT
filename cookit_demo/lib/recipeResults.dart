@@ -100,9 +100,15 @@ class _RecipeResults extends State<RecipeResults>{
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
           automaticallyImplyLeading: true,
           title: Text('Recipe Results',
           style: TextStyle(color: Colors.lightGreen),
@@ -111,7 +117,6 @@ class _RecipeResults extends State<RecipeResults>{
             onPressed: () => Navigator.pop(context, false),
           ),
         ),
-        backgroundColor: Colors.white,
         body: Center(
           child: FutureBuilder<RecipeList>(
             future: recipes,

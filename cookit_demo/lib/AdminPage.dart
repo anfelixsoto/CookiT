@@ -14,6 +14,13 @@ import 'model/User.dart';
 void main(){
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      brightness: Brightness.light,
+      primaryColor: Colors.lightGreen,
+    ),
+    darkTheme: ThemeData(
+      brightness: Brightness.dark,
+    ),
     home: AdminPage(),
   ));
 }
@@ -216,18 +223,27 @@ class _AdminPage extends State<AdminPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin Page', style: TextStyle(color: Colors.lightGreen), ),
-        actions: <Widget>[
-          IconButton(
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Admin Page', style: TextStyle(color: Colors.lightGreen), ),
+          actions: <Widget>[
+            IconButton(
               icon: profilePic != null ? CircleAvatar( radius: 15.0,
                   backgroundImage: NetworkImage( profilePic ) ) :
               Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
-          ),
-        ],
-        backgroundColor: Colors.white,
-        centerTitle: true,
+            ),
+          ],
+          //backgroundColor: Colors.white,
+          centerTitle: true,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -235,82 +251,91 @@ class _AdminPage extends State<AdminPage>{
             ),
             onPressed: (){Navigator.pop(context);},
           ),
-      ),
-      body: Container(
-        child: StreamBuilder(
-          stream: Firestore.instance.collection(collection).snapshots(),
-          builder: (context, snapshot){
-            switch(snapshot.connectionState){
-              case ConnectionState.waiting:
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              default:
-                return ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-                  children:
-                    collection == 'posts' ? displayPosts(snapshot):
-                        collection == 'recipes' ? displayRecipes(snapshot):
-                            displayUsers(snapshot)
-                );
-            }
+        ),
+        body: Container(
+          child: StreamBuilder(
+            stream: Firestore.instance.collection(collection).snapshots(),
+            builder: (context, snapshot){
+              switch(snapshot.connectionState){
+                case ConnectionState.waiting:
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                default:
+                  return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+                      children:
+                      collection == 'posts' ? displayPosts(snapshot):
+                      collection == 'recipes' ? displayRecipes(snapshot):
+                      displayUsers(snapshot)
+                  );
+              }
+            },
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.lightGreen,
+          child: Icon(Icons.info_outline, color: Colors.white, size: 45.0,),
+          onPressed: (){
+            collection == 'posts' ? showAdminPostAlert() :
+            collection == 'recipes' ? showAdminRecipeAlert() :
+            showAdminUserAlert();
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightGreen,
-        child: Icon(Icons.info_outline, color: Colors.white, size: 45.0,),
-        onPressed: (){
-          collection == 'posts' ? showAdminPostAlert() :
-          collection == 'recipes' ? showAdminRecipeAlert() :
-          showAdminUserAlert();
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar( //
-        backgroundColor: Colors.grey[100],// footer
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text('Users'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo_library),
-            title: Text('Posts'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            title: Text('Recipes'),
-          ),
-        ],
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.lightGreen,
-        onTap: _onItemTapped,
+        bottomNavigationBar: BottomNavigationBar( //
+          //backgroundColor: Colors.grey[100],// footer
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('Users'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.photo_library),
+              title: Text('Posts'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant_menu),
+              title: Text('Recipes'),
+            ),
+          ],
+          currentIndex: _currentIndex,
+          selectedItemColor: Colors.lightGreen,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
 
   Future<void> showUserAlert(BuildContext context, String userId, String email, String url, String role) {
     return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        title: Text('Are you want to delete ' + email + "?",),
-        content: SingleChildScrollView(
-          child: Row(
-            children: <Widget>[
-              GestureDetector(
-                child: Text('Yes'),
-                onTap: (){
-                  adminRemovePic(url);
-                  AdminOperations.deleteUser(userId);
-                  Navigator.pop(context);},
-              ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text( 'Cancel',style: TextStyle(color: Colors.redAccent) ),
-                onTap: () { Navigator.pop(context);},
-              ),
-            ],
+      return new MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        home: AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          title: Text('Are you want to delete ' + email + "?",),
+          content: SingleChildScrollView(
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                  child: Text('Yes'),
+                  onTap: (){
+                    adminRemovePic(url);
+                    AdminOperations.deleteUser(userId);
+                    Navigator.pop(context);},
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text( 'Cancel',style: TextStyle(color: Colors.redAccent) ),
+                  onTap: () { Navigator.pop(context);},
+                ),
+              ],
+            ),
           ),
         ),
       );

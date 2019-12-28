@@ -1,18 +1,15 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cookit_demo/ImageUpload.dart';
 import 'package:cookit_demo/SavePage.dart';
-import 'package:cookit_demo/favorite.dart';
+import 'package:cookit_demo/Favorite.dart';
 import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/service/Authentication.dart';
-import 'package:cookit_demo/editProfile.dart';
+import 'package:cookit_demo/EditProfile.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
 import 'AdminPage.dart';
-import 'HomeScreen.dart';
 import 'model/PostModel.dart';
 
 void main(){
@@ -49,8 +46,6 @@ class _UserProfile extends State<UserProfile> {
   FirebaseUser currentUser;
   String username;
   int postCount = 0;
-  int _selectedIndex = 0;
-  int _currentIndex = 0;
   DocumentReference userRef;
   String currEmail;
   String currId;
@@ -251,31 +246,6 @@ class _UserProfile extends State<UserProfile> {
     });
     return posts.toList();
   }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    if(index == 0) {
-
-    }
-    //else if (index == 1) {
-
-    /*Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home(
-           )),
-      );*/
-    //}
-
-    else if(index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PostUpload()),
-      );
-    }
-  }
-
 
 
   @override

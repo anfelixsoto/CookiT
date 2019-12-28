@@ -72,7 +72,7 @@ class _editProfile extends State<editProfile> {
           tempPic = profilePic;
         }
       });
-
+      print(profilePic);
       //print(user.displayName.toString());
     });
   }
@@ -375,7 +375,6 @@ class _editProfile extends State<editProfile> {
 
                   // in case the image is null
                   //Image.file(_image, width: 300, height: 300 ),
-                  Divider(),
                   Container(
                     width: 100,
                     child: ClipRRect(

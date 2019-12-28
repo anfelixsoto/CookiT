@@ -10,15 +10,10 @@ import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/ViewUser.dart';
 import 'package:cookit_demo/model/PostModel.dart';
 import 'package:cookit_demo/model/Recipe.dart';
-import 'package:cookit_demo/recipeResults.dart';
+import 'package:cookit_demo/RecipeResults.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
-import 'package:cookit_demo/service/RootPage.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
-
-
-
-import 'package:cookit_demo/UserScreen.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -81,6 +76,7 @@ class HomeState extends State<Home> {
         }
       });
     });
+    return;
   }
 
   String getuserId() {

@@ -1,8 +1,8 @@
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:cookit_demo/recipeResults.dart';
+import 'package:cookit_demo/RecipeResults.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cookit_demo/delayed_animation.dart';
+import 'package:cookit_demo/Delayed_Animation.dart';
 
 void main() => runApp(
       new MaterialApp(

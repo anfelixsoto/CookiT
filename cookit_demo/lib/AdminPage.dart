@@ -278,9 +278,7 @@ class _AdminPage extends State<AdminPage>{
           backgroundColor: Colors.lightGreen,
           child: Icon(Icons.info_outline, color: Colors.white, size: 45.0,),
           onPressed: (){
-            collection == 'posts' ? showAdminPostAlert() :
-            collection == 'recipes' ? showAdminRecipeAlert() :
-            showAdminUserAlert();
+            showAlert(collection);
           },
         ),
         bottomNavigationBar: BottomNavigationBar( //
@@ -307,11 +305,108 @@ class _AdminPage extends State<AdminPage>{
     );
   }
 
+  Future<void> showAlert(String collection) {
+    return showDialog(context: context,builder: (BuildContext context) {
+      if (collection == 'users'){
+        return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: Colors.white,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+        ),
+            home: AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+              title: Text('Admin Key - Users'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Wrap(
+                      children: <Widget>[
+                        Row(children: <Widget>[Icon(Icons.star, color: Colors.yellow,), Text('  That user an admin'),], ),
+                        Padding(padding: EdgeInsets.all(8.0)),
+                        Row(children: <Widget>[Icon(Icons.star_border, color: Colors.yellow,), Text('  That user is not an admin'),], ),
+                        Padding(padding: EdgeInsets.all(8.0)),
+                        Row(children: <Widget>[Text("Stars are clickable to turn on and \noff admin privillages"),],),
+                        Padding(padding: EdgeInsets.all(8.0)),
+                        Row(children: <Widget>[Text("Admin is able to view and delete \nusers\n"),],),
+                        Padding(padding: EdgeInsets.all(8.0)),
+                        GestureDetector(
+                          child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);},
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
+        );
+      } else if(collection == 'posts'){
+        return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+            brightness: Brightness.light,
+              primaryColor: Colors.white,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+            ),
+            home: AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+              title: Text('Admin Key - Posts'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Wrap(
+                      children: <Widget>[
+                        Text("Here the admin is able to view and delete user's post\n"),
+                        GestureDetector(
+                          child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);})
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
+        );
+      } else {
+        return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              primaryColor: Colors.white,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+            ),
+          home:  AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+            title: Text('Admin Key - Recipes'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Wrap(
+                    children: <Widget>[
+                      Text("Here the admin is able to view all the recipes that are stored in the database\nThese recipes orginally came from the api, but where stored in our database to lower api calls.\n"),
+                      GestureDetector(child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);}, )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ));
+      }
+    });
+  }
+
   Future<void> showUserAlert(BuildContext context, String userId, String email, String url, String role) {
     return showDialog(context: context,builder: (BuildContext context) {
       return new MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
+          primaryColor: Colors.white,
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -342,84 +437,17 @@ class _AdminPage extends State<AdminPage>{
     });
   }
 
-  Future<void> showAdminUserAlert() {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        title: Text('Admin Key - Users'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Wrap(
-                children: <Widget>[
-                  Row(children: <Widget>[Icon(Icons.star, color: Colors.yellow,), Text('  That user an admin'),], ),
-                  Padding(padding: EdgeInsets.all(8.0)),
-                  Row(children: <Widget>[Icon(Icons.star_border, color: Colors.yellow,), Text('  That user is not an admin'),], ),
-                  Padding(padding: EdgeInsets.all(8.0)),
-                  Row(children: <Widget>[Text("Stars are clickable to turn on and \noff admin privillages"),],),
-                  Padding(padding: EdgeInsets.all(8.0)),
-                  Row(children: <Widget>[Text("Admin is able to view and delete \nusers\n"),],),
-                  Padding(padding: EdgeInsets.all(8.0)),
-                  GestureDetector(
-                    child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);},
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-
-  Future<void> showAdminPostAlert() {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        title: Text('Admin Key - Posts'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Wrap(
-                children: <Widget>[
-                  Text("Here the admin is able to view and delete user's post\n"),
-                  GestureDetector(
-                    child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);},
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-
-  Future<void> showAdminRecipeAlert() {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        title: Text('Admin Key - Recipes'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Wrap(
-                children: <Widget>[
-                  Text("Here the admin is able to view all the recipes that are stored in the database\nThese recipes orginally came from the api, but where stored in our database to lower api calls.\n"),
-                  GestureDetector(child: Text( 'Close', style: TextStyle(color: Colors.redAccent)),onTap: (){Navigator.pop(context);}, )
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-
-
   Future<void> showPostAlert(BuildContext context, String postId, String role, String url) {
     return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
+      return MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.white,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+        ),
+        home: AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         title: Text('Are you sure you want to delete this post? '),
         content: SingleChildScrollView(
@@ -448,7 +476,7 @@ class _AdminPage extends State<AdminPage>{
             ],
           ),
         ),
-      );
+      ));
     });
   }
 

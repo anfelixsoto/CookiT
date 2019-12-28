@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -257,7 +256,8 @@ class _LoginSignupState extends State<LoginSignupPage>{
                 hintText: 'Enter username',
                 hintStyle: TextStyle(color: Colors.grey),
               ),
-              validator: (value) => value.isEmpty ? 'Username can\'t be empty' : null,
+              validator: (value) => value.isEmpty ? 'Username can\'t be empty' :
+              usernameCheck(value) != null ? 'Username is taken' : null,
               onSaved: (value) => _username = value.trim(),
             ),
           )
@@ -424,7 +424,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
       isEmpty = true;
       _isLoading = false;
       return new Text(
-        _errorMessage,
+        _errorMessage = " ",
         textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: 13.0,
@@ -451,72 +451,23 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Future<String> uploadProfileImage(BuildContext context) async{
-    String fileName = basename(_profileUrl.path);
-    StorageReference firebaseStorageRef  = FirebaseStorage.instance.ref().child("UserProfileImage/" + fileName);
-    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_profileUrl);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    String downloadUrl = await firebaseStorageRef.getDownloadURL();
-    return downloadUrl;
+  String validateEmail(String email){
+    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if(!regex.hasMatch(email)){
+      _errorMessage = "Enter vaild Email";
+      return _errorMessage;
+    }else{
+      return null;
+    }
   }
 
-  openGallery(BuildContext context) async{
-    var profileImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-    this.setState((){
-      _profileUrl = profileImage;
-    });
-    //profileIm = await uploadProfileImage(context);
-    Navigator.of(context).pop();
-  }
-
-  openCamera(BuildContext context) async{
-    var profileImage = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState((){
-      _profileUrl = profileImage;
-    });
-    //profileIm = await uploadProfileImage(context);
-    Navigator.of(context).pop();
-  }
-
-  Future<void> showOptions(BuildContext context) {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Select From: '),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              GestureDetector(
-                child: Text('Gallery'),
-                onTap: (){openGallery(context);},),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text('Camera'),
-                onTap: () {openCamera(context);},),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text('Cancel',
-                    style: TextStyle(color: Colors.redAccent,)),
-                onTap: () {Navigator.pop(context);},)
-            ],
-          ),
-        ),);
-    });
-  }
-
-  Widget showAvatar(){
-      return Container(
-          padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 50.0),
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                  child: Icon(
-                      Icons.account_circle,
-                      color: Colors.grey[300],
-                      size: 100.0,
-                    ),
-              )
-            ],
-          )
-      );
+  Future<bool> usernameCheck(String _username)async{
+    final result = await Firestore.instance
+        .collection('users')
+        .where('user_name', isEqualTo: _username)
+        .getDocuments();
+    return result.documents.isEmpty;
   }
 }
+

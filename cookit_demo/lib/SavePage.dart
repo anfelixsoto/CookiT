@@ -1,7 +1,3 @@
-//Daichi Kanasugi
-//favorite.dart
-//This file allows people to search through their favorite.
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

@@ -257,7 +257,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
                 hintStyle: TextStyle(color: Colors.grey),
               ),
               validator: (value) => value.isEmpty ? 'Username can\'t be empty' :
-              usernameCheck(value) != null ? 'Username is taken' : null,
+              usernameCheck(value) == Future.value(true) ? 'Username is taken' : null,
               onSaved: (value) => _username = value.trim(),
             ),
           )
@@ -467,7 +467,11 @@ class _LoginSignupState extends State<LoginSignupPage>{
         .collection('users')
         .where('user_name', isEqualTo: _username)
         .getDocuments();
-    return result.documents.isEmpty;
+    if(result.documents.isEmpty) {
+      return Future.value(true);
+    }
+    return Future.value(false);
+
   }
 }
 

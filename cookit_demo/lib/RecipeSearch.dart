@@ -25,13 +25,9 @@ class RecipeSearch extends StatefulWidget {
     state=new  _RecipeSearchState();
     return state;
   }
-
   RecipeSearch();
 
-
 }
-
-
 
 class _RecipeSearchState extends State<RecipeSearch> {
 
@@ -49,6 +45,9 @@ class _RecipeSearchState extends State<RecipeSearch> {
               decoration: InputDecoration(
                 hintText: 'Enter an ingredient',
                 hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.lightGreen)
+                  )
               ),
             ),);
       setState(() => ++_count);

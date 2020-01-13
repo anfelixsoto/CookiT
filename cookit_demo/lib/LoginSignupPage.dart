@@ -22,8 +22,6 @@ class LoginSignupPage extends StatefulWidget{
 
 class _LoginSignupState extends State<LoginSignupPage>{
   final _formKey = new GlobalKey<FormState>();
-
-  File _profileUrl;
   String _username, _email, _password, _repeatPassword, _errorMessage, profileIm;
   bool _isLoginForm = true;
   bool _isLoading;
@@ -132,6 +130,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
         ),
     );
   }
+
   Widget showLoginForm(){
     return new Container(
         padding: EdgeInsets.all(16.0),
@@ -255,6 +254,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
               decoration: InputDecoration(
                 hintText: 'Enter username',
                 hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.lightGreen)
+                  )
               ),
               validator: (value) => value.isEmpty ? 'Username can\'t be empty' :
               usernameCheck(value) == Future.value(true) ? 'Username is taken' : null,
@@ -288,6 +290,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
               decoration: InputDecoration(
                 hintText: 'Enter your email',
                 hintStyle: TextStyle(color: Colors.grey),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.lightGreen)
+                )
               ),
               validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
               onSaved: (value) => _email = value.trim(),
@@ -321,6 +326,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
               decoration: InputDecoration(
                 hintText: 'Enter your password',
                 hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.lightGreen)
+                  )
               ),
               validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
               onSaved: (value) => _password = value.trim(),
@@ -354,6 +362,9 @@ class _LoginSignupState extends State<LoginSignupPage>{
               decoration: InputDecoration(
                 hintText: 'Confirm Password',
                 hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.lightGreen)
+                  )
               ),
               validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
               onSaved: (value) => _repeatPassword = value.trim(),

@@ -11,6 +11,7 @@ class User {
   String role;
   List<String> favorites = new List<String>();
   List<String> saved = new List<String>();
+  List<String> recipeCreated = new List<String>();
 
 
   User({

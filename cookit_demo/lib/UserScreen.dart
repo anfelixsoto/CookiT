@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cookit_demo/CreateRecipePage.dart';
 import 'package:cookit_demo/SavePage.dart';
 import 'package:cookit_demo/Favorite.dart';
 import 'package:cookit_demo/RecipeSearch.dart';
@@ -116,14 +117,11 @@ class _UserProfile extends State<UserProfile> {
           }
         }
       });
-
-      //print(user.displayName.toString());
     });
   }
 
 
   showAvatar(String pic) {
-
     return GestureDetector(
         child: ClipOval(
           child: profilePic == null
@@ -200,7 +198,8 @@ class _UserProfile extends State<UserProfile> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => new RecipeSearch()),
+            MaterialPageRoute(builder: (context) => new CreateRecipe()),
+            //MaterialPageRoute(builder: (context) => new RecipeSearch()),
           );
         },
         child: new Text(text),

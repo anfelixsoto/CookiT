@@ -8,7 +8,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
 
 void main(){
@@ -190,7 +189,6 @@ class _PostUploadState extends State<PostUpload> {
   }
 
   void createPost(Post post) {
-
     String id;
     Firestore.instance.collection('posts').add({
       'imageUrl': post.imageUrl,
@@ -232,7 +230,6 @@ class _PostUploadState extends State<PostUpload> {
       description: caption,
       email: showEmail(),
       profileImage: profileImage,
-
 
     );
 
@@ -335,20 +332,27 @@ class _PostUploadState extends State<PostUpload> {
                       style: TextStyle(fontSize: 18.0),
                       decoration: InputDecoration(
                         labelText: 'Title',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.lightGreen)
+                          )
                       ),
                       onChanged: (input) => title = input,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 30.0, right:30, bottom: 35.0),
-                    child: TextField(
-                      controller: captionController,
-                      style: TextStyle(fontSize: 18.0),
-                      decoration: InputDecoration(
-                        labelText: 'Description',
+                  Container(
+                    width: 100.0,
+                      padding: EdgeInsets.only(top: 5.0, left: 30.0, right:30, bottom: 35.0),
+                      child: TextFormField(
+                        controller: captionController,
+                        style: TextStyle(fontSize: 18.0),
+                        decoration: InputDecoration(
+                            labelText: 'Description',
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightGreen)
+                            )
+                        ),
+                        onChanged: (input) => caption = input,
                       ),
-                      onChanged: (input) => caption = input,
-                    ),
                   ),
 
                   FlatButton(
@@ -367,9 +371,6 @@ class _PostUploadState extends State<PostUpload> {
                       child: new Text('Upload'),
                     ),
                   ),
-
-
-
                 ],
 
               )

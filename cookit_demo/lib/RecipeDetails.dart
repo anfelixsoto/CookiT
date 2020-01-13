@@ -197,12 +197,21 @@ class _RecipeDetails extends State<RecipeDetails>{
               flexibleSpace: FlexibleSpaceBar(
                 background: Image.network(recipe.imageURL, fit: BoxFit.cover,),
               ),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color:Colors.lightGreen),
+              leading:
+              FlatButton(
+                color: Colors.white,
+                child: Icon(Icons.arrow_back, color: Colors.lightGreen),
                 onPressed: (){
                   Navigator.pop(context);
                 },
+                shape: CircleBorder(),
               ),
+//              IconButton(
+//                icon: Icon(Icons.arrow_back, color:Colors.lightGreen),
+//                onPressed: (){
+//                  Navigator.pop(context);
+//                },
+//              ),
               actions: <Widget>[
                 showHeart(),
               ],
@@ -399,8 +408,55 @@ class _RecipeDetails extends State<RecipeDetails>{
 
   Widget showHeart(){
     if(favorite == false){
-      return IconButton(
-        icon: Icon(Icons.favorite_border,
+      return FlatButton(
+        child: Icon(Icons.favorite_border,
+            color: Colors.red,
+            size: 30),
+        shape: new CircleBorder(),
+        color: Colors.white,
+        onPressed: (){
+          print("pressed");
+          setState(() {
+            favorite = true;
+          });
+          //print(widget.recipeId.rid.toString());
+          if(widget.recipeId != null){
+            UserOperations.addToFavorites(userId, widget.recipeId.rid.toString());
+            RecipeOperations.addToRecipes(widget.recipeId.rid.toString(), recipe);
+
+          }else{
+            UserOperations.addToFavorites(userId, widget.recid.id.toString());
+            RecipeOperations.addToRecipes(widget.recid.id.toString(), recipe);
+          }
+          print("Added to favorites list");
+        },
+      );
+    } else{
+      return FlatButton(
+        child: Icon(Icons.favorite,
+            color: Colors.red,
+            size: 30),
+        shape: CircleBorder(),
+        color: Colors.white,
+        onPressed: (){
+          setState(() {
+            favorite = false;
+          });
+          if(widget.recipeId != null) {
+            UserOperations.deleteFavorite(userId, widget.recipeId.rid.toString());
+          }else{
+            UserOperations.deleteFavorite(userId, widget.recid.id.toString());
+          }
+        },
+      );
+    }
+  }
+
+  Widget showHeart2(){
+    if(favorite == false){
+      return new FloatingActionButton(
+        backgroundColor: Colors.white,
+        child: Icon(Icons.favorite_border,
             color: Colors.red,
             size: 30),
         onPressed: (){
@@ -421,8 +477,9 @@ class _RecipeDetails extends State<RecipeDetails>{
         },
       );
     } else{
-      return IconButton(
-        icon: Icon(Icons.favorite,
+      return new FloatingActionButton(
+        backgroundColor: Colors.white,
+        child: Icon(Icons.favorite,
             color: Colors.red,
             size: 30),
         onPressed: (){

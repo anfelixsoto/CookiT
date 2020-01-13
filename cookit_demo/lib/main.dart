@@ -51,11 +51,11 @@ class StartPage extends StatelessWidget{
         borderRadius: BorderRadius.circular(100.0),
         color: Colors.lightGreen,
         child: MaterialButton(
-          padding: EdgeInsets.all(15.0),
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)
-          ),
+            padding: EdgeInsets.all(15.0),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
             onPressed: (){
               Navigator.push(
                   context,

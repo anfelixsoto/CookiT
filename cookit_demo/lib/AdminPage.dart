@@ -166,6 +166,7 @@ class _AdminPage extends State<AdminPage>{
                       children: <Widget>[
                         IconButton(
                           icon: CircleAvatar(radius: 30.0, backgroundImage: NetworkImage(doc['profileImage']),),
+                          onPressed: (){},
                         ),
                         IconButton(
                           icon: Icon(Icons.delete_forever, color:Colors.redAccent),
@@ -205,7 +206,7 @@ class _AdminPage extends State<AdminPage>{
                     leading: CircleAvatar(
                         backgroundImage: NetworkImage(doc['imageURL'])),
                     title: Text(doc['name']),
-                    subtitle: Text("Servings: " + doc['servings'].toString() + " | " + "Calories: " + doc['numCalories'].toString()),
+                    subtitle: Text("Servings: " + doc['servings'].toString() + " | Calories: " + doc['numCalories'].toString()),
                     onTap: (){
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => RecipeDetails(recipe: Recipe.fromDoc(doc), recid: Recipe.fromDoc(doc)))
@@ -240,6 +241,7 @@ class _AdminPage extends State<AdminPage>{
               icon: profilePic != null ? CircleAvatar( radius: 15.0,
                   backgroundImage: NetworkImage( profilePic ) ) :
               Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
+              onPressed: (){},
             ),
           ],
           //backgroundColor: Colors.white,
@@ -276,7 +278,7 @@ class _AdminPage extends State<AdminPage>{
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.lightGreen,
-          child: Icon(Icons.info_outline, color: Colors.white, size: 45.0,),
+          child: Icon(Icons.info_outline, color: Colors.white, size: 30.0,),
           onPressed: (){
             showAlert(collection);
           },

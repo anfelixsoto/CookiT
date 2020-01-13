@@ -46,6 +46,7 @@ class HomeState extends State<Home> {
   String userId;
   String profilePic = " ";
   bool manage = false;
+  String userImage, user_name;
 
   @override
   void initState(){
@@ -78,6 +79,25 @@ class HomeState extends State<Home> {
     });
     return;
   }
+
+//  Future<String> getUserInfo(String userId, String type) async{
+//    String someData = null;
+//    final Firestore _firestore = Firestore.instance;
+//    DocumentReference otherUser;
+//
+//      otherUser = _firestore.collection('users').document(userId);
+//      otherUser.get().then((data) {
+//        if (data.exists) {
+//          if(type == 'username'){
+//           someData = data.data['user_name'].toString();
+//          }else if(type == 'profileImage'){
+//           someData = data.data['profileImage'].toString();
+//          }
+//        }
+//        log('getUserInfo ' + type + ": " + someData);
+//        return someData;
+//      });
+//  }
 
   String getuserId() {
     return userId;
@@ -194,6 +214,11 @@ class HomeState extends State<Home> {
 
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
+      //userImage = getUserInfo(document['userId'], 'profileImage').toString();
+      //print(getUserInfo(document['userId'], 'profileImage').toString());
+      //user_name = getUserInfo(document['userId'], 'username').toString();
+      //print('getUserInfo userImage: ' + userImage);
+      //print('getUserInfo user_name: ' + user_name);
       return Padding(
         padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
       child:Container(
@@ -212,28 +237,14 @@ class HomeState extends State<Home> {
                   leading: SizedBox(
                     child: IconButton(
                       iconSize: 50,
+                      //icon: userImage != null ? CircleAvatar(radius: 20.0, backgroundImage: NetworkImage(userImage)):
                       icon:  document['profileImage'] != "" ? CircleAvatar(radius: 20.0, backgroundImage: NetworkImage(document['profileImage'])):
-                      CircleAvatar(
-                        radius: 20.0,
-                        backgroundImage: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                        ),
-                      ),
+                      CircleAvatar(radius: 20.0,backgroundImage: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s')),
                       onPressed: (){
                         if(userId != document['userId'] ) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>
-                                ViewUser(userId: userId.toString(),
-                                    otherId: document['userId'].toString())
-                            ),
-                          );
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => ViewUser(userId: userId.toString(), otherId: document['userId'].toString()) ), );
                         } else{
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId,
-                              auth: widget.auth,)),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(userId: widget.userId, auth: widget.auth,)));
                         }
                       },
                     ),
@@ -364,7 +375,7 @@ class HomeState extends State<Home> {
             centerTitle: true,
             leading: new IconButton(
               icon:  profilePic != " " ? CircleAvatar(radius: 15.0, backgroundImage: NetworkImage(profilePic), backgroundColor: Colors.grey[300],):
-              Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
+              Icon(Icons.account_circle, color: Colors.grey[300], size: 30.0),
               onPressed: () {
                 Navigator.push(
                   context,

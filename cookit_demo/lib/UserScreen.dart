@@ -477,7 +477,7 @@ Widget showPosts(BuildContext context, Post post, url, String currId, String cur
     child: Container (
       child: new Image.network(
         url,
-        fit: BoxFit.cover,
+        fit: BoxFit.cover
       ),
     ),
   );

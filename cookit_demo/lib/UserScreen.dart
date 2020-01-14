@@ -378,7 +378,7 @@ class _UserProfile extends State<UserProfile> {
             backgroundColor: Colors.lightGreen,
             child:
               collection == 'Posts' ? Icon(Icons.portrait, color: Colors.white):
-                            Icon(Icons.add_circle_outline, color: Colors.white),
+                            Icon(Icons.add, color: Colors.white),
             onPressed: (){
               collection == 'Posts' ? Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage())):
                   Navigator.push(context, MaterialPageRoute(builder: (context) => new CreateRecipe()));

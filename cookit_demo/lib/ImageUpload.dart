@@ -199,6 +199,7 @@ class _PostUploadState extends State<PostUpload> {
       'userId': userId,
       'user_name': username,
       'recipeId': widget.rid.toString(),
+      'timestamp': FieldValue.serverTimestamp(),
     }).then((doc){
       id = doc.documentID;
     });

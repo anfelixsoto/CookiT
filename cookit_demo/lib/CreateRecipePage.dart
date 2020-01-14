@@ -211,7 +211,6 @@ class _CreateRecipe extends State<CreateRecipe> {
       ..add(TextFormField(
         controller: controllerInstructionsList[_countInstructions],
         obscureText: false,
-        expands: true,
         decoration: InputDecoration(
             hintText: 'Enter an instructions',
             hintStyle: TextStyle(color: Colors.grey),
@@ -228,7 +227,7 @@ class _CreateRecipe extends State<CreateRecipe> {
     List<String> ingredients = new List<String>();
     for(int i=0;i< controllerIngredientsList.length;i++){
       String tinput= controllerIngredientsList[i].text.toString().trim();
-      if(tinput.isNotEmpty&&RegExp(r"^[a-zA-Z ]+$").hasMatch(tinput)){
+      if(tinput.isNotEmpty){
         ingredients.add(controllerIngredientsList[i].text.toString().trim());
       }
     }
@@ -249,7 +248,7 @@ class _CreateRecipe extends State<CreateRecipe> {
     List<String> instructions = new List<String>();
     for(int i=0;i< controllerInstructionsList.length;i++){
       String tinput= controllerInstructionsList[i].text.toString().trim();
-      if(tinput.isNotEmpty&&RegExp(r"^[a-zA-Z ]+$").hasMatch(tinput)){
+      if(tinput.isNotEmpty){
         instructions.add(controllerInstructionsList[i].text.toString().trim());
       }
     }
@@ -532,7 +531,7 @@ class _CreateRecipe extends State<CreateRecipe> {
   Widget showIngredients(){
     return Card(
       child: ExpansionTile(
-        title: Text("Ingredients", style: TextStyle(color: Colors.lightGreen)),
+        title: Text("Ingredients (" + _countIngredients.toString() + ")", style: TextStyle(color: Colors.lightGreen)),
         trailing: IconButton(icon: Icon(Icons.add), onPressed: _addIngredients,color:Colors.lightGreen),
         children: <Widget>[
           Container(
@@ -559,7 +558,7 @@ class _CreateRecipe extends State<CreateRecipe> {
   Widget showInstructions(){
     return Card(
       child: ExpansionTile(
-        title: Text("Instructions", style: TextStyle(color: Colors.lightGreen)),
+        title: Text("Instructions (" + _countInstructions.toString() + ")", style: TextStyle(color: Colors.lightGreen)),
         trailing: IconButton(icon: Icon(Icons.add), onPressed: _addInstructions,color:Colors.lightGreen),
         children: <Widget>[
           Container(

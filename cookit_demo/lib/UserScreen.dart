@@ -12,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'AdminPage.dart';
 import 'model/PostModel.dart';
+import 'model/Recipe.dart';
 
 void main(){
   runApp(new MaterialApp(
@@ -47,13 +48,15 @@ class _UserProfile extends State<UserProfile> {
   FirebaseUser currentUser;
   String username;
   int postCount = 0;
+  int recipeCount = 0;
   DocumentReference userRef;
   String currEmail;
   String currId;
   String role;
   bool isAdmin = false;
   String profilePic;
-
+  int _currentIndex = 0;
+  String collection = "Posts";
 
   @override
   void initState() {
@@ -62,6 +65,19 @@ class _UserProfile extends State<UserProfile> {
     getUserRef();
     //showEmail();
     //showUsername();
+  }
+
+  void _onItemTapped(int index){
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if(index == 0){
+      collection = 'Posts';
+    }else{
+      collection = 'Recipes';
+    }
+    print(collection);
   }
 
   void loadCurrentUser() {
@@ -198,8 +214,7 @@ class _UserProfile extends State<UserProfile> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => new CreateRecipe()),
-            //MaterialPageRoute(builder: (context) => new RecipeSearch()),
+            MaterialPageRoute(builder: (context) => new RecipeSearch()),
           );
         },
         child: new Text(text),
@@ -244,6 +259,21 @@ class _UserProfile extends State<UserProfile> {
       postCount = snap.documents.length;
     });
     return posts.toList();
+  }
+
+  Future<List<Recipe>> getRecipes() async {
+    List<Recipe> recipes = [];
+    var snap = await Firestore.instance
+        .collection('recipes')
+        .where('description', isEqualTo: showUserId())
+        .getDocuments();
+    for (var doc in snap.documents) {
+      recipes.add(Recipe.fromDoc(doc));
+    }
+    setState(() {
+      recipeCount = snap.documents.length;
+    });
+    return recipes.toList();
   }
 
 
@@ -322,58 +352,113 @@ class _UserProfile extends State<UserProfile> {
               ),
               //buildImageViewButtonBar(),
               Divider(height: 0.0),
-              Container (
-                child: FutureBuilder<List<Post>>(
-                  future: getPosts(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      return Container(
-                          alignment: FractionalOffset.center,
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: CircularProgressIndicator());
-                    else if(snapshot.data.length == 0){
-                      return Container(
-                          alignment: FractionalOffset.center,
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text('No Posts')
-                      );
-                    }
-                    else {
-                      // build the grid
-                      return GridView.count(
-
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.0,
-                          mainAxisSpacing: 1.5,
-                          crossAxisSpacing: 1.5,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: snapshot.data.map((Post post) {
-                            return GridTile(
-                              child: showPosts(context, post, post.imageUrl, currId, currEmail, profilePic),
-                            );
-                          }).toList());
-                    }
-                  },
-
-                ),
-              ),
+              collection == 'Posts' ? displayPosts() : displayRecipes(),
               //Divider(height: 10.0),
             ]
         ),
-
+        bottomNavigationBar: BottomNavigationBar( //
+          //backgroundColor: Colors.grey[100],// footer
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.image),
+              title: Text('Post'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant_menu),
+              title: Text('Recipes Created'),
+            ),
+          ],
+          currentIndex: _currentIndex,
+          selectedItemColor: Colors.lightGreen,
+          onTap: _onItemTapped,
+        ),
         floatingActionButton: Visibility(
           child: FloatingActionButton(
             backgroundColor: Colors.lightGreen,
-            child: Icon(
-              Icons.portrait, color: Colors.white,
-            ),
+            child:
+              collection == 'Posts' ? Icon(Icons.portrait, color: Colors.white):
+                            Icon(Icons.add_circle_outline, color: Colors.white),
             onPressed: (){
-              Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage()));
+              collection == 'Posts' ? Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage())):
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => new CreateRecipe()));
             },
           ),
           visible: isAdmin,
         ),
+      ),
+    );
+  }
+
+  Widget displayPosts(){
+    return Container (
+      child: FutureBuilder<List<Post>>(
+        future: getPosts(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: CircularProgressIndicator());
+          else if(snapshot.data.length == 0){
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text( collection == 'Posts' ? 'No Posts' : 'No Recipes')
+            );
+          }
+          else {
+            // build the grid
+            return GridView.count(
+                crossAxisCount: 3,
+                childAspectRatio: 1.0,
+                mainAxisSpacing: 1.5,
+                crossAxisSpacing: 1.5,
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: snapshot.data.map((Post post) {
+                  return GridTile(
+                    child: showPosts(context, post, post.imageUrl, currId, currEmail, profilePic),
+                  );
+                }).toList());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget displayRecipes(){
+    return Container (
+      child: FutureBuilder<List<Recipe>>(
+        future: getRecipes(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: CircularProgressIndicator());
+          else if(snapshot.data.length == 0){
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text( collection == 'Posts' ? 'No Posts' : 'No Recipes')
+            );
+          }
+          else {
+            // build the grid
+            return GridView.count(
+                crossAxisCount: 3,
+                childAspectRatio: 1.0,
+                mainAxisSpacing: 1.5,
+                crossAxisSpacing: 1.5,
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: snapshot.data.map((Recipe recipe) {
+                  return GridTile(
+                    child: showRecipes(context, recipe, recipe.imageURL, currId, currEmail, profilePic),
+                  );
+                }).toList());
+          }
+        },
       ),
     );
   }
@@ -387,6 +472,24 @@ Widget showPosts(BuildContext context, Post post, url, String currId, String cur
         builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, profileImage: profileImage,),
       ),
       );
+    },
+    child: Container (
+      child: new Image.network(
+        url,
+        fit: BoxFit.cover,
+      ),
+    ),
+  );
+}
+
+Widget showRecipes(BuildContext context, Recipe recipe, url, String currId, String currEmail, String profileImage){
+  return InkWell(
+    //  onTap: () => print("Post " + post.id +" pressed"),
+    onTap:() {
+//      Navigator.push(context, MaterialPageRoute(
+//        builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, profileImage: profileImage,),
+//      ),
+//      );
     },
     child: Container (
       child: new Image.network(

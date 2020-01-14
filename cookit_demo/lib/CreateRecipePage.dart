@@ -147,7 +147,7 @@ class _CreateRecipe extends State<CreateRecipe> {
     String imageURL = await uploadPic(context);
     Recipe newRecipe = Recipe(
       name: _recipeName,
-      description: getEmail(),
+      description: getUserId(),
       imageURL: imageURL,
       numCalories: _calories,
       prepTime: _prepTime,
@@ -179,9 +179,9 @@ class _CreateRecipe extends State<CreateRecipe> {
     });
   }
 
-  String getEmail() {
+  String getUserId() {
     if (currentUser != null) {
-      return currentUser.email;
+      return currentUser.uid;
     } else {
       return "no current user";
     }
@@ -211,6 +211,7 @@ class _CreateRecipe extends State<CreateRecipe> {
       ..add(TextFormField(
         controller: controllerInstructionsList[_countInstructions],
         obscureText: false,
+        expands: true,
         decoration: InputDecoration(
             hintText: 'Enter an instructions',
             hintStyle: TextStyle(color: Colors.grey),
@@ -312,7 +313,7 @@ class _CreateRecipe extends State<CreateRecipe> {
                           showNutrition(),
                           showIngredients(),
                           showInstructions(),
-                          showPrimaryButton(),
+                          showPrimaryButton(context),
                         ],
                       ),
                     ),
@@ -582,7 +583,7 @@ class _CreateRecipe extends State<CreateRecipe> {
     );
   }
 
-  Widget showPrimaryButton(){
+  Widget showPrimaryButton(BuildContext context){
     return Container(
       margin: const EdgeInsets.only(top: 20.0),
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -617,7 +618,7 @@ class _CreateRecipe extends State<CreateRecipe> {
                               color: Colors.lightGreen,
                             ),
                             onPressed: () {
-                              String _email = getEmail();
+                              String _userId = getUserId();
                               _ingredients = getIngredients( );
                               _instructions = getInstructions( );
                               print( _ingredients );
@@ -626,7 +627,8 @@ class _CreateRecipe extends State<CreateRecipe> {
                               print( _prepTime );
                               print( _calories );
                               print( _servings );
-                              print ( _email );
+                              print ( _userId );
+                              submitRecipe(context);
                             }
                           )
                       ),
@@ -634,7 +636,7 @@ class _CreateRecipe extends State<CreateRecipe> {
                   ],
                 ),
                 onPressed: (){
-                  String _email = getEmail();
+                  String _userId = getUserId();
                   _ingredients = getIngredients( );
                   _instructions = getInstructions( );
                   print( _ingredients );
@@ -643,7 +645,8 @@ class _CreateRecipe extends State<CreateRecipe> {
                   print( _prepTime );
                   print( _calories );
                   print ( _servings );
-                  print(_email);
+                  print(_userId);
+                  submitRecipe(context);
                 },
               ))
         ],

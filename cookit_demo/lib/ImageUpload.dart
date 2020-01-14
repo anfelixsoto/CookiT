@@ -208,7 +208,6 @@ class _PostUploadState extends State<PostUpload> {
       'id': id,
     });
 
-
   }
 
 

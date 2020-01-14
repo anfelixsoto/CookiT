@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/CreateRecipePage.dart';
+import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/SavePage.dart';
 import 'package:cookit_demo/Favorite.dart';
 import 'package:cookit_demo/RecipeSearch.dart';
@@ -484,12 +485,10 @@ Widget showPosts(BuildContext context, Post post, url, String currId, String cur
 
 Widget showRecipes(BuildContext context, Recipe recipe, url, String currId, String currEmail, String profileImage){
   return InkWell(
-    //  onTap: () => print("Post " + post.id +" pressed"),
     onTap:() {
-//      Navigator.push(context, MaterialPageRoute(
-//        builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, profileImage: profileImage,),
-//      ),
-//      );
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => RecipeDetails(recipe: recipe, recid: recipe,)
+      ));
     },
     child: Container (
       child: new Image.network(

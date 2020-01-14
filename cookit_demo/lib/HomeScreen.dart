@@ -300,11 +300,19 @@ class HomeState extends State<Home> {
                       fit: BoxFit.cover),
                    ),
                    ),
-                ListTile(
-                  title: Text(
-                      document['description'],
-                      style: TextStyle(fontWeight: FontWeight.w500)),
+                Divider(),
+                Padding (
+                  padding:EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 0.0),
+                  child:  ListTile(
+
+                    title: Text(
+                        document['description'],
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                  ),
                 ),
+
+
+
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -395,7 +403,7 @@ class HomeState extends State<Home> {
           ),
           body: Container(
             child: StreamBuilder(
-              stream: Firestore.instance.collection('posts').snapshots(),
+              stream: Firestore.instance.collection('posts').orderBy('timestamp', descending: true).snapshots(),
               builder: (context, snapshot) {
                 switch(snapshot.connectionState){
                   case ConnectionState.waiting:

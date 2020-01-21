@@ -110,8 +110,8 @@ class _AdminPage extends State<AdminPage>{
                   leading: CircleAvatar(
                     backgroundImage: doc['profileImage'] == " " || doc['profileImage'] == null ? NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',):
                     NetworkImage(doc['profileImage'])),
-                  title: Text(doc['user_name']),
-                  subtitle: Text(doc['email']),
+                  title: Text(doc['user_name'] == null ? "null" : doc['user_name']),
+                  subtitle: Text(doc['email'] == null ? "email null" : doc['email']),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

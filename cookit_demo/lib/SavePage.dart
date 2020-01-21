@@ -44,11 +44,18 @@ class _SavePage extends State<SavePage> {
   List<String> favNames;
   List<String> saved = [];
   bool isAdmin = false;
+  List<String> favs = [];
+
 
   List<String> filterRecipes;
   TextEditingController editingController = TextEditingController();
   var items = List<String>();
   TextEditingController filterController = new TextEditingController();
+
+  Widget appBarTitle = new Text('Bookmarks',
+      style: TextStyle(color: Colors.lightGreen)
+  );
+  Icon currIcon = Icon (Icons.search);
 
   @override
   void initState() {
@@ -150,6 +157,14 @@ class _SavePage extends State<SavePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    void userQuery(String query) {
+      setState(() {
+        filterRecipes = favs.where((string) => string.toLowerCase().contains(query.toLowerCase())).toList();
+      });
+
+    }
+
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -161,16 +176,63 @@ class _SavePage extends State<SavePage> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: new Text('Bookmarks',
-              style: TextStyle(color: Colors.lightGreen)),
-          centerTitle: true,
+          title: appBarTitle,
+          automaticallyImplyLeading: false,
           leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.lightGreen,
+                size: 24.0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+
+         // title: appBarTitle,
+          actions: <Widget>[
+            IconButton (
+
+              onPressed: () {
+                //SizedBox(height: 10),
+                setState(() {
+                  if( this.currIcon.icon == Icons.search) {
+                    this.currIcon = Icon(Icons.cancel);
+                    this.appBarTitle = Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: filterController,
+                        decoration: InputDecoration(
+                            hintText: 'Search your favs...'
+                        ),
+                        onChanged: userQuery,
+                      ),
+                    );
+                  }
+                  else {
+                    this.currIcon = Icon(Icons.search);
+                    this.appBarTitle = Text("Favorites",
+                        style: TextStyle(
+                            color:Colors.lightGreen
+                        )
+                    );
+                  }
+                });
+
+              },
+              icon: currIcon,
+            )
+
+            //Adding the search widget in AppBar
+
+          ],
+          centerTitle: true,
+          /*leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
               color: Colors.lightGreen,
             ),
             onPressed: (){Navigator.pop(context);},
-          ),
+          ),*/
         ),
         body:Column(
             children: <Widget>[
@@ -217,6 +279,7 @@ class _SavePage extends State<SavePage> {
                                 if(!temp3.contains(snapshot.data['saved'][index].toString())) {
                                   temp3.add(snapshot.data['saved'][index].toString());
                                 }
+
                                 return  StreamBuilder(
                                     stream: Firestore.instance
                                         .collection('recipes')
@@ -237,7 +300,53 @@ class _SavePage extends State<SavePage> {
                                             itemCount: snapshot.data.documents.length,
                                             itemBuilder: (context, recipeId) {
                                               DocumentSnapshot recipe = snapshot.data.documents[recipeId];
-                                              if(temp3.contains(recipe.documentID) ) {
+                                              if ( filterRecipes != null && filterRecipes.length != 0) {
+                                                if (temp3.contains(recipe.documentID)) {
+
+                                                  //if(favs.contains(searchText)){
+                                                  if(filterRecipes.contains(recipe.data["name"])) {
+                                                    return Container(
+                                                      height: 100,
+                                                      padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                      child: Card(
+                                                        clipBehavior: Clip.antiAlias,
+                                                        child: Column(
+                                                            children: <Widget>[
+                                                              ListTile(
+                                                                leading: CircleAvatar(radius: 30.0,
+                                                                  backgroundImage: NetworkImage(recipe.data['imageURL']),
+                                                                ),
+                                                                title: Text(recipe.data['name'].toString()),
+                                                                subtitle: Text("Prep Time: " + recipe.data['prepTime'].toString() + " | " +
+                                                                    "Servings: " + recipe.data['servings'].toString()
+                                                                ),
+                                                                trailing: IconButton(
+                                                                  icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                                                                  onPressed: (){
+                                                                    UserOperations.delete('saved', userId, recipe.documentID);
+                                                                  },
+                                                                ),
+                                                                onTap: () {
+                                                                  Recipe selectRecipe = Recipe.fromDoc(recipe);
+                                                                  Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(builder: (context) => RecipeDetails(recipe: selectRecipe, recid: selectRecipe, )),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ]
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+
+                                                }
+
+                                              }
+                                              else if(temp3.contains(recipe.documentID) ) {
+                                                if(!favs.contains(recipe.data["name"])) {
+                                                  favs.add(recipe.data["name"]);
+                                                }
                                                 return Container(
                                                   height: 100,
                                                   padding: EdgeInsets.only(top: 0.0, bottom: 0.0),

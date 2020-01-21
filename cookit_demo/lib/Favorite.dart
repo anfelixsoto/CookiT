@@ -61,6 +61,17 @@ class _Favorites extends State<Favorites> {
   var items = List<String>();
   TextEditingController filterController = new TextEditingController();
 
+  Widget appBarTitle = new Text(
+      "Favorites",
+          style: TextStyle( color: Colors.lightGreen),
+  );
+  Icon currIcon = Icon (Icons.search);
+
+  Widget getAppTitle() {
+    return appBarTitle;
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -260,10 +271,7 @@ class _Favorites extends State<Favorites> {
     }).toList();
   }
 
-  void filterSearchResults(String query) {
 
-
-  }
 
 
 
@@ -273,6 +281,16 @@ class _Favorites extends State<Favorites> {
   @override
   Widget build(BuildContext context) {
 
+
+    void userQuery(String query) {
+      setState(() {
+        filterRecipes = favs
+            .where((string) => string.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+
+      });
+
+    }
 
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -295,14 +313,45 @@ class _Favorites extends State<Favorites> {
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Text(
-            'Favorites',
-            style: TextStyle(
-              color: Colors.lightGreen,
-            ),
-          ),
+
+          title: appBarTitle,
+
+
+
 
           actions: <Widget>[
+            IconButton (
+
+              onPressed: () {
+                //SizedBox(height: 10),
+               setState(() {
+                 if( this.currIcon.icon == Icons.search) {
+                   this.currIcon = Icon(Icons.cancel);
+                   this.appBarTitle = Padding(
+                     padding: const EdgeInsets.all(8.0),
+                     child: TextField(
+                       controller: filterController,
+                       decoration: InputDecoration(
+                           hintText: 'Search your favs...'
+                       ),
+                       onChanged: userQuery,
+                     ),
+                   );
+                 }
+                 else {
+                    this.currIcon = Icon(Icons.search);
+                    this.appBarTitle = Text("Favorites",
+                      style: TextStyle(
+                          color:Colors.lightGreen
+                      )
+                    );
+                 }
+               });
+
+              },
+              icon: currIcon,
+            )
+
             //Adding the search widget in AppBar
 
           ],
@@ -311,6 +360,8 @@ class _Favorites extends State<Favorites> {
         body:Column(
 
             children: <Widget>[
+
+
 
               
 
@@ -406,14 +457,11 @@ class _Favorites extends State<Favorites> {
                                             itemBuilder: (context, recipeId) {
                                               DocumentSnapshot recipe = snapshot.data.documents[recipeId];
 
-
-                                              print("printing");
-                                              print(temp3);
-                                              print(favs);
-                                              if ( searchText != "") {
+                                              if ( filterRecipes != null && filterRecipes.length != 0) {
                                                     if (temp3.contains(recipe.documentID)) {
 
-                                                      if(favs.contains(searchText)){
+                                                      //if(favs.contains(searchText)){
+                                                      if(filterRecipes.contains(recipe.data["name"])) {
                                                         return Container(
                                                           height: 250,
 

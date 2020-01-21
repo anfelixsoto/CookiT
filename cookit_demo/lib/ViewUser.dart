@@ -42,6 +42,7 @@ class ViewUser extends StatefulWidget {
 class _ViewUser extends State<ViewUser> {
 
   List<Post> postsFeed = [];
+  List<Recipe> recipeFeed = [];
   FirebaseUser currentUser;
   DocumentReference userRef;
   DocumentReference otherUserRef;
@@ -51,11 +52,14 @@ class _ViewUser extends State<ViewUser> {
   bool isAdmin = false;
   String userId;
   int postCount;
+  int recipeCount = 0;
   String profilePic;
   String otherEmail;
   String pic;
   String otherRole;
   String otherUsername;
+  int _currentIndex = 0;
+  String collection = 'Posts';
 
   @override
   void initState(){
@@ -67,6 +71,19 @@ class _ViewUser extends State<ViewUser> {
     print(getPosts());
     getUserRef();
     //print(this.us);
+  }
+
+  void _onItemTapped(int index){
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if(index == 0){
+      collection = 'Posts';
+    }else{
+      collection = 'Recipes';
+    }
+    print(collection);
   }
 
   Future<void> getUserRef() async {
@@ -154,12 +171,6 @@ class _ViewUser extends State<ViewUser> {
     }
   }
 
-
-
-
-
-
-
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
     return snapshot.data.documents.map<Widget>((document){
       if(widget.otherId.toString() == document['userId'].toString()) {
@@ -176,9 +187,6 @@ class _ViewUser extends State<ViewUser> {
 
                   child: Column(
                       children: <Widget>[
-
-
-
                         ListTile(
                           leading: CircleAvatar(
                             backgroundImage: document['profileImage'] == null ? NetworkImage(
@@ -187,9 +195,7 @@ class _ViewUser extends State<ViewUser> {
                               document['profileImage'],
                             ),
                           ),
-
                           contentPadding: EdgeInsets.all(7),
-
                           title: GestureDetector(
                             child:Text(
                               document['email'],
@@ -271,6 +277,21 @@ class _ViewUser extends State<ViewUser> {
         );
       }
     }).toList();
+  }
+
+  Future<List<Recipe>> getRecipes() async {
+    List<Recipe> recipes = [];
+    var snap = await Firestore.instance
+        .collection('recipes')
+        .where('description', isEqualTo: widget.otherId.toString())
+        .getDocuments();
+    for (var doc in snap.documents) {
+      recipes.add(Recipe.fromDoc(doc));
+    }
+    setState(() {
+      recipeCount = snap.documents.length;
+    });
+    return recipes.toList();
   }
 
   Future<List<Post>> getPosts() async {
@@ -481,52 +502,125 @@ class _ViewUser extends State<ViewUser> {
                 ),
               ),
               Divider(height: 0.0),
-              Container (
-                child: FutureBuilder<List<Post>>(
-                  future: getPosts(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      return Container(
-                          alignment: FractionalOffset.center,
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: CircularProgressIndicator());
-                    else if(snapshot.data.length == 0){
-                      return Container(
-                          alignment: FractionalOffset.center,
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text('No Posts')
-                      );
-                    }
-                    else {
-                      // build the grid
-                      return GridView.count(
-
-                          crossAxisCount: 3,
-                          childAspectRatio: 1.0,
-                          //                    padding: const EdgeInsets.all(0.5),
-                          mainAxisSpacing: 1.5,
-
-                          crossAxisSpacing: 1.5,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: snapshot.data.map((Post post) {
-                            return GridTile(
-                              child: showPosts(context, post, post.imageUrl, post.userId, post.email),
-                            );
-                          }).toList());
-
-
-                    }
-                  },
-
-                ),
-              ),
+              collection == 'Posts' ? displayUserPosts() : displayUserRecipes(),
             ]
         ),
-
+        bottomNavigationBar: BottomNavigationBar( //
+          //backgroundColor: Colors.grey[100],// footer
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.image),
+              title: Text('Post'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant_menu),
+              title: Text('User Recipes'),
+            ),
+          ],
+          currentIndex: _currentIndex,
+          selectedItemColor: Colors.lightGreen,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
+
+  Widget displayUserPosts(){
+    return Container (
+      child: FutureBuilder<List<Post>>(
+        future: getPosts(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: CircularProgressIndicator());
+          else if(snapshot.data.length == 0){
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text( collection == 'Posts' ? 'No Posts' : 'No Recipes')
+            );
+          }
+          else {
+            // build the grid
+            return GridView.count(
+
+                crossAxisCount: 3,
+                childAspectRatio: 1.0,
+                //                    padding: const EdgeInsets.all(0.5),
+                mainAxisSpacing: 1.5,
+
+                crossAxisSpacing: 1.5,
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: snapshot.data.map((Post post) {
+                  return GridTile(
+                    child: showPosts(context, post, post.imageUrl, post.userId, post.email),
+                  );
+                }).toList());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget displayUserRecipes(){
+    return Container (
+      child: FutureBuilder<List<Recipe>>(
+        future: getRecipes(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: CircularProgressIndicator());
+          else if(snapshot.data.length == 0){
+            return Container(
+                alignment: FractionalOffset.center,
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(collection == 'Posts' ? 'No Posts' : 'No Recipes')
+            );
+          }
+          else {
+            // build the grid
+            return GridView.count(
+
+                crossAxisCount: 3,
+                childAspectRatio: 1.0,
+                //                    padding: const EdgeInsets.all(0.5),
+                mainAxisSpacing: 1.5,
+
+                crossAxisSpacing: 1.5,
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: snapshot.data.map((Recipe recipe) {
+                  return GridTile(
+                    child: showRecipes(context, recipe, recipe.imageURL, widget.otherId.toString(), " ", profilePic),
+                  );
+                }).toList());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget showRecipes(BuildContext context, Recipe recipe, url, String currId, String currEmail, String profileImage){
+    return InkWell(
+      onTap:() {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => RecipeDetails(recipe: recipe, recid: recipe,)
+        ));
+      },
+      child: Container (
+        child: new Image.network(
+          url,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
 
   Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
     return InkWell(
@@ -561,10 +655,6 @@ class _ViewUser extends State<ViewUser> {
 
     );
   }
-
-
-
-
 }
 
 

@@ -384,7 +384,7 @@ class _UserProfile extends State<UserProfile> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => new CreateRecipe()));
             },
           ),
-          visible: isAdmin,
+          visible: isAdmin || collection == "Recipes",
         ),
       ),
     );

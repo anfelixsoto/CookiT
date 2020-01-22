@@ -1,46 +1,32 @@
 // for user view. Not implemented yet
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cookit_demo/HomeScreen.dart';
-import 'package:cookit_demo/ImageUpload.dart';
 import 'package:cookit_demo/RecipeDetails.dart';
-import 'package:cookit_demo/UserScreen.dart';
 import 'package:cookit_demo/model/Recipe.dart';
-import 'package:cookit_demo/recipeResults.dart';
-import 'package:cookit_demo/Model/User.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
-import 'package:cookit_demo/service/Authentication.dart';
-
-import 'package:cookit_demo/editProfile.dart';
 import 'package:cookit_demo/service/UserOperations.dart';
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:splashscreen/splashscreen.dart';
-import 'dart:io';
-
 import 'model/PostModel.dart';
-
 
 class ViewUser extends StatefulWidget {
   // ViewUser({Key key,  this.userId,  this.otherUserId });
   final String userId;
   final String otherId;
-  ViewUser({Key key, this.userId, this.otherId,})
-      : super(key: key);
+  ViewUser({
+    Key key,
+    this.userId,
+    this.otherId,
+  }) : super(key: key);
 
   // final BaseAuth auth;
   //final VoidCallback logoutCallback;
-
 
   @override
   _ViewUser createState() => new _ViewUser();
 }
 
-
 class _ViewUser extends State<ViewUser> {
-
   List<Post> postsFeed = [];
   List<Recipe> recipeFeed = [];
   FirebaseUser currentUser;
@@ -62,10 +48,10 @@ class _ViewUser extends State<ViewUser> {
   String collection = 'Posts';
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
-    if(widget.userId.toString() == widget.otherId.toString()){
+    if (widget.userId.toString() == widget.otherId.toString()) {
       print("Current User");
     }
     print(getPosts());
@@ -73,14 +59,14 @@ class _ViewUser extends State<ViewUser> {
     //print(this.us);
   }
 
-  void _onItemTapped(int index){
+  void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
 
-    if(index == 0){
+    if (index == 0) {
       collection = 'Posts';
-    }else{
+    } else {
       collection = 'Recipes';
     }
     print(collection);
@@ -92,19 +78,19 @@ class _ViewUser extends State<ViewUser> {
 
     FirebaseUser user = await _auth.currentUser();
 
-    setState((){
+    setState(() {
       userRef = _firestore.collection('users').document(user.uid);
-      otherUserRef = _firestore.collection('users').document(widget.otherId.toString());
+      otherUserRef =
+          _firestore.collection('users').document(widget.otherId.toString());
       userId = user.uid;
       userRef.get().then((data) {
         if (data.exists) {
           role = data.data['role'].toString();
-          pic =  data.data['profileImage'].toString();
+          pic = data.data['profileImage'].toString();
           print('Role: ' + role);
           if (role == 'admin') {
             isAdmin = true;
           }
-
         }
       });
 
@@ -115,7 +101,6 @@ class _ViewUser extends State<ViewUser> {
           otherUsername = data.data['user_name'].toString();
           otherRole = data.data['role'].toString();
           print(otherEmail);
-
         }
       });
 
@@ -146,132 +131,115 @@ class _ViewUser extends State<ViewUser> {
   }
 */
 
-
-
-
-
-
-  Future<void> removeImage(String url) async{
+  Future<void> removeImage(String url) async {
     //Future<StorageReference> photoReference =
     try {
       //String path;
-      print (url);
+      print(url);
       String path = url.replaceAll(new RegExp(r'%2F'), '---');
       // print(path.split('---')[1]);
       String remove = path.split('---')[1].replaceAll('?alt', '---');
       String img = remove.split('---')[0];
       print(img);
       final StorageReference storageReference =
-      FirebaseStorage.instance.ref().child("UserRecipes/" + img);
+          FirebaseStorage.instance.ref().child("UserRecipes/" + img);
 
       storageReference.delete();
-
     } catch (e) {
       return null;
     }
   }
 
   List<Widget> displayPosts(AsyncSnapshot snapshot) {
-    return snapshot.data.documents.map<Widget>((document){
-      if(widget.otherId.toString() == document['userId'].toString()) {
+    return snapshot.data.documents.map<Widget>((document) {
+      if (widget.otherId.toString() == document['userId'].toString()) {
         return Padding(
-            padding: EdgeInsets.symmetric( vertical: 10, horizontal: 1),
-            child:Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 1),
+            child: Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
                 clipBehavior: Clip.antiAlias,
                 // shape: shape,
 
                 child: Padding(
-                  padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
-
-                  child: Column(
-                      children: <Widget>[
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: document['profileImage'] == null ? NetworkImage(
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                            ): NetworkImage(
-                              document['profileImage'],
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.all(7),
-                          title: GestureDetector(
-                            child:Text(
-                              document['email'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 5.0),
+                  child: Column(children: <Widget>[
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: document['profileImage'] == null
+                            ? NetworkImage(
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                              )
+                            : NetworkImage(
+                                document['profileImage'],
                               ),
-                            ),
-                            onTap: () {
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ViewUser(userId: getuserId(), otherId: document['userId'],)
-                                ),
-                              );
-                            },
-
-                          ),
-
-
-                          trailing: Text(
-                            document['title'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 11,
-                            ),
-                          ),
-
-                        ),
-                        Center(
-
-                          child: ClipRect(
-                            child:Image.network(
-                              document['imageUrl'],
-
-                              height: 300,
-                              width: MediaQuery.of(context).size.width,
-                              fit: BoxFit.cover,
-
-                            ),
+                      ),
+                      contentPadding: EdgeInsets.all(7),
+                      title: GestureDetector(
+                        child: Text(
+                          document['email'],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-
-                        Divider(),
-                        ListTile(
-                          title: Text(
-                              document['description'],
-                              style: TextStyle(fontWeight: FontWeight.w500)),
-
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewUser(
+                                      userId: getuserId(),
+                                      otherId: document['userId'],
+                                    )),
+                          );
+                        },
+                      ),
+                      trailing: Text(
+                        document['title'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 11,
                         ),
-                        ButtonBar(
-                          alignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            FlatButton(
-                              child: Text('Cook it'),
-                              textColor: Colors.lightBlueAccent,
-                              onPressed: () { print('pressed'); },
-                            ),
-                            FlatButton(
-                              child: Text('Next time'),
-                              textColor: Colors.orangeAccent,
-                              onPressed: () { print('pressed'); },
-                            ),
-
-
-                          ],
+                      ),
+                    ),
+                    Center(
+                      child: ClipRect(
+                        child: Image.network(
+                          document['imageUrl'],
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
                         ),
-
-
-                      ]
-                  ),
+                      ),
+                    ),
+                    Divider(),
+                    ListTile(
+                      title: Text(document['description'],
+                          style: TextStyle(fontWeight: FontWeight.w500)),
+                    ),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('Cook it'),
+                          textColor: Colors.lightBlueAccent,
+                          onPressed: () {
+                            print('pressed');
+                          },
+                        ),
+                        FlatButton(
+                          child: Text('Next time'),
+                          textColor: Colors.orangeAccent,
+                          onPressed: () {
+                            print('pressed');
+                          },
+                        ),
+                      ],
+                    ),
+                  ]),
                 ),
-
               ),
-            )
-        );
-      } else{
+            ));
+      } else {
         return Card(
           child: Text('User not found'),
         );
@@ -310,116 +278,107 @@ class _ViewUser extends State<ViewUser> {
     return posts.toList();
   }
 
-
-
-
-
-
   Widget _buildAvatar() {
     return new GestureDetector(
         child: Container(
-          width: (MediaQuery.of(context).size.width/3),
-          height: (MediaQuery.of(context).size.width/3),
+          width: (MediaQuery.of(context).size.width / 3),
+          height: (MediaQuery.of(context).size.width / 3),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white30),
           ),
           margin: const EdgeInsets.only(top: 32.0, left: 16.0),
           padding: const EdgeInsets.all(3.0),
-          child:  ClipOval(
-            child: (profilePic == null || profilePic == "" )
-                ?
-            Image.network(
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-            )
+          child: ClipOval(
+            child: (profilePic == null || profilePic == "")
+                ? Image.network(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                  )
                 : Image.network(
-              profilePic,
-              height: 300,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
+                    profilePic,
+                    height: 300,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  ),
           ),
-
         ),
-        onTap:(){
+        onTap: () {
           //showAlert(context, widget.otherId, otherRole);
-        }
-    );
-  }
-  Future<void> showAlert(BuildContext context, String userId, String role, String email, String url) {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Seclect an option: '),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              GestureDetector(
-                child: Text('Delete user: ' + email.toString()),
-                onTap: (){
-                  adminRemovePic(url);
-                  AdminOperations.deleteUser(userId);
-                  Navigator.pop(context);
-                },
-              ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text( otherRole != 'admin' ? 'Grant admin role' : 'Remove admin role'),
-                onTap: () {
-                  otherRole != 'admin' ? AdminOperations.grantAdmin(userId) : AdminOperations.unGrantAdmin(userId);
-                  Navigator.pop(context);
-                },
-              ),
-
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    )
-                ),
-
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
-        ),
-      );
-    });
+        });
   }
 
-  static Future<void> adminRemovePic(String url) async{
+  Future<void> showAlert(BuildContext context, String userId, String role,
+      String email, String url) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Seclect an option: '),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Text('Delete user: ' + email.toString()),
+                    onTap: () {
+                      adminRemovePic(url);
+                      AdminOperations.deleteUser(userId);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text(otherRole != 'admin'
+                        ? 'Grant admin role'
+                        : 'Remove admin role'),
+                    onTap: () {
+                      otherRole != 'admin'
+                          ? AdminOperations.grantAdmin(userId)
+                          : AdminOperations.unGrantAdmin(userId);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text('Cancel',
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                        )),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  static Future<void> adminRemovePic(String url) async {
     //Future<StorageReference> photoReference =
     print("removing..");
 
     try {
-
-      print (" deleteing..." + url.toString());
+      print(" deleteing..." + url.toString());
       String path = url.toString().replaceAll(new RegExp(r'%2F'), '---');
 
       String remove = path.split('---')[1].replaceAll('?alt', '---');
       String img = remove.split('---')[0];
       print(img);
       final StorageReference storageReference =
-      FirebaseStorage.instance.ref().child("UserProfileImage/" + img);
+          FirebaseStorage.instance.ref().child("UserProfileImage/" + img);
 
       storageReference.delete();
-      print (" deleted..." );
-
-
+      print(" deleted...");
     } catch (e) {
       print("Something went wrong");
       return null;
     }
   }
 
-
-  Widget showDelete(BuildContext context, String userId, String role, String email, String pic) {
-
-    return  Visibility(
-
+  Widget showDelete(BuildContext context, String userId, String role,
+      String email, String pic) {
+    return Visibility(
       child: IconButton(
           icon: Icon(
             Icons.more_vert,
@@ -428,11 +387,8 @@ class _ViewUser extends State<ViewUser> {
           ),
           onPressed: () {
             showAlert(context, userId, role, email, pic);
-          }
-      ),
-
+          }),
     );
-
   }
 
   @override
@@ -448,64 +404,63 @@ class _ViewUser extends State<ViewUser> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text(getUsername().toString(),
-            style: TextStyle(color: Colors.lightGreen),),
+          title: Text(
+            getUsername().toString(),
+            style: TextStyle(color: Colors.lightGreen),
+          ),
           centerTitle: true,
-          leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen), onPressed: () => Navigator.of(context).pop(context)),
+          leading: new IconButton(
+              icon: new Icon(Icons.arrow_back, color: Colors.lightGreen),
+              onPressed: () => Navigator.of(context).pop(context)),
           actions: <Widget>[
-            role == "admin"? showDelete(context, widget.otherId, role,otherEmail, profilePic) :
-            new IconButton(icon: pic == " " || pic == null ? Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0):
-            CircleAvatar(radius:15.0, backgroundImage: NetworkImage(pic)),
-              onPressed: () {}, ),
+            role == "admin"
+                ? showDelete(
+                    context, widget.otherId, role, otherEmail, profilePic)
+                : new IconButton(
+                    icon: pic == " " || pic == null
+                        ? Icon(Icons.account_circle,
+                            color: Colors.grey[300], size: 40.0)
+                        : CircleAvatar(
+                            radius: 15.0, backgroundImage: NetworkImage(pic)),
+                    onPressed: () {},
+                  ),
           ],
         ),
-        body: ListView (
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
+        body: ListView(children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                Center(
+                  child: _buildAvatar(),
+                ),
+                Row(
                   children: <Widget>[
-                    Center(
-                      child: _buildAvatar(),
-                    ),
-                    Row(
-                      children: <Widget>[
-
-
-
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-
-                                ],
-                              ),
-                              Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-
-                                  ]),
-                            ],
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[],
                           ),
-                        )
-                      ],
-                    ),
-
-
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[]),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              ),
-              Divider(height: 0.0),
-              collection == 'Posts' ? displayUserPosts() : displayUserRecipes(),
-            ]
-        ),
-        bottomNavigationBar: BottomNavigationBar( //
+              ],
+            ),
+          ),
+          Divider(height: 0.0),
+          collection == 'Posts' ? displayUserPosts() : displayUserRecipes(),
+        ]),
+        bottomNavigationBar: BottomNavigationBar(
+          //
           //backgroundColor: Colors.grey[100],// footer
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -525,8 +480,8 @@ class _ViewUser extends State<ViewUser> {
     );
   }
 
-  Widget displayUserPosts(){
-    return Container (
+  Widget displayUserPosts() {
+    return Container(
       child: FutureBuilder<List<Post>>(
         future: getPosts(),
         builder: (context, snapshot) {
@@ -535,28 +490,25 @@ class _ViewUser extends State<ViewUser> {
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
                 child: CircularProgressIndicator());
-          else if(snapshot.data.length == 0){
+          else if (snapshot.data.length == 0) {
             return Container(
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
-                child: Text( collection == 'Posts' ? 'No Posts' : 'No Recipes')
-            );
-          }
-          else {
+                child: Text(collection == 'Posts' ? 'No Posts' : 'No Recipes'));
+          } else {
             // build the grid
             return GridView.count(
-
                 crossAxisCount: 3,
                 childAspectRatio: 1.0,
                 //                    padding: const EdgeInsets.all(0.5),
                 mainAxisSpacing: 1.5,
-
                 crossAxisSpacing: 1.5,
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: snapshot.data.map((Post post) {
                   return GridTile(
-                    child: showPosts(context, post, post.imageUrl, post.userId, post.email),
+                    child: showPosts(
+                        context, post, post.imageUrl, post.userId, post.email),
                   );
                 }).toList());
           }
@@ -565,8 +517,8 @@ class _ViewUser extends State<ViewUser> {
     );
   }
 
-  Widget displayUserRecipes(){
-    return Container (
+  Widget displayUserRecipes() {
+    return Container(
       child: FutureBuilder<List<Recipe>>(
         future: getRecipes(),
         builder: (context, snapshot) {
@@ -575,28 +527,25 @@ class _ViewUser extends State<ViewUser> {
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
                 child: CircularProgressIndicator());
-          else if(snapshot.data.length == 0){
+          else if (snapshot.data.length == 0) {
             return Container(
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
-                child: Text(collection == 'Posts' ? 'No Posts' : 'No Recipes')
-            );
-          }
-          else {
+                child: Text(collection == 'Posts' ? 'No Posts' : 'No Recipes'));
+          } else {
             // build the grid
             return GridView.count(
-
                 crossAxisCount: 3,
                 childAspectRatio: 1.0,
                 //                    padding: const EdgeInsets.all(0.5),
                 mainAxisSpacing: 1.5,
-
                 crossAxisSpacing: 1.5,
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: snapshot.data.map((Recipe recipe) {
                   return GridTile(
-                    child: showRecipes(context, recipe, recipe.imageURL, widget.otherId.toString(), " ", profilePic),
+                    child: showRecipes(context, recipe, recipe.imageURL,
+                        widget.otherId.toString(), " ", profilePic),
                   );
                 }).toList());
           }
@@ -605,14 +554,19 @@ class _ViewUser extends State<ViewUser> {
     );
   }
 
-  Widget showRecipes(BuildContext context, Recipe recipe, url, String currId, String currEmail, String profileImage){
+  Widget showRecipes(BuildContext context, Recipe recipe, url, String currId,
+      String currEmail, String profileImage) {
     return InkWell(
-      onTap:() {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => RecipeDetails(recipe: recipe, recid: recipe,)
-        ));
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RecipeDetails(
+                      recipe: recipe,
+                      recid: recipe,
+                    )));
       },
-      child: Container (
+      child: Container(
         child: new Image.network(
           url,
           fit: BoxFit.cover,
@@ -621,16 +575,25 @@ class _ViewUser extends State<ViewUser> {
     );
   }
 
-
-  Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail){
+  Widget showPosts(
+      BuildContext context, Post post, url, String currId, String currEmail) {
     return InkWell(
       //  onTap: () => print("Post " + post.id +" pressed"),
-      onTap:() {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => PostDetails(post: post, currId: userId, currEmail: currEmail, currRole: role, loginProfilePic: pic,),
-        ),);
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PostDetails(
+              post: post,
+              currId: userId,
+              currEmail: currEmail,
+              currRole: role,
+              loginProfilePic: pic,
+            ),
+          ),
+        );
       },
-      child: Container (
+      child: Container(
         child: new Image.network(
           url,
           fit: BoxFit.cover,
@@ -639,27 +602,21 @@ class _ViewUser extends State<ViewUser> {
     );
   }
 
-  Widget getUserId(){
+  Widget getUserId() {
     return Container(
         child: FutureBuilder(
             future: FirebaseAuth.instance.currentUser(),
-            builder: (context, AsyncSnapshot<FirebaseUser> snapshot){
-              if(snapshot.hasData){
+            builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+              if (snapshot.hasData) {
                 return Text(snapshot.data.uid);
-              }else{
+              } else {
                 return Text('Loading...');
               }
-            }
-
-        )
-
-    );
+            }));
   }
 }
 
-
 class PostDetails extends StatelessWidget {
-
   final Post post;
   String currId;
   String currEmail;
@@ -668,8 +625,13 @@ class PostDetails extends StatelessWidget {
 
   // In the constructor, require a Post.
   PostDetails(
-      {Key key, @required this.post, @required this.currId, @required this.currEmail, @required this.currRole, @required this.loginProfilePic})
-      : super( key: key );
+      {Key key,
+      @required this.post,
+      @required this.currId,
+      @required this.currEmail,
+      @required this.currRole,
+      @required this.loginProfilePic})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -685,129 +647,120 @@ class PostDetails extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text( post.title,
-            style: TextStyle( color: Colors.lightGreen ), ),
+          title: Text(
+            post.title,
+            style: TextStyle(color: Colors.lightGreen),
+          ),
           centerTitle: true,
           leading: new IconButton(
-              icon: new Icon( Icons.arrow_back, color: Colors.lightGreen ),
-              onPressed: () => Navigator.of( context ).pop( context ) ),
+              icon: new Icon(Icons.arrow_back, color: Colors.lightGreen),
+              onPressed: () => Navigator.of(context).pop(context)),
           actions: <Widget>[
             IconButton(
-                icon: loginProfilePic != null ? CircleAvatar( radius: 15.0,
-                    backgroundImage: NetworkImage( loginProfilePic ) ) :
-                Icon( Icons.account_circle, color: Colors.grey[300], size: 40.0 ),
-                onPressed: () {}
-            ),
+                icon: loginProfilePic != null
+                    ? CircleAvatar(
+                        radius: 15.0,
+                        backgroundImage: NetworkImage(loginProfilePic))
+                    : Icon(Icons.account_circle,
+                        color: Colors.grey[300], size: 40.0),
+                onPressed: () {}),
           ],
         ),
         body: Padding(
-          padding: EdgeInsets.all( 10 ),
+          padding: EdgeInsets.all(10),
           child: Container(
             height: 530,
             child: Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular( 15.0 ),
+                borderRadius: BorderRadius.circular(15.0),
               ),
               child: Padding(
-                padding: EdgeInsets.fromLTRB( 0.0, 10.0, 0.0, 0.0 ),
-                child: Column(
+                padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                child: Column(children: <Widget>[
+                  ListTile(
+                    leading: IconButton(
+                      icon: post.profileImage != ""
+                          ? CircleAvatar(
+                              radius: 15.0,
+                              backgroundImage: NetworkImage(post.profileImage))
+                          : CircleAvatar(
+                              radius: 15.0,
+                              backgroundImage: NetworkImage(
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                              ),
+                            ),
+                    ),
+                    contentPadding: EdgeInsets.all(7),
+                    title: GestureDetector(
+                      child: Text(
+                        post.username,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                    trailing: Text(
+                      post.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: ClipRect(
+                      child: Image.network(
+                        post.imageUrl,
+                        height: 300,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(post.description,
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                  ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      ListTile(
-                        leading: IconButton(
-                          icon: post.profileImage != "" ? CircleAvatar(
-                              radius: 15.0, backgroundImage: NetworkImage( post
-                              .profileImage ) ) :
-                          CircleAvatar(
-                            radius: 15.0,
-                            backgroundImage: NetworkImage(
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                            ),
-                          ),
-                        ),
-
-                        contentPadding: EdgeInsets.all( 7 ),
-
-                        title: GestureDetector(
-                          child: Text(
-                            post.username,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onTap: () {
-
-
-                          },
-
-                        ),
-
-
-                        trailing: Text(
-                          post.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 11,
-                          ),
-                        ),
-
+                      FlatButton(
+                        child: Text('Cook it'),
+                        textColor: Colors.lightBlueAccent,
+                        onPressed: () {
+                          Firestore.instance
+                              .collection('recipes')
+                              .document(post.recipeId)
+                              .get()
+                              .then((data) {
+                            //print(data.documentID);
+                            Recipe postRecipe = Recipe.fromDoc(data);
+                            print(postRecipe.id);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RecipeDetails(
+                                    recipe: postRecipe,
+                                    recid: postRecipe,
+                                  ),
+                                ));
+                          });
+                        },
                       ),
-                      Center(
-
-                        child: ClipRect(
-                          child: Image.network(
-                            post.imageUrl,
-
-                            height: 300,
-                            width: MediaQuery
-                                .of( context )
-                                .size
-                                .width,
-                            fit: BoxFit.cover,
-
-                          ),
-                        ),
+                      FlatButton(
+                        child: Text('Next time'),
+                        textColor: Colors.redAccent,
+                        onPressed: () {
+                          UserOperations.addToSave(
+                              currId, post.recipeId.toString());
+                        },
                       ),
-                      ListTile(
-                        title: Text(
-                            post.description,
-                            style: TextStyle( fontWeight: FontWeight.w500 )
-                        ),
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          FlatButton(
-                            child: Text( 'Cook it' ),
-                            textColor: Colors.lightBlueAccent,
-                            onPressed: () {
-                              Firestore.instance.collection( 'recipes' ).document(
-                                  post.recipeId ).get( ).then( (data) {
-                                //print(data.documentID);
-                                Recipe postRecipe = Recipe.fromDoc( data );
-                                print( postRecipe.id );
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute( builder: (context) =>
-                                        RecipeDetails( recipe: postRecipe,
-                                          recid: postRecipe, ), )
-                                );
-                              } );
-                            },
-                          ),
-                          FlatButton(
-                            child: Text( 'Next time' ),
-                            textColor: Colors.redAccent,
-                            onPressed: () {
-                              UserOperations.addToSave( currId,
-                                  post.recipeId.toString( ) );
-                            },
-                          ),
-                          // show menu button
-                          // post.email == currEmail ?
-                        ],
-                      ),
-                    ]
-                ),
+                      // show menu button
+                      // post.email == currEmail ?
+                    ],
+                  ),
+                ]),
               ),
             ),
           ),

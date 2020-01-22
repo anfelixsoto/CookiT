@@ -1,17 +1,11 @@
-import 'dart:io';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cookit_demo/ImageUpload.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cookit_demo/service/Authentication.dart';
-import 'package:image_picker/image_picker.dart';
 import 'main.dart';
-import 'model/User.dart';
-import 'package:path/path.dart';
 
-class LoginSignupPage extends StatefulWidget{
-  LoginSignupPage({this.auth,this.loginCallback});
+class LoginSignupPage extends StatefulWidget {
+  LoginSignupPage({this.auth, this.loginCallback});
 
   final BaseAuth auth;
   final VoidCallback loginCallback;
@@ -20,42 +14,47 @@ class LoginSignupPage extends StatefulWidget{
   State<StatefulWidget> createState() => new _LoginSignupState();
 }
 
-class _LoginSignupState extends State<LoginSignupPage>{
+class _LoginSignupState extends State<LoginSignupPage> {
   final _formKey = new GlobalKey<FormState>();
-  String _username, _email, _password, _repeatPassword, _errorMessage, profileIm;
+  String _username,
+      _email,
+      _password,
+      _repeatPassword,
+      _errorMessage,
+      profileIm;
   bool _isLoginForm = true;
   bool _isLoading;
   bool isEmpty = true;
   bool emptyForm = true;
 
-  bool validateAndSave(){
+  bool validateAndSave() {
     final form = _formKey.currentState;
-    if(form.validate()){
+    if (form.validate()) {
       form.save();
       return true;
     }
     return false;
   }
 
-  bool passwordsMatch(){
-    if(_password == _repeatPassword) {
+  bool passwordsMatch() {
+    if (_password == _repeatPassword) {
       return true;
     }
     return false;
   }
 
-  void validateAndSubmit() async{
+  void validateAndSubmit() async {
     setState(() {
       _errorMessage = " ";
       _isLoading = true;
     });
-    if(validateAndSave()){
+    if (validateAndSave()) {
       String userId = " ";
-      try{
-        if(_isLoginForm){
+      try {
+        if (_isLoginForm) {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
-        }else if(!_isLoginForm && passwordsMatch()){
+        } else if (!_isLoginForm && passwordsMatch()) {
           userId = await widget.auth.signUp(_username, _email, _password);
           print('Signed up user: $userId');
         }
@@ -63,10 +62,11 @@ class _LoginSignupState extends State<LoginSignupPage>{
           _isLoading = false;
         });
 
-        if(userId.length > 0 && userId != null && _isLoginForm || !_isLoginForm){
+        if (userId.length > 0 && userId != null && _isLoginForm ||
+            !_isLoginForm) {
           widget.loginCallback();
         }
-      }catch(e){
+      } catch (e) {
         print('Error: $e');
         setState(() {
           _isLoading = false;
@@ -75,25 +75,25 @@ class _LoginSignupState extends State<LoginSignupPage>{
         });
       }
     }
-    if(!passwordsMatch()){
+    if (!passwordsMatch()) {
       _errorMessage = "Passwords don't match";
     }
   }
 
   @override
-  void initState(){
+  void initState() {
     _errorMessage = "";
     _isLoading = false;
     _isLoginForm = true;
     super.initState();
   }
 
-  void resetForm(){
+  void resetForm() {
     _formKey.currentState.reset();
     _errorMessage = " ";
   }
 
-  void toggleFormMode(){
+  void toggleFormMode() {
     resetForm();
     setState(() {
       _isLoginForm = !_isLoginForm;
@@ -101,7 +101,7 @@ class _LoginSignupState extends State<LoginSignupPage>{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -111,27 +111,35 @@ class _LoginSignupState extends State<LoginSignupPage>{
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-        home: Scaffold(
-            appBar: new AppBar(
-              title: new Text(_isLoginForm ? "Login" : "Create Account",
-                style: TextStyle(color: Colors.lightGreen,),),
-              centerTitle: true,
-              leading: IconButton(icon:Icon(Icons.arrow_back, color: Colors.lightGreen,),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StartPage()));
-                },),
+      home: Scaffold(
+          appBar: new AppBar(
+            title: new Text(
+              _isLoginForm ? "Login" : "Create Account",
+              style: TextStyle(
+                color: Colors.lightGreen,
+              ),
             ),
-            body: Stack(
-              children: <Widget>[
-                _isLoginForm ? showLoginForm() : showSignUpForm(context),
-              ],
-            )
-        ),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.lightGreen,
+              ),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StartPage()));
+              },
+            ),
+          ),
+          body: Stack(
+            children: <Widget>[
+              _isLoginForm ? showLoginForm() : showSignUpForm(context),
+            ],
+          )),
     );
   }
 
-  Widget showLoginForm(){
+  Widget showLoginForm() {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -151,11 +159,10 @@ class _LoginSignupState extends State<LoginSignupPage>{
               showCircularProgress(),
             ],
           ),
-        )
-    );
+        ));
   }
 
-  Widget showSignUpForm(BuildContext context){
+  Widget showSignUpForm(BuildContext context) {
     return new Container(
         padding: EdgeInsets.all(16.0),
         child: new Form(
@@ -176,13 +183,12 @@ class _LoginSignupState extends State<LoginSignupPage>{
               showCircularProgress(),
             ],
           ),
-        )
-    );
+        ));
   }
 
-  Widget showCookitLogo(){
+  Widget showCookitLogo() {
     return new Hero(
-      tag:'hero',
+      tag: 'hero',
       child: CircleAvatar(
         backgroundColor: Colors.lightGreen,
         radius: 48.0,
@@ -208,19 +214,19 @@ class _LoginSignupState extends State<LoginSignupPage>{
                     ),
                   ),
                   radius: 50.0,
-                ))
-        ),
+                ))),
       ),
     );
   }
 
-  Widget showWelcomeText(){
+  Widget showWelcomeText() {
     return Material(
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 7.0, 0.0, 0.0),
         child: Text(
-          (_isLoginForm ? ("Login to get started!").toUpperCase() :
-          ("Fill out the form to get started").toUpperCase()),
+          (_isLoginForm
+              ? ("Login to get started!").toUpperCase()
+              : ("Fill out the form to get started").toUpperCase()),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.lightGreen,
@@ -232,12 +238,13 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showUserNameInput(){
+  Widget showUserNameInput() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Row(
         children: <Widget>[
-          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+          new Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
             child: Icon(
               Icons.person_outline,
               color: Colors.grey,
@@ -252,14 +259,15 @@ class _LoginSignupState extends State<LoginSignupPage>{
           new Expanded(
             child: TextFormField(
               decoration: InputDecoration(
-                hintText: 'Enter username',
-                hintStyle: TextStyle(color: Colors.grey),
+                  hintText: 'Enter username',
+                  hintStyle: TextStyle(color: Colors.grey),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.lightGreen)
-                  )
-              ),
-              validator: (value) => value.isEmpty ? 'Username can\'t be empty' :
-              usernameCheck(value) == Future.value(true) ? 'Username is taken' : null,
+                      borderSide: BorderSide(color: Colors.lightGreen))),
+              validator: (value) => value.isEmpty
+                  ? 'Username can\'t be empty'
+                  : usernameCheck(value) == Future.value(true)
+                      ? 'Username is taken'
+                      : null,
               onSaved: (value) => _username = value.trim(),
             ),
           )
@@ -268,12 +276,13 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showEmailInput(){
+  Widget showEmailInput() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Row(
         children: <Widget>[
-          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+          new Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
             child: Icon(
               Icons.mail_outline,
               color: Colors.grey,
@@ -288,13 +297,12 @@ class _LoginSignupState extends State<LoginSignupPage>{
           new Expanded(
             child: TextFormField(
               decoration: InputDecoration(
-                hintText: 'Enter your email',
-                hintStyle: TextStyle(color: Colors.grey),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.lightGreen)
-                )
-              ),
-              validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
+                  hintText: 'Enter your email',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.lightGreen))),
+              validator: (value) =>
+                  value.isEmpty ? 'Email can\'t be empty' : null,
               onSaved: (value) => _email = value.trim(),
             ),
           )
@@ -303,12 +311,13 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showPasswordInput(){
+  Widget showPasswordInput() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Row(
         children: <Widget>[
-          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+          new Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
             child: Icon(
               Icons.lock_open,
               color: Colors.grey,
@@ -324,13 +333,12 @@ class _LoginSignupState extends State<LoginSignupPage>{
             child: TextFormField(
               obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Enter your password',
-                hintStyle: TextStyle(color: Colors.grey),
+                  hintText: 'Enter your password',
+                  hintStyle: TextStyle(color: Colors.grey),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.lightGreen)
-                  )
-              ),
-              validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+                      borderSide: BorderSide(color: Colors.lightGreen))),
+              validator: (value) =>
+                  value.isEmpty ? 'Password can\'t be empty' : null,
               onSaved: (value) => _password = value.trim(),
             ),
           )
@@ -339,12 +347,13 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showRepeatPasswordInput(){
+  Widget showRepeatPasswordInput() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Row(
         children: <Widget>[
-          new Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+          new Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
             child: Icon(
               Icons.lock_open,
               color: Colors.grey,
@@ -360,13 +369,12 @@ class _LoginSignupState extends State<LoginSignupPage>{
             child: TextFormField(
               obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Confirm Password',
-                hintStyle: TextStyle(color: Colors.grey),
+                  hintText: 'Confirm Password',
+                  hintStyle: TextStyle(color: Colors.grey),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.lightGreen)
-                  )
-              ),
-              validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+                      borderSide: BorderSide(color: Colors.lightGreen))),
+              validator: (value) =>
+                  value.isEmpty ? 'Password can\'t be empty' : null,
               onSaved: (value) => _repeatPassword = value.trim(),
             ),
           )
@@ -378,12 +386,14 @@ class _LoginSignupState extends State<LoginSignupPage>{
   Widget showSecondaryButton() {
     return new FlatButton(
         child: new Text(
-            _isLoginForm ? ('Create an account').toUpperCase() : ('Have an account? Sign in').toUpperCase(),
+            _isLoginForm
+                ? ('Create an account').toUpperCase()
+                : ('Have an account? Sign in').toUpperCase(),
             style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode);
   }
 
-  Widget showPrimaryButton(){
+  Widget showPrimaryButton() {
     return Container(
       margin: const EdgeInsets.only(top: 20.0),
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -391,47 +401,50 @@ class _LoginSignupState extends State<LoginSignupPage>{
         children: <Widget>[
           new Expanded(
               child: FlatButton(
-                shape: new RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0)),
-                splashColor: Colors.lightGreen,
-                color: Colors.lightGreen,
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                      child: new Text(_isLoginForm ? ('Login').toUpperCase() : ('Create account').toUpperCase(),
-                          style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-                    ),
-                    new Expanded(
-                        child: Container()),
-                    new Transform.translate(offset: Offset(15.0,0.0),
-                      child: new Container(
-                          padding: const EdgeInsets.all(5.0),
-                          child: FlatButton(
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(28.0)
-                            ),
-                            splashColor: Colors.white,
-                            color: Colors.white,
-                            child: Icon(Icons.arrow_forward,
-                              color: Colors.lightGreen,
-                            ),
-                            onPressed: () => {},
-                          )
-                      ),
-                    )
-                  ],
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            splashColor: Colors.lightGreen,
+            color: Colors.lightGreen,
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  child: new Text(
+                      _isLoginForm
+                          ? ('Login').toUpperCase()
+                          : ('Create account').toUpperCase(),
+                      style:
+                          new TextStyle(fontSize: 20.0, color: Colors.white)),
                 ),
-                onPressed: validateAndSubmit,
-              ))
+                new Expanded(child: Container()),
+                new Transform.translate(
+                  offset: Offset(15.0, 0.0),
+                  child: new Container(
+                      padding: const EdgeInsets.all(5.0),
+                      child: FlatButton(
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(28.0)),
+                        splashColor: Colors.white,
+                        color: Colors.white,
+                        child: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.lightGreen,
+                        ),
+                        onPressed: () => {},
+                      )),
+                )
+              ],
+            ),
+            onPressed: validateAndSubmit,
+          ))
         ],
       ),
     );
   }
 
-  Widget showErrorMessage(){
-    if(_errorMessage.length > 0 && _errorMessage != null){
+  Widget showErrorMessage() {
+    if (_errorMessage.length > 0 && _errorMessage != null) {
       isEmpty = true;
       _isLoading = false;
       return new Text(
@@ -443,15 +456,16 @@ class _LoginSignupState extends State<LoginSignupPage>{
             height: 1.0,
             fontWeight: FontWeight.w300),
       );
-    }else{
+    } else {
       isEmpty = false;
       return new Container(
         height: 0.0,
       );
-    }}
+    }
+  }
 
-  Widget showCircularProgress(){
-    if(_isLoading){
+  Widget showCircularProgress() {
+    if (_isLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -462,27 +476,26 @@ class _LoginSignupState extends State<LoginSignupPage>{
     );
   }
 
-  String validateEmail(String email){
-    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  String validateEmail(String email) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-    if(!regex.hasMatch(email)){
+    if (!regex.hasMatch(email)) {
       _errorMessage = "Enter vaild Email";
       return _errorMessage;
-    }else{
+    } else {
       return null;
     }
   }
 
-  Future<bool> usernameCheck(String _username)async{
+  Future<bool> usernameCheck(String _username) async {
     final result = await Firestore.instance
         .collection('users')
         .where('user_name', isEqualTo: _username)
         .getDocuments();
-    if(result.documents.isEmpty) {
+    if (result.documents.isEmpty) {
       return Future.value(true);
     }
     return Future.value(false);
-
   }
 }
-

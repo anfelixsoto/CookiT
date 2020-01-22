@@ -238,8 +238,6 @@ class _RecipeDetails extends State<RecipeDetails>{
                                     children: <Widget>[
                                       new Text(recipe.name,
                                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0)),
-                                      new Text(recipe.description,
-                                      style: TextStyle(fontWeight: FontWeight.w400,fontSize: 15.0,color: Colors.grey),)
                                     ],
                                   ),
                                 ),

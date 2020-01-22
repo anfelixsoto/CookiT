@@ -7,8 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
-
-void main(){
+void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Edit Profile Picture',
@@ -16,17 +15,12 @@ void main(){
   ));
 }
 
-
 class editProfile extends StatefulWidget {
-
-
-
   @override
   _editProfile createState() => _editProfile();
 }
 
 class _editProfile extends State<editProfile> {
-
   FirebaseUser currentUser;
   File _image;
   TextEditingController titleController = TextEditingController();
@@ -49,7 +43,6 @@ class _editProfile extends State<editProfile> {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
         this.currentUser = user;
-
       });
     });
   }
@@ -60,7 +53,7 @@ class _editProfile extends State<editProfile> {
 
     FirebaseUser user = await _auth.currentUser();
 
-    setState((){
+    setState(() {
       userRef = _firestore.collection('users').document(user.uid);
       userRef.get().then((data) {
         if (data.exists) {
@@ -84,69 +77,62 @@ class _editProfile extends State<editProfile> {
 
   openGallery(BuildContext context) async {
     var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
-    this.setState((){
+    this.setState(() {
       _image = picture;
     });
-
     Navigator.of(context).pop(); // pass the context
   }
-
-
 
   openCamera(BuildContext context) async {
     var picture = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState((){
+    this.setState(() {
       _image = picture;
     });
-
     Navigator.of(context).pop(); // pass the context
-
   }
 
   Future<void> showOptions(BuildContext context) {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Select From: '),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              GestureDetector(
-                child: Text('Gallery'),
-                onTap: (){
-                  openGallery(context);
-                },
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Select From: '),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Text('Gallery'),
+                    onTap: () {
+                      openGallery(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text('Camera'),
+                    onTap: () {
+                      openCamera(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text('Cancel',
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                        )),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
               ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text('Camera'),
-                onTap: () {
-                  openCamera(context);
-                },
-              ),
-
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    )
-                ),
-
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
-        ),
-      );
-    });
+            ),
+          );
+        });
   }
 
   Widget _buildAvatar(BuildContext context) {
     return new Container(
-      width: (MediaQuery.of(context).size.width/3),
+      width: (MediaQuery.of(context).size.width / 3),
       height: 180.0,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -158,30 +144,28 @@ class _editProfile extends State<editProfile> {
         child: Image.network(
           profilePic,
         ),
-      ),);
+      ),
+    );
   }
-
-
 
   Widget handleNullImage(BuildContext context) {
     if (_image == null) {
-      return Container (
-          padding: EdgeInsets.only(top: 5.0, bottom: 30.0),
-          margin: const EdgeInsets.only(bottom: 10.0),
-          height: 200,
-          width: MediaQuery.of(context).size.width,
+      return Container(
+        padding: EdgeInsets.only(top: 5.0, bottom: 30.0),
+        margin: const EdgeInsets.only(bottom: 10.0),
+        height: 200,
+        width: MediaQuery.of(context).size.width,
         child: CircleAvatar(
-            child: Center (
-              child: MaterialButton(
-                minWidth: 10.0,
-                height: 50.0,
-                onPressed: () {
-                  showOptions(context);
-                },
-                child: new Text('Pick Image'),
-              ),
-            )
-        ),
+            child: Center(
+          child: MaterialButton(
+            minWidth: 10.0,
+            height: 50.0,
+            onPressed: () {
+              showOptions(context);
+            },
+            child: new Text('Pick Image'),
+          ),
+        )),
       );
     } else {
       return Material(
@@ -189,70 +173,60 @@ class _editProfile extends State<editProfile> {
         shape: CircleBorder(),
         clipBehavior: Clip.hardEdge,
         color: Colors.transparent,
-        child: Image.file(_image, fit: BoxFit.fitHeight, width: (MediaQuery.of(context).size.width*(2/3)), height: 200.0,),
+        child: Image.file(
+          _image,
+          fit: BoxFit.fitHeight,
+          width: (MediaQuery.of(context).size.width * (2 / 3)),
+          height: 200.0,
+        ),
       );
       //return Container(
-        //padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 30.0),
+      //padding: EdgeInsets.only(top: 5.0, left: 20.0, bottom: 30.0),
 
       //);
     }
   }
 
   void setProfilePic(String imgURL) {
-
     List<String> posts = [];
-    Firestore.instance.collection('users').document(currentUser.uid).updateData({
+    Firestore.instance
+        .collection('users')
+        .document(currentUser.uid)
+        .updateData({
       'profileImage': imgURL,
-      }
-    );
+    });
 
     Firestore.instance
         .collection('posts')
         .where("userId", isEqualTo: currentUser.uid)
-        .getDocuments().then((data){
-
-          for (var doc in data.documents) {
-            posts.add(doc.documentID);
-          }
+        .getDocuments()
+        .then((data) {
+      for (var doc in data.documents) {
+        posts.add(doc.documentID);
+      }
     });
-  // update user profile pics in posts
+    // update user profile pics in posts
     for (var postId in posts) {
       Firestore.instance.collection('posts').document(postId).updateData({
         'profileImage': imgURL,
-      }
-      );
+      });
     }
-
   }
-
-
-
-
-
-
-
 
   submitPic(BuildContext context) async {
     // uploadPic(context); // upload pic upon submit
     setState(() {
       loading = true;
     });
+
     bool clear = false;
-
     // clear and rm the previous prpfile pic if any
-
-
     // upload the selected image
     String profileImageUrl = await uploadPic(context);
 
-
-
     setProfilePic(profileImageUrl);
 
-
-
     setState(() {
-
       _image = null; // set image to empty
       loading = false;
     });
@@ -261,22 +235,19 @@ class _editProfile extends State<editProfile> {
       context,
       MaterialPageRoute(builder: (context) => UserProfile()),
     );
-
   }
 
-
-  Future<String> uploadPic(BuildContext context) async{
-    if(profilePic.toString() != "") {
-
+  Future<String> uploadPic(BuildContext context) async {
+    if (profilePic.toString() != "") {
       print("removing.." + profilePic.toString());
       removeProfilePic(profilePic.toString());
-
     }
 
     String fileName = basename(_image.path);
-    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child("UserProfileImage/" + fileName);
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child("UserProfileImage/" + fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-    StorageTaskSnapshot taskSnapshot=await uploadTask.onComplete;
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String downloadUrl = await firebaseStorageRef.getDownloadURL();
 
     // StorageReference imgStorageRef =
@@ -284,25 +255,21 @@ class _editProfile extends State<editProfile> {
     return downloadUrl;
   }
 
-  Future<void> removeProfilePic(String url) async{
+  Future<void> removeProfilePic(String url) async {
     //Future<StorageReference> photoReference =
     print("removing..");
-
     try {
-
-      print (" deleteing..." + url.toString());
+      print(" deleteing..." + url.toString());
       String path = url.toString().replaceAll(new RegExp(r'%2F'), '---');
 
       String remove = path.split('---')[1].replaceAll('?alt', '---');
       String img = remove.split('---')[0];
       print(img);
       final StorageReference storageReference =
-      FirebaseStorage.instance.ref().child("UserProfileImage/" + img);
+          FirebaseStorage.instance.ref().child("UserProfileImage/" + img);
 
       storageReference.delete();
-      print (" deleted..." );
-
-
+      print(" deleted...");
     } catch (e) {
       print("Something went wrong");
       return null;
@@ -310,31 +277,17 @@ class _editProfile extends State<editProfile> {
   }
 
   showLoading(BuildContext context) {
-    return Container (
+    return Container(
       width: MediaQuery.of(context).size.width,
       height: 300.0,
-
       margin: const EdgeInsets.only(top: 16.0, left: 16.0),
       padding: const EdgeInsets.all(3.0),
-      child: Center(
-          child:
-          CircularProgressIndicator()
-      ),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
-
-
-
-
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -355,58 +308,43 @@ class _editProfile extends State<editProfile> {
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Text('Edit Profile',
-            style: TextStyle(color: Colors.lightGreen),),
+          title: Text(
+            'Edit Profile',
+            style: TextStyle(color: Colors.lightGreen),
+          ),
           centerTitle: true,
         ),
         body: Container(
           margin: EdgeInsets.all(20.0),
-
-
           child: Center(
               child: ListView(
-                //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  loading == true ?
-                  showLoading(context): handleNullImage(context),
-
-                  // in case the image is null
-                  //Image.file(_image, width: 300, height: 300 ),
-                  Container(
-                    width: 100,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30.0),
-                      child: MaterialButton(
-                        minWidth: 10.0,
-                        height: 50.0,
-
-                        color: Colors.lightBlueAccent,
-                        textColor: Colors.white,
-                        onPressed: () {
-                          if(loading == false) {
-                            submitPic(context);
-                          }
-                        },
-                        child: new Text('Upload'),
-                      ),
-                    ),
+            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              loading == true ? showLoading(context) : handleNullImage(context),
+              // in case the image is null
+              //Image.file(_image, width: 300, height: 300 ),
+              Container(
+                width: 100,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: MaterialButton(
+                    minWidth: 10.0,
+                    height: 50.0,
+                    color: Colors.lightBlueAccent,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      if (loading == false) {
+                        submitPic(context);
+                      }
+                    },
+                    child: new Text('Upload'),
                   ),
-
-
-
-
-
-
-                ],
-
-              )
-
-          ),
+                ),
+              ),
+            ],
+          )),
         ),
-
       ),
     );
   }
 }
-
-

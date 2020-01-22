@@ -9,8 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
-
-void main(){
+void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Image Upload',
@@ -18,20 +17,20 @@ void main(){
   ));
 }
 
-
 class PostUpload extends StatefulWidget {
-
   final String rid;
   final Recipe recipe;
-  PostUpload({Key key, @required this.recipe, @required this.rid,})
-      : super(key: key);
+  PostUpload({
+    Key key,
+    @required this.recipe,
+    @required this.rid,
+  }) : super(key: key);
 
   @override
   _PostUploadState createState() => _PostUploadState();
 }
 
 class _PostUploadState extends State<PostUpload> {
-
   FirebaseUser currentUser;
   File _image;
   TextEditingController titleController = TextEditingController();
@@ -55,7 +54,6 @@ class _PostUploadState extends State<PostUpload> {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
         this.currentUser = user;
-
       });
     });
   }
@@ -66,23 +64,19 @@ class _PostUploadState extends State<PostUpload> {
 
     FirebaseUser user = await _auth.currentUser();
 
-    setState((){
+    setState(() {
       userRef = _firestore.collection('users').document(user.uid);
       userId = user.uid;
       userRef.get().then((data) {
         if (data.exists) {
           profileImage = data.data['profileImage'].toString();
           username = data.data['user_name'].toString();
-
-
-
         }
       });
 
       //print(user.displayName.toString());
     });
   }
-
 
   String showEmail() {
     if (currentUser != null) {
@@ -94,77 +88,70 @@ class _PostUploadState extends State<PostUpload> {
 
   openGallery(BuildContext context) async {
     var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
-    this.setState((){
+    this.setState(() {
       _image = picture;
     });
 
     Navigator.of(context).pop(); // pass the context
   }
-
-
 
   openCamera(BuildContext context) async {
     var picture = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState((){
+    this.setState(() {
       _image = picture;
     });
 
     Navigator.of(context).pop(); // pass the context
-
   }
 
   Future<void> showOptions(BuildContext context) {
-    return showDialog(context: context,builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Select From: '),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              GestureDetector(
-                child: Text('Gallery'),
-                onTap: (){
-                  openGallery(context);
-                },
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Select From: '),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Text('Gallery'),
+                    onTap: () {
+                      openGallery(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text('Camera'),
+                    onTap: () {
+                      openCamera(context);
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(8.0)),
+                  GestureDetector(
+                    child: Text('Cancel',
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                        )),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
               ),
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text('Camera'),
-                onTap: () {
-                  openCamera(context);
-                },
-              ),
-
-              Padding(padding: EdgeInsets.all(8.0)),
-              GestureDetector(
-                child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    )
-                ),
-
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
-        ),
-      );
-    });
+            ),
+          );
+        });
   }
 
   Widget handleNullImage(BuildContext context) {
     if (_image == null) {
-      return Container (
+      return Container(
           padding: EdgeInsets.only(top: 5.0, bottom: 0.0),
           margin: const EdgeInsets.only(bottom: 0.0),
           height: 300,
           width: MediaQuery.of(context).size.width,
           color: Colors.blueGrey[100],
-
-        child: Center (
-
+          child: Center(
             child: MaterialButton(
               minWidth: 10.0,
               height: 50.0,
@@ -173,17 +160,16 @@ class _PostUploadState extends State<PostUpload> {
               },
               child: new Text('Pick Image'),
             ),
-
-
-        )
-      );
+          ));
     } else {
       return Container(
         padding: EdgeInsets.only(top: 5.0, left: 0.0, bottom: 0.0),
-         child: Image.file(
-             _image, width: MediaQuery.of(context).size.width,
-           fit: BoxFit.cover, height: 300,
-         ),
+        child: Image.file(
+          _image,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
+          height: 300,
+        ),
       );
     }
   }
@@ -200,7 +186,7 @@ class _PostUploadState extends State<PostUpload> {
       'user_name': username,
       'recipeId': widget.rid.toString(),
       'timestamp': FieldValue.serverTimestamp(),
-    }).then((doc){
+    }).then((doc) {
       id = doc.documentID;
     });
 
@@ -208,17 +194,12 @@ class _PostUploadState extends State<PostUpload> {
     Firestore.instance.collection('posts').document(id).updateData({
       'id': id,
     });
-
   }
 
-
-
-
-
   submitPost(BuildContext context) async {
-   // uploadPic(context); // upload pic upon submit
+    // uploadPic(context); // upload pic upon submit
     setState(() {
-    loading = true;
+      loading = true;
     });
 
     // make the post
@@ -230,7 +211,6 @@ class _PostUploadState extends State<PostUpload> {
       description: caption,
       email: showEmail(),
       profileImage: profileImage,
-
     );
 
     createPost(currPost);
@@ -251,44 +231,33 @@ class _PostUploadState extends State<PostUpload> {
       context,
       MaterialPageRoute(builder: (context) => UserProfile()),
     );
-
   }
 
-
-  Future<String> uploadPic(BuildContext context) async{
-
+  Future<String> uploadPic(BuildContext context) async {
     String fileName = basename(_image.path);
-    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child("UserRecipes/" + fileName);
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child("UserRecipes/" + fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-    StorageTaskSnapshot taskSnapshot=await uploadTask.onComplete;
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String downloadUrl = await firebaseStorageRef.getDownloadURL();
 
-   // StorageReference imgStorageRef =
+    // StorageReference imgStorageRef =
 
     return downloadUrl;
   }
 
-
   showLoading(BuildContext context) {
-    return Container (
+    return Container(
       width: MediaQuery.of(context).size.width,
       height: 300.0,
-
       margin: const EdgeInsets.only(top: 16.0, left: 16.0),
       padding: const EdgeInsets.all(3.0),
-      child: Center(
-          child:
-          CircularProgressIndicator()
-      ),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 
-
-
-
-
-    @override
-    Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -305,82 +274,70 @@ class _PostUploadState extends State<PostUpload> {
                 Icons.arrow_back,
                 color: Colors.lightGreen,
                 size: 24.0,
-
               ),
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: Text('Upload Picture', style: TextStyle(color: Colors.lightGreen)),
-
+          title: Text('Upload Picture',
+              style: TextStyle(color: Colors.lightGreen)),
         ),
         body: Container(
           margin: EdgeInsets.all(20.0),
-
-
           child: Center(
               child: ListView(
-                //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  loading == true ? showLoading(context): handleNullImage(context), // in case the image is null
-                  //Image.file(_image, width: 300, height: 300 ),
+            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              loading == true
+                  ? showLoading(context)
+                  : handleNullImage(context), // in case the image is null
+              //Image.file(_image, width: 300, height: 300 ),
 
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30.0),
+                child: TextField(
+                  controller: titleController,
+                  style: TextStyle(fontSize: 18.0),
+                  decoration: InputDecoration(
+                      labelText: 'Title',
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.lightGreen))),
+                  onChanged: (input) => title = input,
+                ),
+              ),
+              Container(
+                width: 100.0,
+                padding: EdgeInsets.only(
+                    top: 5.0, left: 30.0, right: 30, bottom: 35.0),
+                child: TextFormField(
+                  controller: captionController,
+                  style: TextStyle(fontSize: 18.0),
+                  decoration: InputDecoration(
+                      labelText: 'Description',
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.lightGreen))),
+                  onChanged: (input) => caption = input,
+                ),
+              ),
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      controller: titleController,
-                      style: TextStyle(fontSize: 18.0),
-                      decoration: InputDecoration(
-                        labelText: 'Title',
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.lightGreen)
-                          )
-                      ),
-                      onChanged: (input) => title = input,
-                    ),
-                  ),
-                  Container(
-                    width: 100.0,
-                      padding: EdgeInsets.only(top: 5.0, left: 30.0, right:30, bottom: 35.0),
-                      child: TextFormField(
-                        controller: captionController,
-                        style: TextStyle(fontSize: 18.0),
-                        decoration: InputDecoration(
-                            labelText: 'Description',
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.lightGreen)
-                            )
-                        ),
-                        onChanged: (input) => caption = input,
-                      ),
-                  ),
-
-                  FlatButton(
-                    //borderRadius: BorderRadius.circular(30.0),
-                    child: MaterialButton(
-                      minWidth: (MediaQuery.of(context).size.width/3.5),
-                      height: 40.0,
-
-                      color: Colors.lightGreen,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        if(loading == false) {
-                          submitPost(context);
-                        }
-                      },
-                      child: new Text('Upload'),
-                    ),
-                  ),
-                ],
-
-              )
-
-          ),
+              FlatButton(
+                //borderRadius: BorderRadius.circular(30.0),
+                child: MaterialButton(
+                  minWidth: (MediaQuery.of(context).size.width / 3.5),
+                  height: 40.0,
+                  color: Colors.lightGreen,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    if (loading == false) {
+                      submitPost(context);
+                    }
+                  },
+                  child: new Text('Upload'),
+                ),
+              ),
+            ],
+          )),
         ),
-
       ),
     );
   }
 }
-
-

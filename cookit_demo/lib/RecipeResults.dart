@@ -6,66 +6,65 @@ import 'package:flutter/material.dart';
 import 'model/RecipeList.dart';
 import 'model/recipeId.dart';
 
-void main(){
+void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'CookiT Recipe Results',
-    home: RecipeResults(ingredients:['salt','pepper','salmon','lemon']),
+    home: RecipeResults(ingredients: ['salt', 'pepper', 'salmon', 'lemon']),
   ));
 }
 
 class RecipeResults extends StatefulWidget {
   final List<String> ingredients;
-  RecipeResults({Key key,@required this.ingredients}):super(key:key);
+  RecipeResults({Key key, @required this.ingredients}) : super(key: key);
 
   @override
   _RecipeResults createState() => _RecipeResults();
 }
 
-class _RecipeResults extends State<RecipeResults>{
+class _RecipeResults extends State<RecipeResults> {
   Future<RecipeList> recipes;
   List<RecipeId> recipeList;
   List<Recipe> recipeItems;
-  static var recipees=new List<Recipe>();
+  static var recipees = new List<Recipe>();
   //_RecipeResults({Key key,@required this.ingredients}):super(key:key);
 
-   @override
-  void initState(){
+  @override
+  void initState() {
     super.initState();
     recipes = RecipeList.fetchRecipes(widget.ingredients);
-    recipeItems=new List<Recipe>(0);
+    recipeItems = new List<Recipe>(0);
   }
 
-  String getIngredientString(){
-    String s="";
-    for(int i=0;i<widget.ingredients.length;i++){
-      if(i==(widget.ingredients.length-1)){
-        s+=widget.ingredients[i];
-      }
-      else{
-        s+=(widget.ingredients[i]+", ");
+  String getIngredientString() {
+    String s = "";
+    for (int i = 0; i < widget.ingredients.length; i++) {
+      if (i == (widget.ingredients.length - 1)) {
+        s += widget.ingredients[i];
+      } else {
+        s += (widget.ingredients[i] + ", ");
       }
     }
     return s;
   }
-  
-  Future<List<Recipe>> getRes(List<RecipeId> ids) async{
-    List<Recipe> list = await Future.wait(ids.map((itemId) => Recipe.fetchRecipe(itemId.rid)));
-    return list.map((response){
+
+  Future<List<Recipe>> getRes(List<RecipeId> ids) async {
+    List<Recipe> list =
+        await Future.wait(ids.map((itemId) => Recipe.fetchRecipe(itemId.rid)));
+    return list.map((response) {
       // do processing here and return items
       return response;
     }).toList();
   }
 
   @override
-  Widget build(BuildContext context){
-    final resultsHeader=Center(
+  Widget build(BuildContext context) {
+    final resultsHeader = Center(
       child: Container(
         child: Padding(
           padding: const EdgeInsets.all(36.0),
-          child: ListView(
-            children: <Widget>[
-              /*SizedBox(height: 20.0,),
+          child: ListView(children: <Widget>[
+            /*SizedBox(height: 20.0,),
               Text(
                 "Recipe Results",
                 textAlign: TextAlign.center,
@@ -83,17 +82,15 @@ class _RecipeResults extends State<RecipeResults>{
                   fontSize: 20.0,
                   color: Colors.grey,)
               ),*/
-              SizedBox(height:50.0),
-              Text(
-                "No recipes found :(",
+            SizedBox(height: 50.0),
+            Text("No recipes found :(",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   //fontWeight: FontWeight.bold,
                   fontSize: 30.0,
-                  color: Colors.lightGreen,)
-              ),
-            ]
-          ),
+                  color: Colors.lightGreen,
+                )),
+          ]),
         ),
       ),
     );
@@ -110,10 +107,12 @@ class _RecipeResults extends State<RecipeResults>{
       home: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
-          title: Text('Recipe Results',
-          style: TextStyle(color: Colors.lightGreen),
+          title: Text(
+            'Recipe Results',
+            style: TextStyle(color: Colors.lightGreen),
           ),
-          leading: IconButton(icon:Icon(Icons.arrow_back,color: Colors.lightGreen),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.lightGreen),
             onPressed: () => Navigator.pop(context, false),
           ),
         ),
@@ -122,43 +121,42 @@ class _RecipeResults extends State<RecipeResults>{
             future: recipes,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                recipeList=snapshot.data.recipes;
-                if(recipeList.isNotEmpty){
-                  for(int i=0;i<recipeList.length;i++){
-                    if(recipeList[i]!=null&&recipeList[i].mCount>0){
+                recipeList = snapshot.data.recipes;
+                if (recipeList.isNotEmpty) {
+                  for (int i = 0; i < recipeList.length; i++) {
+                    if (recipeList[i] != null && recipeList[i].mCount > 0) {
                       recipeList.removeAt(i);
                       i--;
                     }
                   }
                 }
-                Future<List<Recipe>> recipees=getRes(recipeList);
+                Future<List<Recipe>> recipees = getRes(recipeList);
                 return FutureBuilder<List<Recipe>>(
-                  future: recipees,
-                  builder: (context, snapshot2) {
-                    if (snapshot2.hasData) {
-                      List<Recipe> rec=snapshot2.data;
-                      for(int i=0;i<rec.length;i++){
-                        Recipe rTest=rec[i];
-                        if(rTest==null||
-                          rTest.ingredients==null||
-                          rTest.instructions==null||
-                          rTest.instructions.isEmpty||
-                          rTest.ingredients.isEmpty){
+                    future: recipees,
+                    builder: (context, snapshot2) {
+                      if (snapshot2.hasData) {
+                        List<Recipe> rec = snapshot2.data;
+                        for (int i = 0; i < rec.length; i++) {
+                          Recipe rTest = rec[i];
+                          if (rTest == null ||
+                              rTest.ingredients == null ||
+                              rTest.instructions == null ||
+                              rTest.instructions.isEmpty ||
+                              rTest.ingredients.isEmpty) {
                             rec.removeAt(i);
                             i--;
                           }
                         }
-                        if(rec.length==0){
+                        if (rec.length == 0) {
                           return resultsHeader;
-                        }
-                        else{
-                        return Center(
-                          child: Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: ListView(
-                                children: <Widget>[
-                                  /*SizedBox(height: 10.0,),
+                        } else {
+                          return Center(
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: ListView(
+                                  children: <Widget>[
+                                    /*SizedBox(height: 10.0,),
                                   Text(
                                     "Recipe Results",
                                     textAlign: TextAlign.center,
@@ -167,66 +165,87 @@ class _RecipeResults extends State<RecipeResults>{
                                       fontSize: 30.0,
                                       color: Colors.lightGreen,)
                                   ),*/
-                                  SizedBox(height: 10.0,),
-                                  Text(
-                                    getIngredientString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      //fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                      color: Colors.grey,)
-                                  ),
-                                  SizedBox(height: 10.0,),
-                                  new Container(
-                                    height: 400.0,
-                                    child:new ListView.builder(
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          shrinkWrap: true,
-                                          itemCount: rec.length,
-                                          itemBuilder: (context, index) {
-                                            //if(temp3.contains(recipe.documentID) ) {
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Text(getIngredientString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          //fontWeight: FontWeight.bold,
+                                          fontSize: 20.0,
+                                          color: Colors.grey,
+                                        )),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    new Container(
+                                        height: 400.0,
+                                        child: new ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: rec.length,
+                                            itemBuilder: (context, index) {
+                                              //if(temp3.contains(recipe.documentID) ) {
                                               return Container(
                                                 height: 100,
-                                                padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
+                                                padding: EdgeInsets.only(
+                                                    top: 0.0, bottom: 0.0),
                                                 child: Card(
                                                   clipBehavior: Clip.antiAlias,
                                                   child: Column(
                                                       children: <Widget>[
                                                         ListTile(
-                                                          leading: CircleAvatar(radius: 30.0,
-                                                            backgroundImage: NetworkImage(rec[index].imageURL),
+                                                          leading: CircleAvatar(
+                                                            radius: 30.0,
+                                                            backgroundImage:
+                                                                NetworkImage(rec[
+                                                                        index]
+                                                                    .imageURL),
                                                           ),
-                                                          title: Text(rec[index].name.toString()),
-
-
-
-                                                          subtitle: Text("Prep Time: " + rec[index].prepTime.toString() + " | " +
-                                                              "Servings: " + rec[index].servings.toString()
-                                                          ),
+                                                          title: Text(rec[index]
+                                                              .name
+                                                              .toString()),
+                                                          subtitle: Text(
+                                                              "Prep Time: " +
+                                                                  rec[index]
+                                                                      .prepTime
+                                                                      .toString() +
+                                                                  " | " +
+                                                                  "Servings: " +
+                                                                  rec[index]
+                                                                      .servings
+                                                                      .toString()),
                                                           onTap: () {
                                                             //Recipe selectRecipe = Recipe.fromDoc(recipe);
                                                             Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => RecipeDetails(recipe: rec[index], recipeId: recipeList[index], )),
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          RecipeDetails(
+                                                                            recipe:
+                                                                                rec[index],
+                                                                            recipeId:
+                                                                                recipeList[index],
+                                                                          )),
                                                             );
                                                           },
                                                         ),
-                                                      ]
-                                                  ),
+                                                      ]),
                                                 ),
                                               );
-                                            } )
-                                          //},
-                                  )
-                                ],
+                                            })
+                                        //},
+                                        )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
+                          );
                         }
-                      } 
-                      else if(snapshot2.hasError){
+                      } else if (snapshot2.hasError) {
                         //return Text("${snapshot2.error}");
                         print("${snapshot2.error}");
                         return Text(
@@ -235,21 +254,23 @@ class _RecipeResults extends State<RecipeResults>{
                           style: TextStyle(
                             //fontWeight: FontWeight.bold,
                             fontSize: 30.0,
-                            color: Colors.red,),
+                            color: Colors.red,
+                          ),
                         );
-                      }  
-                      return CircularProgressIndicator(); 
+                      }
+                      return CircularProgressIndicator();
                     });
               } else if (snapshot.hasError) {
                 //return Text("${snapshot.error}");
                 return Text(
-                      "Oh no,\nan error occured:(\n\nWe apologize for the inconvenience.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 30.0,
-                        color: Colors.red,),
-                    );
+                  "Oh no,\nan error occured:(\n\nWe apologize for the inconvenience.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    //fontWeight: FontWeight.bold,
+                    fontSize: 30.0,
+                    color: Colors.red,
+                  ),
+                );
               }
               // By default, show a loading spinner.
               return CircularProgressIndicator();

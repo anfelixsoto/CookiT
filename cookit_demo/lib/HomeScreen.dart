@@ -10,7 +10,6 @@ import 'package:cookit_demo/RecipeSearch.dart';
 import 'package:cookit_demo/ViewUser.dart';
 import 'package:cookit_demo/model/PostModel.dart';
 import 'package:cookit_demo/model/Recipe.dart';
-import 'package:cookit_demo/RecipeResults.dart';
 import 'package:cookit_demo/service/AdminOperations.dart';
 import 'package:cookit_demo/service/Authentication.dart';
 import 'package:cookit_demo/service/UserOperations.dart';

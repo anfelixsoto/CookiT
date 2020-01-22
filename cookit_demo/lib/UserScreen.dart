@@ -15,7 +15,7 @@ import 'AdminPage.dart';
 import 'model/PostModel.dart';
 import 'model/Recipe.dart';
 
-void main(){
+void main() {
   runApp(new MaterialApp(
     theme: ThemeData(
       brightness: Brightness.light,
@@ -29,7 +29,6 @@ void main(){
   ));
 }
 
-
 class UserProfile extends StatefulWidget {
   UserProfile({Key key, this.auth, this.userId, this.logoutCallback})
       : super(key: key);
@@ -37,15 +36,11 @@ class UserProfile extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback logoutCallback;
 
-
-
   @override
   _UserProfile createState() => new _UserProfile();
 }
 
-
 class _UserProfile extends State<UserProfile> {
-
   FirebaseUser currentUser;
   String username;
   int postCount = 0;
@@ -68,14 +63,14 @@ class _UserProfile extends State<UserProfile> {
     //showUsername();
   }
 
-  void _onItemTapped(int index){
+  void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
 
-    if(index == 0){
+    if (index == 0) {
       collection = 'Posts';
-    }else{
+    } else {
       collection = 'Recipes';
     }
     print(collection);
@@ -86,7 +81,6 @@ class _UserProfile extends State<UserProfile> {
       setState(() {
         this.currentUser = user;
         //userRef.get().then()
-
       });
     });
   }
@@ -106,6 +100,7 @@ class _UserProfile extends State<UserProfile> {
       return "no current user";
     }
   }
+
   String getRole() {
     return role;
   }
@@ -116,7 +111,7 @@ class _UserProfile extends State<UserProfile> {
 
     FirebaseUser user = await _auth.currentUser();
 
-    setState((){
+    setState(() {
       userRef = _firestore.collection('users').document(user.uid);
       currId = user.uid;
       userRef.get().then((data) {
@@ -129,7 +124,7 @@ class _UserProfile extends State<UserProfile> {
           role = data.data['role'].toString();
           username = data.data['user_name'].toString();
           print(profilePic);
-          if(role == 'admin'){
+          if (role == 'admin') {
             isAdmin = true;
           }
         }
@@ -137,79 +132,69 @@ class _UserProfile extends State<UserProfile> {
     });
   }
 
-
   showAvatar(String pic) {
     return GestureDetector(
         child: ClipOval(
           child: profilePic == null
               ? new CircleAvatar(
-            child: Image.network(
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-            ),
-          )
+                  child: Image.network(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                  ),
+                )
               : new CircleAvatar(
-            child: Image.network(
-                profilePic
-            ),
-          ),
+                  child: Image.network(profilePic),
+                ),
         ),
-        onTap:(){
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => editProfile()),
           );
-        }
-    );
-
+        });
   }
 
   Widget _buildAvatar() {
     return new GestureDetector(
         child: Container(
-          width: (MediaQuery.of(context).size.width/3),
-          height: (MediaQuery.of(context).size.width/3),
+          width: (MediaQuery.of(context).size.width / 3),
+          height: (MediaQuery.of(context).size.width / 3),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white30),
           ),
           margin: const EdgeInsets.only(top: 32.0, left: 16.0),
           padding: const EdgeInsets.all(3.0),
-          child:  ClipOval(
+          child: ClipOval(
             child: (profilePic == null || profilePic.toString() == "")
-                ?
-            Image.network(
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-            )
+                ? Image.network(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                  )
                 : Image.network(
-              profilePic,
-              height: 300,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
+                    profilePic,
+                    height: 300,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  ),
           ),
-
         ),
-        onTap:(){
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => editProfile()),
           );
-        }
-    );
+        });
   }
 
-
-
-  Widget findRecipes(String text, {
+  Widget findRecipes(
+    String text, {
     Color backgroundColor = Colors.transparent,
     Color textColor = Colors.white,
   }) {
     return new ClipRRect(
       borderRadius: new BorderRadius.circular(15.0),
       child: new MaterialButton(
-        minWidth: (MediaQuery.of(context).size.width/3),
+        minWidth: (MediaQuery.of(context).size.width / 3),
         height: 40.0,
-
         color: Colors.lightGreen,
         textColor: textColor,
         onPressed: () {
@@ -223,15 +208,15 @@ class _UserProfile extends State<UserProfile> {
     );
   }
 
-
-  Widget showFavorites(String text, {
+  Widget showFavorites(
+    String text, {
     Color backgroundColor = Colors.transparent,
     Color textColor = Colors.white,
   }) {
     return new ClipRRect(
       borderRadius: new BorderRadius.circular(15.0),
       child: new MaterialButton(
-        minWidth: (MediaQuery.of(context).size.width/3),
+        minWidth: (MediaQuery.of(context).size.width / 3),
         height: 40.0,
         color: Colors.lightGreen,
         textColor: textColor,
@@ -245,7 +230,6 @@ class _UserProfile extends State<UserProfile> {
       ),
     );
   }
-
 
   Future<List<Post>> getPosts() async {
     List<Post> posts = [];
@@ -277,7 +261,6 @@ class _UserProfile extends State<UserProfile> {
     return recipes.toList();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -291,15 +274,19 @@ class _UserProfile extends State<UserProfile> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text(username.toString(),
-            style: TextStyle(color: Colors.lightGreen),),
+          title: Text(
+            username.toString(),
+            style: TextStyle(color: Colors.lightGreen),
+          ),
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.bookmark_border,
+              icon: Icon(
+                Icons.bookmark_border,
                 color: Colors.lightGreen,
-                size: 40.0,),
-              onPressed: (){
+                size: 40.0,
+              ),
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SavePage()),
@@ -307,57 +294,56 @@ class _UserProfile extends State<UserProfile> {
               },
             )
           ],
-          leading: new IconButton(icon: new Icon(Icons.arrow_back, color: Colors.lightGreen,),
+          leading: new IconButton(
+            icon: new Icon(
+              Icons.arrow_back,
+              color: Colors.lightGreen,
+            ),
             onPressed: () {
-              Navigator.pop(context,true);
-            },),
+              Navigator.pop(context, true);
+            },
+          ),
         ),
-        body: ListView(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
+        body: ListView(children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                Center(
+                  child: _buildAvatar(),
+                ),
+                Row(
                   children: <Widget>[
-                    Center(
-                      child: _buildAvatar(),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Column(
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  findRecipes('What to Cook'),
-                                  showFavorites('Favorites'),
-                                ],
-                              ),
-                              Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                  ]),
+                              findRecipes('What to Cook'),
+                              showFavorites('Favorites'),
                             ],
                           ),
-                        )
-                      ],
-                    ),
-
-
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[]),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              ),
-              //buildImageViewButtonBar(),
-              Divider(height: 0.0),
-              collection == 'Posts' ? displayPosts() : displayRecipes(),
-              //Divider(height: 10.0),
-            ]
-        ),
-        bottomNavigationBar: BottomNavigationBar( //
+              ],
+            ),
+          ),
+          //buildImageViewButtonBar(),
+          Divider(height: 0.0),
+          collection == 'Posts' ? displayPosts() : displayRecipes(),
+          //Divider(height: 10.0),
+        ]),
+        bottomNavigationBar: BottomNavigationBar(
+          //
           //backgroundColor: Colors.grey[100],// footer
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -376,12 +362,17 @@ class _UserProfile extends State<UserProfile> {
         floatingActionButton: Visibility(
           child: FloatingActionButton(
             backgroundColor: Colors.lightGreen,
-            child:
-              collection == 'Posts' ? Icon(Icons.portrait, color: Colors.white):
-                            Icon(Icons.add, color: Colors.white),
-            onPressed: (){
-              collection == 'Posts' ? Navigator.push(context ,MaterialPageRoute(builder: (context) => new AdminPage())):
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => new CreateRecipe()));
+            child: collection == 'Posts'
+                ? Icon(Icons.portrait, color: Colors.white)
+                : Icon(Icons.add, color: Colors.white),
+            onPressed: () {
+              collection == 'Posts'
+                  ? Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => new AdminPage()))
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => new CreateRecipe()));
             },
           ),
           visible: isAdmin || collection == "Recipes",
@@ -390,8 +381,8 @@ class _UserProfile extends State<UserProfile> {
     );
   }
 
-  Widget displayPosts(){
-    return Container (
+  Widget displayPosts() {
+    return Container(
       child: FutureBuilder<List<Post>>(
         future: getPosts(),
         builder: (context, snapshot) {
@@ -400,14 +391,12 @@ class _UserProfile extends State<UserProfile> {
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
                 child: CircularProgressIndicator());
-          else if(snapshot.data.length == 0){
+          else if (snapshot.data.length == 0) {
             return Container(
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
-                child: Text( collection == 'Posts' ? 'No Posts' : 'No Recipes')
-            );
-          }
-          else {
+                child: Text(collection == 'Posts' ? 'No Posts' : 'No Recipes'));
+          } else {
             // build the grid
             return GridView.count(
                 crossAxisCount: 3,
@@ -418,7 +407,8 @@ class _UserProfile extends State<UserProfile> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: snapshot.data.map((Post post) {
                   return GridTile(
-                    child: showPosts(context, post, post.imageUrl, currId, currEmail, profilePic),
+                    child: showPosts(context, post, post.imageUrl, currId,
+                        currEmail, profilePic),
                   );
                 }).toList());
           }
@@ -427,8 +417,8 @@ class _UserProfile extends State<UserProfile> {
     );
   }
 
-  Widget displayRecipes(){
-    return Container (
+  Widget displayRecipes() {
+    return Container(
       child: FutureBuilder<List<Recipe>>(
         future: getRecipes(),
         builder: (context, snapshot) {
@@ -437,14 +427,12 @@ class _UserProfile extends State<UserProfile> {
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
                 child: CircularProgressIndicator());
-          else if(snapshot.data.length == 0){
+          else if (snapshot.data.length == 0) {
             return Container(
                 alignment: FractionalOffset.center,
                 padding: const EdgeInsets.only(top: 10.0),
-                child: Text( collection == 'Posts' ? 'No Posts' : 'No Recipes')
-            );
-          }
-          else {
+                child: Text(collection == 'Posts' ? 'No Posts' : 'No Recipes'));
+          } else {
             // build the grid
             return GridView.count(
                 crossAxisCount: 3,
@@ -455,7 +443,8 @@ class _UserProfile extends State<UserProfile> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: snapshot.data.map((Recipe recipe) {
                   return GridTile(
-                    child: showRecipes(context, recipe, recipe.imageURL, currId, currEmail, profilePic),
+                    child: showRecipes(context, recipe, recipe.imageURL, currId,
+                        currEmail, profilePic),
                   );
                 }).toList());
           }
@@ -465,32 +454,42 @@ class _UserProfile extends State<UserProfile> {
   }
 }
 
-Widget showPosts(BuildContext context, Post post, url, String currId, String currEmail, String profileImage){
+Widget showPosts(BuildContext context, Post post, url, String currId,
+    String currEmail, String profileImage) {
   return InkWell(
     //  onTap: () => print("Post " + post.id +" pressed"),
-    onTap:() {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => PostDetails(post: post, currId: currId, currEmail: currEmail, profileImage: profileImage,),
-      ),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PostDetails(
+            post: post,
+            currId: currId,
+            currEmail: currEmail,
+            profileImage: profileImage,
+          ),
+        ),
       );
     },
-    child: Container (
-      child: new Image.network(
-        url,
-        fit: BoxFit.cover
-      ),
+    child: Container(
+      child: new Image.network(url, fit: BoxFit.cover),
     ),
   );
 }
 
-Widget showRecipes(BuildContext context, Recipe recipe, url, String currId, String currEmail, String profileImage){
+Widget showRecipes(BuildContext context, Recipe recipe, url, String currId,
+    String currEmail, String profileImage) {
   return InkWell(
-    onTap:() {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => RecipeDetails(recipe: recipe, recid: recipe,)
-      ));
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RecipeDetails(
+                    recipe: recipe,
+                    recid: recipe,
+                  )));
     },
-    child: Container (
+    child: Container(
       child: new Image.network(
         url,
         fit: BoxFit.cover,
@@ -500,7 +499,7 @@ Widget showRecipes(BuildContext context, Recipe recipe, url, String currId, Stri
 }
 
 Widget showDelete(String postId, String role, String url) {
-  return  Visibility(
+  return Visibility(
     child: IconButton(
         icon: Icon(
           Icons.remove_circle,
@@ -510,35 +509,29 @@ Widget showDelete(String postId, String role, String url) {
         onPressed: () {
           removeImage(url);
           UserOperations.deletePost(postId);
-        }
-    ),
-
+        }),
   );
-
 }
 
-Future<void> removeImage(String url) async{
+Future<void> removeImage(String url) async {
   //Future<StorageReference> photoReference =
 
   try {
     //String path;
-    print (url);
+    print(url);
     String path = url.replaceAll(new RegExp(r'%2F'), '---');
     // print(path.split('---')[1]);
     String remove = path.split('---')[1].replaceAll('?alt', '---');
     String img = remove.split('---')[0];
     print(img);
     final StorageReference storageReference =
-    FirebaseStorage.instance.ref().child("UserRecipes/" + img);
+        FirebaseStorage.instance.ref().child("UserRecipes/" + img);
 
     storageReference.delete();
-
   } catch (e) {
     return null;
   }
 }
-
-
 
 class PostDetails extends StatelessWidget {
   final Post post;
@@ -547,31 +540,44 @@ class PostDetails extends StatelessWidget {
   String profileImage;
 
   // In the constructor, require a Post.
-  PostDetails({Key key, @required this.post, @required this.currId, @required this.currEmail, @required this.profileImage}) : super(key: key);
-
+  PostDetails(
+      {Key key,
+      @required this.post,
+      @required this.currId,
+      @required this.currEmail,
+      @required this.profileImage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Use the Post to create the UI.
     return Scaffold(
       appBar: AppBar(
-        title: Text(post.title,
-        style: TextStyle(color: Colors.lightGreen),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.lightGreen,),
-          onPressed: (){Navigator.pop(context);},
-        ),
-        //backgroundColor: Colors.white,
-        actions: <Widget>[
-          IconButton(
-              icon: profileImage != null ? CircleAvatar(radius:15.0, backgroundImage: NetworkImage(profileImage)):
-              Icon(Icons.account_circle, color: Colors.grey[300], size: 40.0),
-              onPressed: () {}
+          title: Text(
+            post.title,
+            style: TextStyle(color: Colors.lightGreen),
           ),
-          ]
-      ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.lightGreen,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          //backgroundColor: Colors.white,
+          actions: <Widget>[
+            IconButton(
+                icon: profileImage != null
+                    ? CircleAvatar(
+                        radius: 15.0,
+                        backgroundImage: NetworkImage(profileImage))
+                    : Icon(Icons.account_circle,
+                        color: Colors.grey[300], size: 40.0),
+                onPressed: () {}),
+          ]),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: Container(
@@ -582,55 +588,54 @@ class PostDetails extends StatelessWidget {
             ),
             //color: Colors.grey[200],
             child: Padding(
-              padding:EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-              child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: post.profileImage == null ? NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
-                        ): NetworkImage(
-                          post.profileImage,
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.all(7),
-                      title: GestureDetector(
-                        child:Text(
-                          post.username,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+              padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+              child: Column(children: <Widget>[
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: post.profileImage == null
+                        ? NetworkImage(
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbEs2FYUCNh9EJ1Hl_agLEB6oMYniTBhZqFBMoJN2yCC1Ix0Hi&s',
+                          )
+                        : NetworkImage(
+                            post.profileImage,
                           ),
-                        ),
-                        onTap: () {},
-                      ),
-                      trailing: Text(
-                        post.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 11,
-                        ),
+                  ),
+                  contentPadding: EdgeInsets.all(7),
+                  title: GestureDetector(
+                    child: Text(
+                      post.username,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Center(
-                      child: ClipRect(
-                        child:Image.network(
-                          post.imageUrl,
-                          height: 300,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                    onTap: () {},
+                  ),
+                  trailing: Text(
+                    post.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 11,
                     ),
-                    ListTile(
-                      title: Text(
-                          post.description,
-                          style: TextStyle(fontWeight: FontWeight.w500)
-                      ),
-                      trailing: post.email == currEmail ?
-                      showUserOptions(context, post, currId, currEmail): Container(),
+                  ),
+                ),
+                Center(
+                  child: ClipRect(
+                    child: Image.network(
+                      post.imageUrl,
+                      height: 300,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
                     ),
-                  ]
-              ),
+                  ),
+                ),
+                ListTile(
+                  title: Text(post.description,
+                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  trailing: post.email == currEmail
+                      ? showUserOptions(context, post, currId, currEmail)
+                      : Container(),
+                ),
+              ]),
             ),
           ),
         ),
@@ -639,9 +644,9 @@ class PostDetails extends StatelessWidget {
   }
 }
 
-
-Widget showUserOptions(BuildContext context, Post post, String userId, String email) {
-  return  Visibility(
+Widget showUserOptions(
+    BuildContext context, Post post, String userId, String email) {
+  return Visibility(
     child: IconButton(
         icon: Icon(
           Icons.more_vert,
@@ -650,52 +655,48 @@ Widget showUserOptions(BuildContext context, Post post, String userId, String em
         ),
         onPressed: () {
           showAlert(context, userId, email, post.id, post.email, post.imageUrl);
-        }
-    ),
+        }),
   );
 }
 
-Future<void> showAlert(BuildContext context, String userId, email, String postId, String postEmail, url) {
-  return showDialog(context: context,builder: (BuildContext context) {
-    return AlertDialog(
-      title: Text('Are you sure you want to delete this post? '),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            GestureDetector(
-              child: Text('Yes'),
-              onTap: (){
-
-                removeImage(url);
-                UserOperations.deletePost(postId);
-                Navigator.pop(context);
-
-              },
+Future<void> showAlert(BuildContext context, String userId, email,
+    String postId, String postEmail, url) {
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure you want to delete this post? '),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Text('Yes'),
+                  onTap: () {
+                    removeImage(url);
+                    UserOperations.deletePost(postId);
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text('No'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Text('Cancel',
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                      )),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
             ),
-            Padding(padding: EdgeInsets.all(8.0)),
-            GestureDetector(
-              child: Text('No'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-
-            Padding(padding: EdgeInsets.all(8.0)),
-            GestureDetector(
-              child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                  )
-              ),
-
-              onTap: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        ),
-      ),
-    );
-  });
+          ),
+        );
+      });
 }

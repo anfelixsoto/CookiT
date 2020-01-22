@@ -1,4 +1,3 @@
-// for user view. Not implemented yet
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookit_demo/RecipeDetails.dart';
 import 'package:cookit_demo/model/Recipe.dart';
@@ -460,8 +459,6 @@ class _ViewUser extends State<ViewUser> {
           collection == 'Posts' ? displayUserPosts() : displayUserRecipes(),
         ]),
         bottomNavigationBar: BottomNavigationBar(
-          //
-          //backgroundColor: Colors.grey[100],// footer
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.image),

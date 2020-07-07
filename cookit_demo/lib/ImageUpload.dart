@@ -9,7 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
-void main() {
+void main() { //
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Image Upload',

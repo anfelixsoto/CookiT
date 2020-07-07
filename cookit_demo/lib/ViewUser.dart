@@ -103,7 +103,7 @@ class _ViewUser extends State<ViewUser> {
         }
       });
 
-      //print(user.displayName.toString());
+      print(user.displayName.toString());
     });
   }
 

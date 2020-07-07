@@ -14,12 +14,20 @@ class RecipeSearch extends StatefulWidget {
   var state = new _RecipeSearchState();
   final _count = 0;
   bool flag;
+  bool veg;
+  bool vegan;
+  bool glut;
+  bool dairy;
   List<TextField> fields;
   var listOfFields = <Widget>[];
 
   @override
   _RecipeSearchState createState() {
     flag = false;
+    veg=false;
+    glut=false;
+    vegan=false;
+    dairy=false;
     state = new _RecipeSearchState();
     return state;
   }
@@ -32,6 +40,10 @@ class _RecipeSearchState extends State<RecipeSearch> {
   var listOfFields = <Widget>[];
   int _count = 0;
   bool flag = false;
+  bool veg=false;
+  bool glut=false;
+  bool vegan=false;
+  bool dairy=false;
 
   void _add() {
     controllerList.add(new TextEditingController());
@@ -69,6 +81,34 @@ class _RecipeSearchState extends State<RecipeSearch> {
       });
     }
     return ingredients;
+  }
+
+  Container createCheckboxView(msg,val){
+    return Container(
+      width:(MediaQuery.of(context).size.width/2),
+      height:25.0,
+      alignment: Alignment.center,
+      child:ListView(
+      scrollDirection:Axis.horizontal,
+      children: <Widget>[
+        Text(
+          msg,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20.0,
+            color: Colors.lightGreen,
+          ),
+        ),
+        Checkbox(
+          value: val,
+          onChanged: (bool value) {
+            setState(() {
+              val = value;
+            });
+          }
+        ),
+      ],
+    ));
   }
 
   @override
@@ -224,7 +264,19 @@ class _RecipeSearchState extends State<RecipeSearch> {
                                 fontSize: 15.0,
                                 color: Colors.red,
                               ),
-                            )),
+                            ))
+                        /*Container(
+                          width:(MediaQuery.of(context).size.width / 2),
+                          height:(MediaQuery.of(context).size.height / 4),
+                        child: ListView(
+                          children:<Widget>[
+                            createCheckboxView("vegetarian", veg),
+                            createCheckboxView("vegan", vegan),
+                            createCheckboxView("gluten free", glut),
+                            createCheckboxView("dairy free", dairy),
+                          ]//widget end
+                        ), //listview end
+                        ), //container end*/
                       ],
                     ),
                   ),

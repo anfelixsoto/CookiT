@@ -23,12 +23,14 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
+  @override
   Future<String> signUp(String username, String email, String password) async{
     try {
       AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password
       );
       FirebaseUser user = result.user;
+      await user.sendEmailVerification();
       if (user != null) {
         Firestore.instance.collection('/users').document(user.uid).setData({
           'user_name': username,
@@ -39,6 +41,7 @@ class Auth implements BaseAuth {
           'saved': [],
         });
         signIn(email, password);
+
         return user.uid;
       }
     }catch(e) {

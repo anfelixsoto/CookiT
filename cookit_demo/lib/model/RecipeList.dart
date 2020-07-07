@@ -32,7 +32,7 @@ class RecipeList{
   static Future<RecipeList> fetchRecipes(List<String> ingredients) async {
     String url=getUrlString(ingredients);
     final response =
-      await http.get('https://api.spoonacular.com/recipes/findByIngredients?ingredients='+url+'&ranking=2&number=8&ignorePantry=true&apiKey='+Globals.getKey());
+      await http.get('https://api.spoonacular.com/recipes/findByIngredients?ingredients='+url+'&ranking=2&number=10&ignorePantry=true&apiKey='+Globals.getKey());
 
       if (response.statusCode == 200) {
         // If the call to the server was successful, parse the JSON.
